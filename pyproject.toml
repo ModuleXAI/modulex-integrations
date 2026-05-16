@@ -1,0 +1,93 @@
+[build-system]
+requires = ["hatchling>=1.20"]
+build-backend = "hatchling.build"
+
+[project]
+name = "modulex-integrations"
+version = "0.0.1"
+description = "Community-contributable integrations (tools) for ModuleX"
+readme = "README.md"
+requires-python = ">=3.12"
+license = "MIT"
+license-files = ["LICENSE"]
+authors = [{ name = "ModuleX", email = "team@modulex.dev" }]
+keywords = ["modulex", "integrations", "ai", "tools", "langchain"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Operating System :: OS Independent",
+    "Typing :: Typed",
+]
+dependencies = [
+    "pydantic>=2.5.0",
+    "httpx>=0.25.0",
+    "langchain-core>=0.3.0",
+]
+
+[project.optional-dependencies]
+# `all` is auto-assembled from per-integration `dependencies.toml`
+# files by scripts/assemble_dependencies.py. Do not edit by hand.
+all = []
+
+dev = [
+    "pytest>=8.0.0",
+    "pytest-asyncio>=0.23.0",
+    "pytest-httpx>=0.30.0",
+    "ruff>=0.6.0",
+    "mypy>=1.10.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/ModuleXAI/modulex-integrations"
+Repository = "https://github.com/ModuleXAI/modulex-integrations"
+Issues = "https://github.com/ModuleXAI/modulex-integrations/issues"
+
+# Entry points — each migrated tool gets one line here.
+[project.entry-points."modulex.tools"]
+# Example (added when github POC lands):
+# github = "modulex_integrations.tools.github"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/modulex_integrations"]
+
+[tool.hatch.build.targets.sdist]
+include = [
+    "src",
+    "tests",
+    "scripts",
+    "README.md",
+    "CONTRIBUTING.md",
+    "CHANGELOG.md",
+    "LICENSE",
+    "pyproject.toml",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests", "src/modulex_integrations"]
+python_files = "test_*.py"
+asyncio_mode = "auto"
+addopts = [
+    "--strict-markers",
+    "--import-mode=importlib",
+    "-ra",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "N", "W", "B", "C4", "UP", "RUF"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**/*.py" = ["N802", "N803", "N806"]
+
+[tool.mypy]
+python_version = "3.12"
+strict = true
+warn_unused_configs = true
+files = ["src/modulex_integrations"]
