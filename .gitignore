@@ -17,7 +17,6 @@ sdist/
 .venv/
 venv/
 env/
-.python-version
 
 # Tooling caches
 .pytest_cache/

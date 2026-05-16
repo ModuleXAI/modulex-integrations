@@ -1,0 +1,17 @@
+# Default owner for everything not matched below
+*                                          @ModuleXAI/core
+
+# Schema and packaging — changes here ripple through every integration
+/src/modulex_integrations/schema.py        @ModuleXAI/core
+/src/modulex_integrations/__init__.py      @ModuleXAI/core
+/pyproject.toml                            @ModuleXAI/core
+
+# Repo meta and governance
+/.github/                                  @ModuleXAI/core
+/LICENSE                                   @ModuleXAI/core
+/CHANGELOG.md                              @ModuleXAI/core
+/SECURITY.md                               @ModuleXAI/core
+/CODE_OF_CONDUCT.md                        @ModuleXAI/core
+
+# Per-integration ownership is added per integration as they migrate:
+# /src/modulex_integrations/tools/<name>/  @<maintainer>
