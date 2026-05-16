@@ -46,6 +46,7 @@ class TestManifest:
         # Both auth_schemas use POST /search with a body to validate the
         # credential. Tests the new TestEndpoint.body schema field.
         for auth in manifest.auth_schemas:
+            assert auth.test_endpoint is not None
             assert auth.test_endpoint.method == "POST"
             assert auth.test_endpoint.body == {"query": "test", "numResults": 1}
 

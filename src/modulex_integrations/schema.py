@@ -136,7 +136,14 @@ class TestEndpoint(BaseModel):
 
 
 class _AuthSchemaBase(BaseModel):
-    """Fields shared by every auth_schema variant."""
+    """Fields shared by every auth_schema variant.
+
+    ``test_endpoint`` is optional: some legacy integrations (e.g.
+    instacart, hackernews) use ``modulex_key`` for a "public API"
+    that has no credential to validate, so they ship no
+    test_endpoint at all. The modulex runtime skips credential
+    testing in that case.
+    """
 
     model_config = ConfigDict(extra="forbid")
 
@@ -144,7 +151,7 @@ class _AuthSchemaBase(BaseModel):
     description: str
     setup_instructions: list[str] | None = None
     setup_environment_variables: list[EnvVar] = Field(default_factory=list)
-    test_endpoint: TestEndpoint
+    test_endpoint: TestEndpoint | None = None
 
 
 class OAuthConfig(BaseModel):

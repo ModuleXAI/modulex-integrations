@@ -28,6 +28,31 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 - `.github/workflows/release.yml` — tag-triggered (`v*`) workflow that classifies pre-release vs stable via PEP 440, enforces branch-of-origin (stable from `main`, pre-release from `staging`), builds sdist + wheel, and publishes to PyPI via Trusted Publishing OIDC in the `release-pypi` environment.
 - `RELEASING.md` — release process, PyPI Trusted Publisher setup checklist, and the modulex-side per-branch pinning policy.
 
+### Added (Wave 1 — first bulk migration batch)
+
+- **5 new integrations** — 19 LangChain `@tool` actions across simple
+  HTTP + validated auth types (`api_key`, `modulex_key`):
+  - `instacart` (3 actions) — public Instacart recipe/list/retailer endpoints
+  - `tinyurl` (3 actions) — URL shortening + analytics + metadata
+  - `customerio` (3 actions) — first integration using HTTP Basic Auth
+    (site_id + api_key pair); runtime injects both, tool builds Basic
+    header
+  - `npm` (6 actions) — public npm registry: info, search, popular,
+    versions, deps, downloads. First integration where api_key is
+    optional (public registry)
+  - `pinterest` (4 actions) — boards + sections + pins; supports both
+    `api_key` and `oauth2` auth schemas (both resolve to Bearer)
+- 44 new tests (`isinstance(result, dict)` + roundtrip-via-`model_validate`
+  pattern); total: 61 → 105 passing.
+
+### Changed (schema)
+
+- `_AuthSchemaBase.test_endpoint` is now optional
+  (`TestEndpoint | None = None`). Public-API integrations like
+  instacart and hackernews legitimately ship no credential test
+  endpoint — the legacy modulex JSON omitted the field. Purely
+  additive change.
+
 ### Fixed
 
 - **Critical**: `@tool` functions now return plain dicts at runtime

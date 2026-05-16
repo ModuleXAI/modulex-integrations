@@ -55,6 +55,11 @@ github = "modulex_integrations.tools.github"
 slack = "modulex_integrations.tools.slack"
 exa = "modulex_integrations.tools.exa"
 tavily = "modulex_integrations.tools.tavily"
+instacart = "modulex_integrations.tools.instacart"
+tinyurl = "modulex_integrations.tools.tinyurl"
+customerio = "modulex_integrations.tools.customerio"
+npm = "modulex_integrations.tools.npm"
+pinterest = "modulex_integrations.tools.pinterest"
 
 [tool.hatch.version]
 # Version is derived from the latest git tag matching v* (e.g. v0.1.0,
@@ -105,6 +110,9 @@ select = ["E", "F", "I", "N", "W", "B", "C4", "UP", "RUF"]
 
 [tool.ruff.lint.per-file-ignores]
 "tests/**/*.py" = ["N802", "N803", "N806"]
+# npm outputs mirror the upstream registry's mixedCase field names
+# (devDependencies, peerDependencies, optionalDependencies).
+"src/modulex_integrations/tools/npm/outputs.py" = ["N815"]
 
 [tool.mypy]
 python_version = "3.12"
