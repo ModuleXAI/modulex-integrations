@@ -1,0 +1,57 @@
+"""SendGrid integration."""
+from modulex_integrations.tools.sendgrid.manifest import manifest
+from modulex_integrations.tools.sendgrid.tools import (
+    add_email_to_global_suppression,
+    add_or_update_contact,
+    create_contact_list,
+    delete_blocks,
+    delete_bounces,
+    delete_contacts,
+    delete_global_suppression,
+    get_all_bounces,
+    get_contact_lists,
+    list_blocks,
+    list_global_suppressions,
+    remove_contact_from_list,
+    search_contacts,
+    send_email,
+    send_email_multiple_recipients,
+)
+
+TOOLS = (
+    send_email,
+    send_email_multiple_recipients,
+    add_or_update_contact,
+    search_contacts,
+    create_contact_list,
+    get_contact_lists,
+    remove_contact_from_list,
+    delete_contacts,
+    add_email_to_global_suppression,
+    delete_global_suppression,
+    list_global_suppressions,
+    get_all_bounces,
+    delete_bounces,
+    list_blocks,
+    delete_blocks,
+)
+
+__all__ = [
+    "TOOLS",
+    "add_email_to_global_suppression",
+    "add_or_update_contact",
+    "create_contact_list",
+    "delete_blocks",
+    "delete_bounces",
+    "delete_contacts",
+    "delete_global_suppression",
+    "get_all_bounces",
+    "get_contact_lists",
+    "list_blocks",
+    "list_global_suppressions",
+    "manifest",
+    "remove_contact_from_list",
+    "search_contacts",
+    "send_email",
+    "send_email_multiple_recipients",
+]

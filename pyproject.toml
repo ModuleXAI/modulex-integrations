@@ -81,6 +81,11 @@ apollo_io = "modulex_integrations.tools.apollo_io"
 cloudflare = "modulex_integrations.tools.cloudflare"
 semrush = "modulex_integrations.tools.semrush"
 gmail = "modulex_integrations.tools.gmail"
+sendgrid = "modulex_integrations.tools.sendgrid"
+coinbase = "modulex_integrations.tools.coinbase"
+postgresql = "modulex_integrations.tools.postgresql"
+mysql = "modulex_integrations.tools.mysql"
+snowflake = "modulex_integrations.tools.snowflake"
 
 [tool.hatch.version]
 # Version is derived from the latest git tag matching v* (e.g. v0.1.0,

@@ -6,6 +6,47 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ## [Unreleased]
 
+### Added (Wave 6 — sixth bulk migration batch)
+
+- **5 new integrations** — 50 LangChain `@tool` actions; introduces
+  the **first SDK-backed DB integrations** to the package and the
+  first `custom` auth_type with JWT signing:
+  - `sendgrid` (15 actions) — transactional + marketing email via
+    SendGrid v3 REST. Pure HTTP, `api_key` auth (Bearer header).
+    Every action wraps in try/except → `success=False` envelope
+    (exa-style); timeouts surface as a distinct error.
+  - `coinbase` (8 actions) — Coinbase Developer Platform v2 + v3
+    brokerage. **First `custom` auth_type integration** + first
+    JWT-signing implementation (Ed25519 EdDSA or ECDSA ES256 picked
+    by secret-format sniff). New runtime dep: `cryptography>=41.0`.
+    Test suite exercises a real Ed25519 JWT roundtrip on a locally
+    generated key.
+  - `postgresql` (10 actions) — DB integration via `asyncpg`. Raw
+    SQL, CRUD, upsert (`INSERT ... ON CONFLICT`), introspection.
+    `?` placeholders rewritten to `$N`. New runtime dep:
+    `asyncpg>=0.29.0`.
+  - `mysql` (9 actions) — DB integration via `aiomysql`. Raw SQL,
+    CRUD, stored procedures with multi-result-set support, table
+    introspection (`SHOW FULL TABLES`, `SHOW COLUMNS`). `?`
+    placeholders rewritten to `%s`. New runtime dep:
+    `aiomysql>=0.2.0`.
+  - `snowflake` (9 actions) — data-warehouse integration via the
+    synchronous `snowflake-connector-python` driver. Wraps blocking
+    SDK calls in `async def` (matches legacy; refactor deferred).
+    Batched inserts with per-batch error tracking. New runtime dep:
+    `snowflake-connector-python>=3.0.0`.
+- **Schema delta**: none. All five integrations slot onto the
+  existing schema. The three DB integrations + coinbase all use
+  `CustomAuthSchema` for credential bundles that don't fit
+  `api_key`/`oauth2`.
+- 87 new tests (3 DB integrations exercise `unittest.mock.patch` on
+  the cursor layer — first heavy use of the SDK-mock testing pattern
+  in this phase). Cumulative: 440 → 527 passing.
+- Drive-by: tightened a coinbase ECDSA branch with an `isinstance`
+  guard (mypy complained about the broad `load_pem_private_key`
+  return union); added per-test type ignores for `asyncpg` /
+  `aiomysql` (no stubs published upstream).
+
 ### Added (Wave 5 — fifth bulk migration batch)
 
 - **5 new integrations** — 78 LangChain `@tool` actions across the
