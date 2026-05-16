@@ -47,8 +47,7 @@ Issues = "https://github.com/ModuleXAI/modulex-integrations/issues"
 
 # Entry points — each migrated tool gets one line here.
 [project.entry-points."modulex.tools"]
-# Example (added when github POC lands):
-# github = "modulex_integrations.tools.github"
+github = "modulex_integrations.tools.github"
 
 [tool.hatch.version]
 # Version is derived from the latest git tag matching v* (e.g. v0.1.0,

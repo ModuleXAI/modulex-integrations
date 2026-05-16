@@ -1,0 +1,10 @@
+# Runtime dependencies for the github integration.
+#
+# CI's scripts/assemble_dependencies.py reads this file to build the
+# root pyproject's [project.optional-dependencies] `github` extra, which
+# is then unioned into `all`.
+#
+# github only uses httpx (HTTP) and langchain-core (@tool decorator),
+# both already in the package's core `dependencies`. Nothing new here.
+
+dependencies = []

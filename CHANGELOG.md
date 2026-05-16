@@ -27,8 +27,18 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 - `.github/workflows/release.yml` — tag-triggered (`v*`) workflow that classifies pre-release vs stable via PEP 440, enforces branch-of-origin (stable from `main`, pre-release from `staging`), builds sdist + wheel, and publishes to PyPI via Trusted Publishing OIDC in the `release-pypi` environment.
 - `RELEASING.md` — release process, PyPI Trusted Publisher setup checklist, and the modulex-side per-branch pinning policy.
-- `external-briefs/modulex/001-bump-python-floor-to-3-12.md` — blocking brief: modulex must bump its `requires-python` floor and runtime Python to 3.12 before the upcoming `modulex-integrations` dependency line can resolve.
-- `CLAUDE.md` — "Release model" section pointing at `RELEASING.md`.
+
+### Added (github POC migration)
+
+- First integration: `modulex_integrations.tools.github` — 16 LangChain `@tool` async actions ported from the legacy modulex inline implementation:
+  `list_repositories`, `create_repository`, `delete_repository`, `get_repository`,
+  `list_issues`, `create_issue`, `get_issue`, `update_issue`,
+  `list_pull_requests`, `create_pull_request`, `get_pull_request`, `merge_pull_request`,
+  `create_branch`, `get_file_content`, `create_commit`, `search_code`.
+- `manifest.py` — pydantic `IntegrationManifest` replacing the legacy 1180-line JSON; OAuth2 + Personal Access Token auth schemas with credential test endpoints.
+- `outputs.py` — 16 pydantic response models; the runtime derives output JSONSchema via `Model.model_json_schema()` (no `output_schema` field in the manifest).
+- `tests/test_github.py` — 16 happy-path tests using `pytest-httpx`'s `httpx_mock` fixture plus three manifest sanity tests. Total package test count: 8 schema + 19 github = 27.
+- `pyproject.toml`: entry-point line `github = "modulex_integrations.tools.github"` registered under `[project.entry-points."modulex.tools"]`. Validated end-to-end via `importlib.metadata.entry_points(group="modulex.tools")` — modulex's runtime discovery path works without changes.
 
 ## [0.0.1] — 2026-05-15
 
