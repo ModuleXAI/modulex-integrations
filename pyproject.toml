@@ -38,6 +38,10 @@ dev = [
     "pytest-httpx>=0.30.0",
     "ruff>=0.6.0",
     "mypy>=1.10.0",
+    # SDK extras needed at dev/test time so integration test mocks can
+    # patch the SDK symbols. These also live in each integration's
+    # dependencies.toml for the future assemble script.
+    "langchain-tavily>=0.2.0",
 ]
 
 [project.urls]
@@ -50,6 +54,7 @@ Issues = "https://github.com/ModuleXAI/modulex-integrations/issues"
 github = "modulex_integrations.tools.github"
 slack = "modulex_integrations.tools.slack"
 exa = "modulex_integrations.tools.exa"
+tavily = "modulex_integrations.tools.tavily"
 
 [tool.hatch.version]
 # Version is derived from the latest git tag matching v* (e.g. v0.1.0,

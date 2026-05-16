@@ -28,6 +28,22 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 - `.github/workflows/release.yml` — tag-triggered (`v*`) workflow that classifies pre-release vs stable via PEP 440, enforces branch-of-origin (stable from `main`, pre-release from `staging`), builds sdist + wheel, and publishes to PyPI via Trusted Publishing OIDC in the `release-pypi` environment.
 - `RELEASING.md` — release process, PyPI Trusted Publisher setup checklist, and the modulex-side per-branch pinning policy.
 
+### Added (Phase 3 — SDK pattern + further migrations)
+
+- **tavily integration** — 3 LangChain `@tool` async actions:
+  `web_search`, `answer_search`, `news_search`. First SDK-based
+  integration: wraps `langchain_tavily.TavilySearch` via lazy import
+  inside each tool. The lazy import + graceful "install with pip
+  install langchain-tavily" fallback matches legacy modulex behavior.
+- `tavily/dependencies.toml` declares `langchain-tavily>=0.2.0` for
+  the future assemble script.
+- `pyproject.toml` `dev` extras include `langchain-tavily` so tests
+  can exercise the real SDK class via `unittest.mock.patch` — the
+  CONTRIBUTING.md-specified pattern for SDK tools, now validated.
+- Tests use `patch.dict(sys.modules, {"langchain_tavily": ...})` to
+  both substitute a mock SDK class (happy path) and simulate the
+  missing-SDK ImportError (graceful-degradation path).
+
 ### Added (Phase 3 — first bulk migrations)
 
 - **slack integration** — 8 LangChain `@tool` async actions:
