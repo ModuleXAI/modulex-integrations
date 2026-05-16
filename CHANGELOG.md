@@ -6,6 +6,40 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ## [Unreleased]
 
+### Added (Wave 5 — fifth bulk migration batch)
+
+- **5 new integrations** — 78 LangChain `@tool` actions across the
+  large-action band; one paired oauth2/bearer_token Google integration
+  rounds out the pure-HTTP Gmail surface (no Google SDK dep):
+  - `scrape_do` (5 actions) — web scraping with JS rendering +
+    screenshots + markdown extraction. `api_key` via `?token={key}`
+    query param. `_PARAM_MAP` translates snake_case action params
+    to scrape.do's camelCase query keys.
+  - `apollo_io` (28 actions) — B2B sales/CRM platform; uniform shape
+    across all 28 actions backed by one `_call(path, api_key, …)`
+    helper. `X-Api-Key` header. `_clean_domain()` strips scheme + path
+    + `www.` consistently for domain-keyed enrichment calls.
+  - `cloudflare` (13 actions) — DNS, WAF, zones, firewall rules,
+    load balancing. Single `_call` helper for the entire surface;
+    Cloudflare envelope (`{success, errors, result, result_info}`)
+    handled uniformly. `_pagination_from(result_info)` extracts the
+    Cloudflare pagination block into a typed sub-model.
+  - `semrush` (19 actions) — SEO/marketing intelligence. Two endpoint
+    families: legacy CSV (`api.semrush.com/`, semicolon-separated)
+    and JSON (`api.semrush.com/analytics/ta/api/v3/`). `_parse_csv()`
+    coerces the CSV body into list-of-dicts; `_call_csv` handles the
+    `ERROR ...` body-in-200 failure case explicitly.
+  - `gmail` (13 actions) — Google Gmail REST v1. Pure HTTP (no
+    `google-api-python-client`); MIME messages built locally and
+    base64url-encoded. Paired `oauth2 + bearer_token` schemas.
+    `search_messages` and `list_messages` use an **N+1 metadata-fetch
+    pattern** (list IDs, then per-message metadata GET for
+    Subject/From/Date) — preserved verbatim from legacy.
+- 103 new tests covering all five integrations (28 for apollo_io
+  alone), exercising the `isinstance(result, dict)` + roundtrip-via-
+  `model_validate` pattern plus per-integration shape coverage.
+- Cumulative test count: 337 → 440 passing.
+
 ### Added (Wave 4 — fourth bulk migration batch)
 
 - **5 new integrations** — 60 LangChain `@tool` actions across the

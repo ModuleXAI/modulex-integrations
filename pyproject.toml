@@ -76,6 +76,11 @@ airtable = "modulex_integrations.tools.airtable"
 telegram = "modulex_integrations.tools.telegram"
 servicenow = "modulex_integrations.tools.servicenow"
 intercom = "modulex_integrations.tools.intercom"
+scrape_do = "modulex_integrations.tools.scrape_do"
+apollo_io = "modulex_integrations.tools.apollo_io"
+cloudflare = "modulex_integrations.tools.cloudflare"
+semrush = "modulex_integrations.tools.semrush"
+gmail = "modulex_integrations.tools.gmail"
 
 [tool.hatch.version]
 # Version is derived from the latest git tag matching v* (e.g. v0.1.0,
