@@ -6,6 +6,38 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ## [Unreleased]
 
+### Added (Wave 2 — second bulk migration batch)
+
+- **5 new integrations** — 31 LangChain `@tool` actions, mostly
+  small/simple HTTP across `api_key` and one `modulex_key`:
+  - `klaviyo` (5 actions) — list/profile/subscription management
+    against the Klaviyo REST API (revision `2024-10-15`).
+  - `convertapi` (4 actions) — file/base64/web URL conversion plus
+    format discovery. First integration to use `test_endpoint.params`
+    for query-string credential validation (`?Secret={api_key}`).
+  - `appdrag` (3 actions) — cloud function invocation and raw
+    INSERT/UPDATE against the AppDrag CloudDB. First integration with
+    **two env vars** (`APPDRAG_API_KEY` + `APPDRAG_APP_ID`), both
+    auto-injected by the runtime.
+  - `hackernews` (10 actions) — search via hnrss.org RSS feeds plus
+    direct Firebase JSON API (`top/new/best/ask/show/job` stories,
+    item, user). Public API — `modulex_key` auth_schema, no
+    `test_endpoint`.
+  - `lemon_squeezy` (10 actions) — customers/orders/products/
+    subscriptions/stores via the JSON:API v1 endpoints. Each list
+    method returns `data` + `meta` page-state unchanged.
+- 69 new tests (`isinstance(result, dict)` + roundtrip-via-
+  `model_validate` pattern); total: 105 → 174 passing.
+
+### Changed (schema)
+
+- `TestEndpoint.params: dict[str, str]` added — additive, defaults
+  to `{}`. Lets integrations whose credential test auths via query
+  string (ConvertAPI's `?Secret={api_key}`; nasdaq in Wave 3 follows
+  the same pattern) match the modulex runtime, which already reads
+  `test_endpoint.get("params", {})` in `credential_service.py`. Fully
+  backward-compatible — existing manifests are unaffected.
+
 ### Added
 
 - Initial repository skeleton (src/ layout, hatchling build, pytest/ruff/mypy config).

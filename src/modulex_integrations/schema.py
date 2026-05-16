@@ -113,11 +113,15 @@ class SuccessIndicators(BaseModel):
 class TestEndpoint(BaseModel):
     """Endpoint hit to validate a configured credential.
 
-    Header values may contain placeholders such as ``{access_token}``,
-    ``{token}``, or ``{api_key}`` which the runtime substitutes with
-    the resolved credential value. The optional ``body`` is sent as
-    a JSON payload on non-GET methods (e.g. POST-based credential
-    checks such as Exa's ``POST /search``).
+    URL, header, body, and query-parameter values may contain
+    placeholders such as ``{access_token}``, ``{token}``, or
+    ``{api_key}`` which the runtime substitutes with the resolved
+    credential value. ``body`` is sent as a JSON payload on non-GET
+    methods (e.g. POST-based credential checks such as Exa's
+    ``POST /search``). ``params`` is the URL query string used by
+    integrations that pass their credential as a query parameter
+    (e.g. ConvertAPI's ``?Secret={api_key}``, Nasdaq's
+    ``?api_key={api_key}``).
     """
 
     __test__ = False  # pydantic model, not a pytest test class
@@ -126,6 +130,7 @@ class TestEndpoint(BaseModel):
     url: str
     method: Literal["GET", "POST", "PUT", "DELETE", "PATCH"] = "GET"
     headers: dict[str, str] = Field(default_factory=dict)
+    params: dict[str, str] = Field(default_factory=dict)
     body: dict[str, Any] | None = None
     success_indicators: SuccessIndicators
     cost_level: str = "free"

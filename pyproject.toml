@@ -60,6 +60,11 @@ tinyurl = "modulex_integrations.tools.tinyurl"
 customerio = "modulex_integrations.tools.customerio"
 npm = "modulex_integrations.tools.npm"
 pinterest = "modulex_integrations.tools.pinterest"
+klaviyo = "modulex_integrations.tools.klaviyo"
+convertapi = "modulex_integrations.tools.convertapi"
+appdrag = "modulex_integrations.tools.appdrag"
+hackernews = "modulex_integrations.tools.hackernews"
+lemon_squeezy = "modulex_integrations.tools.lemon_squeezy"
 
 [tool.hatch.version]
 # Version is derived from the latest git tag matching v* (e.g. v0.1.0,
