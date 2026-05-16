@@ -51,3 +51,7 @@ src/modulex_integrations/_version.py
 CLAUDE.md
 .claude/
 external-briefs/
+# Session handoff prompts — local-only handoff docs between Claude
+# Code sessions; not part of the public package.
+NEXT_SESSION_PROMPT.md
+*_SESSION_PROMPT.md
