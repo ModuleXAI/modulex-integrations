@@ -6,6 +6,52 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ## [Unreleased]
 
+### Added (Wave 7 — seventh bulk migration batch)
+
+- **5 new integrations** — 93 LangChain `@tool` actions (the largest
+  wave so far), focused on mid/large CRM/CS/AI platforms:
+  - `hubspot` (26 actions) — HubSpot CRM via the **synchronous**
+    `hubspot-api-client` SDK. Contacts/companies/deals/tickets CRUD
+    (5 shapes × 4 object types) + engagements (note/task/meeting)
+    + property introspection. Factored shared helpers
+    (`_do_recent`, `_do_search`) collapse the 5×4 boilerplate.
+    Paired `oauth2 + bearer_token` schemas. New dep:
+    `hubspot-api-client>=11.0.0`.
+  - `notion` (19 actions) — Notion REST v1; pure HTTP. Pages,
+    databases, blocks, users, comments, search. **N+1 fetch**
+    for `get_page` with content (page + block children).
+    `_extract_title` walks the three Notion title conventions.
+    OAuth uses HTTP Basic token exchange (Notion quirk). Paired
+    `oauth2 + bearer_token`.
+  - `elevenlabs` (15 actions) — AI voice (TTS/STT/SFX/voice
+    cloning/isolation) + Conversational-AI agents +
+    knowledge-base + conversations. Wraps the synchronous
+    `elevenlabs` SDK in async tools. Audio I/O via base64 or URL
+    (shared `_resolve_audio`). Paired `api_key + modulex_key`.
+    New dep: `elevenlabs>=2.0.0`.
+  - `zendesk` (17 actions) — Zendesk Support v2 REST API; pure
+    HTTP. Ticket CRUD + tags + comments, custom fields, users,
+    locales, macros, help-center articles. **Triple-credential
+    pattern** (subdomain + email + api_key forming a Basic Auth
+    header). Tag HTTP semantics non-obvious (PUT=add, POST=set,
+    DELETE=remove) — documented in each action's docstring.
+    `api_key` auth_type with 3 env vars.
+  - `salesforce` (16 actions) — Salesforce REST API v62.0; pure
+    HTTP. SOQL/SOSL queries, generic record CRUD, convenience
+    creators for Account/Contact/Lead/Opportunity/Task/Case +
+    Campaign membership + schema introspection. `auth_data`
+    carries both `access_token` AND `instance_url` (per-org).
+    Paired `oauth2 + bearer_token`.
+- **Schema delta**: none. All five integrations slot onto the
+  existing schema. The triple-credential zendesk pattern is just
+  three env vars on the same `api_key` auth_schema.
+- 116 new tests (notion 26, hubspot 23, elevenlabs 24, zendesk 22,
+  salesforce 21). Cumulative: 527 → 643 passing.
+- Drive-by: dropped a no-longer-needed `# type: ignore[import-untyped]`
+  on elevenlabs (the SDK ships `py.typed`); refactored
+  `existing_kb + [kb_locator]` to spread syntax (`[*existing_kb,
+  kb_locator]`) per ruff RUF005.
+
 ### Added (Wave 6 — sixth bulk migration batch)
 
 - **5 new integrations** — 50 LangChain `@tool` actions; introduces

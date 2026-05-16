@@ -86,6 +86,11 @@ coinbase = "modulex_integrations.tools.coinbase"
 postgresql = "modulex_integrations.tools.postgresql"
 mysql = "modulex_integrations.tools.mysql"
 snowflake = "modulex_integrations.tools.snowflake"
+hubspot = "modulex_integrations.tools.hubspot"
+notion = "modulex_integrations.tools.notion"
+elevenlabs = "modulex_integrations.tools.elevenlabs"
+zendesk = "modulex_integrations.tools.zendesk"
+salesforce = "modulex_integrations.tools.salesforce"
 
 [tool.hatch.version]
 # Version is derived from the latest git tag matching v* (e.g. v0.1.0,

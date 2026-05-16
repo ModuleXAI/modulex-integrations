@@ -1,0 +1,57 @@
+"""ElevenLabs integration."""
+from modulex_integrations.tools.elevenlabs.manifest import manifest
+from modulex_integrations.tools.elevenlabs.tools import (
+    add_knowledge_base_to_agent,
+    check_subscription,
+    create_agent,
+    get_agent,
+    get_conversation,
+    get_voice,
+    isolate_audio,
+    list_agents,
+    list_conversations,
+    list_models,
+    search_voices,
+    speech_to_text,
+    text_to_sound_effects,
+    text_to_speech,
+    voice_clone,
+)
+
+TOOLS = (
+    text_to_speech,
+    speech_to_text,
+    text_to_sound_effects,
+    search_voices,
+    list_models,
+    get_voice,
+    voice_clone,
+    isolate_audio,
+    check_subscription,
+    create_agent,
+    list_agents,
+    get_agent,
+    add_knowledge_base_to_agent,
+    list_conversations,
+    get_conversation,
+)
+
+__all__ = [
+    "TOOLS",
+    "add_knowledge_base_to_agent",
+    "check_subscription",
+    "create_agent",
+    "get_agent",
+    "get_conversation",
+    "get_voice",
+    "isolate_audio",
+    "list_agents",
+    "list_conversations",
+    "list_models",
+    "manifest",
+    "search_voices",
+    "speech_to_text",
+    "text_to_sound_effects",
+    "text_to_speech",
+    "voice_clone",
+]
