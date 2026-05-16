@@ -11,6 +11,9 @@ write a manifest with::
         IntegrationManifest, ActionDefinition, OAuth2AuthSchema, ...
     )
 """
+from importlib.metadata import PackageNotFoundError
+from importlib.metadata import version as _pkg_version
+
 from modulex_integrations.schema import (
     ActionDefinition,
     ApiKeyAuthSchema,
@@ -28,7 +31,10 @@ from modulex_integrations.schema import (
     TestEndpoint,
 )
 
-__version__ = "0.0.1"
+try:
+    __version__ = _pkg_version("modulex-integrations")
+except PackageNotFoundError:  # source checkout without `pip install -e .`
+    __version__ = "0.0.0+unknown"
 
 __all__ = [
     "ActionDefinition",

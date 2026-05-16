@@ -1,0 +1,127 @@
+name: release
+
+# Fires only on version tags shaped like v0.1.0, v0.1.0a1, v0.1.0rc2,
+# v0.1.0.dev3, v0.1.0.post1. The build job classifies the tag, enforces
+# branch-of-origin (stable from main, pre-release from staging), builds
+# the sdist + wheel, and publishes to PyPI via Trusted Publishing.
+#
+# Trusted Publisher must be configured on pypi.org before the first run.
+# See RELEASING.md for the one-time setup checklist.
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: build sdist + wheel
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.release_type.outputs.version }}
+      is_prerelease: ${{ steps.release_type.outputs.is_prerelease }}
+      expected_branch: ${{ steps.release_type.outputs.expected_branch }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # hatch-vcs needs the tag and all history to derive the version
+          # correctly; the branch guard needs branch refs.
+          fetch-depth: 0
+
+      - name: Classify tag (stable vs pre-release)
+        id: release_type
+        env:
+          REF_NAME: ${{ github.ref_name }}
+        run: |
+          if [[ ! "$REF_NAME" =~ ^v[0-9]+\.[0-9]+\.[0-9]+((a|b|rc)[0-9]+|\.dev[0-9]+|\.post[0-9]+)?$ ]]; then
+            echo "::error::tag '$REF_NAME' is not a PEP 440 version (expected vX.Y.Z, vX.Y.ZaN, vX.Y.ZbN, vX.Y.ZrcN, vX.Y.Z.devN, vX.Y.Z.postN)"
+            exit 1
+          fi
+          VERSION="${REF_NAME#v}"
+          if [[ "$VERSION" =~ (a|b|rc|\.dev)[0-9]+$ ]]; then
+            IS_PRE=true
+            EXPECTED_BRANCH=staging
+          else
+            IS_PRE=false
+            EXPECTED_BRANCH=main
+          fi
+          echo "version=$VERSION"          >> "$GITHUB_OUTPUT"
+          echo "is_prerelease=$IS_PRE"     >> "$GITHUB_OUTPUT"
+          echo "expected_branch=$EXPECTED_BRANCH" >> "$GITHUB_OUTPUT"
+          echo "Tag $REF_NAME -> version=$VERSION, pre-release=$IS_PRE, must be on origin/$EXPECTED_BRANCH"
+
+      - name: Verify tag is reachable from the expected branch
+        env:
+          EXPECTED_BRANCH: ${{ steps.release_type.outputs.expected_branch }}
+        run: |
+          git fetch origin "+refs/heads/${EXPECTED_BRANCH}:refs/remotes/origin/${EXPECTED_BRANCH}"
+          if ! git branch -r --contains "$GITHUB_SHA" | grep -qE "^\\s*origin/${EXPECTED_BRANCH}\\s*$"; then
+            echo "::error::tag '${GITHUB_REF_NAME}' points at commit $GITHUB_SHA, which is not reachable from origin/${EXPECTED_BRANCH}. Refusing to publish."
+            echo "Branches that contain this commit:"
+            git branch -r --contains "$GITHUB_SHA" || true
+            exit 1
+          fi
+          echo "OK: tag is on origin/$EXPECTED_BRANCH"
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: pyproject.toml
+
+      - name: Install build tooling
+        run: |
+          python -m pip install --upgrade pip
+          pip install build
+
+      - name: Build sdist and wheel
+        run: python -m build
+
+      - name: Verify built version matches the tag
+        env:
+          EXPECTED_VERSION: ${{ steps.release_type.outputs.version }}
+        run: |
+          ls -la dist/
+          if ! ls dist/ | grep -q "modulex_integrations-${EXPECTED_VERSION}-py3-none-any.whl"; then
+            echo "::error::built wheel does not carry version ${EXPECTED_VERSION}. Contents of dist/:"
+            ls dist/
+            exit 1
+          fi
+          if ! ls dist/ | grep -q "modulex_integrations-${EXPECTED_VERSION}.tar.gz"; then
+            echo "::error::built sdist does not carry version ${EXPECTED_VERSION}. Contents of dist/:"
+            ls dist/
+            exit 1
+          fi
+          echo "OK: built artifacts match tag version ${EXPECTED_VERSION}"
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: dist/
+          retention-days: 7
+
+  publish:
+    name: publish to PyPI
+    needs: build
+    runs-on: ubuntu-latest
+    # Environment-scoped Trusted Publisher config lives in
+    # https://github.com/ModuleXAI/modulex-integrations/settings/environments/release-pypi
+    environment:
+      name: release-pypi
+      url: https://pypi.org/p/modulex-integrations
+    permissions:
+      id-token: write   # required for OIDC exchange with PyPI
+    steps:
+      - name: Download artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist/
+
+      - name: Publish to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1

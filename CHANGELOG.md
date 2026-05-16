@@ -20,7 +20,15 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 ### Changed
 
 - `README.md` expanded with "Why this repo exists", badges, per-integration layout, and a roadmap section.
-- `.gitignore` no longer ignores `.python-version` (file is now committed).
+- `.gitignore` no longer ignores `.python-version` (file is now committed); now also ignores the hatch-vcs-generated `src/modulex_integrations/_version.py`.
+- `pyproject.toml`: switched to `dynamic = ["version"]` driven by `hatch-vcs`; static `version = "0.0.1"` removed. Static `__version__` in `__init__.py` replaced by `importlib.metadata`-based resolution.
+
+### Added (release infrastructure)
+
+- `.github/workflows/release.yml` — tag-triggered (`v*`) workflow that classifies pre-release vs stable via PEP 440, enforces branch-of-origin (stable from `main`, pre-release from `staging`), builds sdist + wheel, and publishes to PyPI via Trusted Publishing OIDC in the `release-pypi` environment.
+- `RELEASING.md` — release process, PyPI Trusted Publisher setup checklist, and the modulex-side per-branch pinning policy.
+- `external-briefs/modulex/001-bump-python-floor-to-3-12.md` — blocking brief: modulex must bump its `requires-python` floor and runtime Python to 3.12 before the upcoming `modulex-integrations` dependency line can resolve.
+- `CLAUDE.md` — "Release model" section pointing at `RELEASING.md`.
 
 ## [0.0.1] — 2026-05-15
 
