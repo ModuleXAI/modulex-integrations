@@ -6,6 +6,35 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ## [Unreleased]
 
+### Added (Wave 8 — eighth bulk migration batch)
+
+- **3 large integrations** — 66 LangChain `@tool` actions, all pure
+  HTTP and zero new runtime deps:
+  - `clickup` (23 actions) — workspaces, spaces, folders, lists,
+    tasks, comments, tags, members via the v2 REST API. Raw
+    `Authorization: <key>` (no Bearer prefix); `custom_task_ids`
+    query-string pattern lets callers address tasks by their
+    workspace-prefixed display ID; `search_tasks` filters
+    client-side because ClickUp has no full-text search.
+  - `google_drive` (24 actions) — **four Google APIs** (Drive v3 +
+    Docs v1 + Sheets v4 + Slides v1) in one integration. Paired
+    `oauth2 + bearer_token`. Multi-call workflows for
+    `create_text_file` (multipart upload), `update_google_doc`
+    (read end-index → delete → insert), `read_google_sheet`
+    (resolve localized sheet names), and `move_item` (read parents
+    first). Custom `_a1_to_grid` helper for Sheets formatting.
+  - `mailchimp` (19 actions) — lists, subscribers, campaigns,
+    tags, notes, segments. Datacenter extracted from the API key
+    suffix (`xxx-us10`) to route to the right per-DC endpoint;
+    Basic Auth with literal `anystring` username; subscribers
+    addressed by MD5 hash of lowercase email.
+- **No schema delta.** All three slot onto the existing surface.
+- 90 new tests (clickup 31, google_drive 33, mailchimp 26).
+  Cumulative: 643 → 733 passing.
+- Drive-by: refactored ClickUp manifest's `ParameterDef`s to be
+  multi-line per ruff E501; broke up two long-field-string params
+  in google_drive's API calls.
+
 ### Added (Wave 7 — seventh bulk migration batch)
 
 - **5 new integrations** — 93 LangChain `@tool` actions (the largest
