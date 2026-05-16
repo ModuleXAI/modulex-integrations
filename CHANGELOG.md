@@ -28,6 +28,32 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 - `.github/workflows/release.yml` — tag-triggered (`v*`) workflow that classifies pre-release vs stable via PEP 440, enforces branch-of-origin (stable from `main`, pre-release from `staging`), builds sdist + wheel, and publishes to PyPI via Trusted Publishing OIDC in the `release-pypi` environment.
 - `RELEASING.md` — release process, PyPI Trusted Publisher setup checklist, and the modulex-side per-branch pinning policy.
 
+### Added (Phase 3 — first bulk migrations)
+
+- **slack integration** — 8 LangChain `@tool` async actions:
+  `list_channels`, `post_message`, `reply_to_thread`, `add_reaction`,
+  `get_channel_history`, `get_thread_replies`, `get_users`,
+  `get_user_profile`. OAuth2 + Bot Token auth schemas. Slack's
+  HTTP-200-with-`ok:false` error model is preserved as
+  `success=False` + `error` on every output model.
+- **exa integration** — 4 LangChain `@tool` async actions: `search`,
+  `get_contents`, `find_similar`, `answer`. First migration to use
+  the `api_key` runtime convention (signature is
+  `(query, api_key, ...)` rather than `(auth_type, auth_data, ...)`)
+  and to exercise the `api_key` + `modulex_key` auth schema variants.
+- `pyproject.toml`: entry-point lines for `slack` and `exa`. End-to-end
+  discovery now reports 3 integrations contributing 28 tools.
+- 24 new tests (12 slack + 12 exa, includes failure-branch coverage
+  for the `ok:false` and non-2xx + empty-key paths). Total package
+  test count: **49**.
+
+### Changed (schema)
+
+- `IntegrationManifest.auth_schemas[*].test_endpoint.body` — new
+  optional field (`dict[str, Any] | None = None`). Needed for POST-based
+  credential checks (e.g. Exa's `POST /search` with a probe payload).
+  Purely additive; existing manifests are unaffected.
+
 ### Added (github POC migration)
 
 - First integration: `modulex_integrations.tools.github` — 16 LangChain `@tool` async actions ported from the legacy modulex inline implementation:
