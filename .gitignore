@@ -45,3 +45,4 @@ src/modulex_integrations/_version.py
 .env.local
 *.local
 .claude/settings.local.json
+external-briefs/
