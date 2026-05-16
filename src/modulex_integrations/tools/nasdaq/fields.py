@@ -1,0 +1,178 @@
+"""Hardcoded field reference tables for Nasdaq Data Link integration.
+
+Mirrors the legacy `BALANCE_SHEET_FIELDS`, `CASH_FLOW_FIELDS`, etc.
+constants from modulex inline `tools.py`. Kept verbatim so the
+``list_available_fields`` action returns identical output.
+"""
+from __future__ import annotations
+
+from typing import Any
+
+__all__ = [
+    "BALANCE_SHEET_FIELDS",
+    "CASH_FLOW_FIELDS",
+    "COMPANY_STATS_FIELDS",
+    "FIELD_MAPPINGS",
+    "FUNDAMENTAL_DETAILS_FIELDS",
+    "FUNDAMENTAL_SUMMARY_FIELDS",
+    "REFERENCE_DATA_FIELDS",
+]
+
+
+BALANCE_SHEET_FIELDS: list[dict[str, Any]] = [
+    {"name": "calendardate", "description": "The Calendar Date represents the normalized reportperiod", "type": "Date", "filterable": True},
+    {"name": "symbol", "description": "Symbol of the company", "type": "String", "filterable": True},
+    {"name": "figi", "description": "Unique Identifier given by Bloomberg", "type": "String", "filterable": True},
+    {"name": "reportperiod", "description": "The Report Period represents the end date of the fiscal period", "type": "Date"},
+    {"name": "dimension", "description": "Dimensional view of data (MRQ: Quarterly, MRY: annual, MRT: trailing-twelve-months)", "type": "String", "filterable": True},
+    {"name": "assets", "description": "Total assets recognized on the balance sheet", "type": "BigInt"},
+    {"name": "bvps", "description": "Book Value Per Share (ratio between equity and shareswa)", "type": "Double"},
+    {"name": "cashneq", "description": "Cash and equivalents on hand", "type": "BigInt"},
+    {"name": "debt", "description": "Total current and non-current debt", "type": "BigInt"},
+    {"name": "liabilities", "description": "Total liabilities recognized on the balance sheet", "type": "BigInt"},
+    {"name": "equity", "description": "Total stockholders' equity", "type": "BigInt"},
+    {"name": "accoci", "description": "Accumulated other comprehensive income", "type": "BigInt"},
+    {"name": "currency", "description": "The company functional reporting currency", "type": "String"},
+    {"name": "investmentsnc", "description": "Non-current portion of investments", "type": "BigInt"},
+    {"name": "investmentsc", "description": "Current portion of investments", "type": "BigInt"},
+    {"name": "receivables", "description": "Trade and non-trade receivables", "type": "BigInt"},
+    {"name": "inventory", "description": "Inventory expected to be sold within one year", "type": "BigInt"},
+    {"name": "assetsnc", "description": "Non-current assets", "type": "BigInt"},
+    {"name": "assetsc", "description": "Current assets", "type": "BigInt"},
+    {"name": "investments", "description": "Total marketable and non-marketable securities and other invested assets", "type": "BigInt"},
+    {"name": "ppnenet", "description": "Property, plant, and equipment (net of depreciation)", "type": "BigInt"},
+    {"name": "intangibles", "description": "Intangible assets and goodwill", "type": "BigInt"},
+    {"name": "tangibles", "description": "Tangible assets (assets minus intangibles)", "type": "BigInt"},
+    {"name": "payables", "description": "Trade and non-trade payables", "type": "BigInt"},
+    {"name": "liabilitiesnc", "description": "Non-current liabilities", "type": "BigInt"},
+    {"name": "liabilitiesc", "description": "Current liabilities", "type": "BigInt"},
+    {"name": "debtc", "description": "Current portion of debt", "type": "BigInt"},
+    {"name": "debtnc", "description": "Non-current portion of debt", "type": "BigInt"},
+    {"name": "deferredrev", "description": "Deferred revenue (unrecognized revenue from received payments)", "type": "BigInt"},
+    {"name": "retearn", "description": "Retained earnings (cumulative undistributed earnings/deficit)", "type": "BigInt"},
+    {"name": "taxassets", "description": "Tax assets and receivables", "type": "BigInt"},
+    {"name": "taxliabilities", "description": "Outstanding tax liabilities", "type": "BigInt"},
+    {"name": "cashnequsd", "description": "Cash and equivalents in USD", "type": "BigInt"},
+]
+
+CASH_FLOW_FIELDS: list[dict[str, Any]] = [
+    {"name": "calendardate", "description": "The Calendar Date represents the normalized reportperiod", "type": "Date", "filterable": True},
+    {"name": "symbol", "description": "Symbol of the company", "type": "String", "filterable": True},
+    {"name": "figi", "description": "Unique Identifier given by Bloomberg", "type": "String", "filterable": True},
+    {"name": "reportperiod", "description": "The Report Period represents the end date of the fiscal period", "type": "Date"},
+    {"name": "dimension", "description": "Dimensional view of data (MRQ: Quarterly, MRY: annual, MRT: trailing-twelve-months)", "type": "String", "filterable": True},
+    {"name": "opex", "description": "Operating expenses (excluding cost of revenue)", "type": "BigInt"},
+    {"name": "ncfi", "description": "Net cash flow from investing activities", "type": "BigInt"},
+    {"name": "ncff", "description": "Net cash flow from financing activities", "type": "BigInt"},
+    {"name": "fcf", "description": "Free Cash Flow (ncfo minus capex)", "type": "BigInt"},
+    {"name": "ncfo", "description": "Net cash flow from operating activities", "type": "BigInt"},
+    {"name": "capex", "description": "Capital expenditure (acquisition of long-lived assets)", "type": "BigInt"},
+    {"name": "ncfbus", "description": "Net cash flow from business acquisitions/disposals", "type": "BigInt"},
+    {"name": "sbcomp", "description": "Stock-based compensation", "type": "BigInt"},
+    {"name": "depamor", "description": "Depreciation, amortization, and accretion", "type": "BigInt"},
+    {"name": "ncfcommon", "description": "Net cash flow from common equity changes", "type": "BigInt"},
+    {"name": "ncfinv", "description": "Net cash flow from investments", "type": "BigInt"},
+    {"name": "debttoassets", "description": "Net cash flow from debt issuance/repayment", "type": "BigInt"},
+]
+
+COMPANY_STATS_FIELDS: list[dict[str, Any]] = [
+    {"name": "symbol", "description": "Symbol of the company", "type": "String", "filterable": True},
+    {"name": "figi", "description": "Unique Identifier given by Bloomberg", "type": "String", "filterable": True},
+    {"name": "marketcap", "description": "Market cap calculated as shares outstanding * previous day close", "type": "BigInt"},
+    {"name": "high52week", "description": "Highest fully adjusted price over the past 52 calendar weeks", "type": "Double"},
+    {"name": "high52week_date", "description": "Date when the highest price was observed over the past 52 weeks", "type": "Date"},
+    {"name": "low52week", "description": "Lowest fully adjusted price over the past 52 calendar weeks", "type": "Double"},
+    {"name": "low52week_date", "description": "Date when the lowest price was observed over the past 52 weeks", "type": "Date"},
+    {"name": "avgvolume1m", "description": "Average 1 month volume based on calendar days", "type": "BigInt"},
+    {"name": "avgvolume3m", "description": "Average 3-month volume based on calendar days", "type": "BigInt"},
+    {"name": "divyield", "description": "Dividend Yield (dividendPerShare / price)", "type": "Double"},
+    {"name": "dividendpershare", "description": "Dividends per share, adjusted for stock splits", "type": "Double"},
+    {"name": "nextdividenddate", "description": "Expected ex date of the next dividend", "type": "Date"},
+    {"name": "exdividenddate", "description": "Ex date of the last dividend", "type": "Date"},
+    {"name": "nextearningsdate", "description": "Expected next earnings report date", "type": "Date"},
+    {"name": "pe", "description": "Price to Earnings ratio (marketcap / netinccmn)", "type": "Double"},
+    {"name": "epsdil", "description": "Earnings per diluted share as reported by the company", "type": "Double"},
+    {"name": "eps", "description": "Earnings per share as reported by the company", "type": "Double"},
+    {"name": "pe1", "description": "Alternative PE representing the ratio between price and eps", "type": "Double"},
+    {"name": "pb", "description": "Price to Book ratio (marketcap / equity)", "type": "Double"},
+    {"name": "freefloat", "description": "Free float percentage of shares available for trading (0-1)", "type": "Double"},
+]
+
+FUNDAMENTAL_DETAILS_FIELDS: list[dict[str, Any]] = [
+    {"name": "calendardate", "description": "The Calendar Date represents the normalized reportperiod", "type": "Date", "filterable": True},
+    {"name": "symbol", "description": "Symbol of the company", "type": "String", "filterable": True},
+    {"name": "figi", "description": "Unique Identifier given by Bloomberg", "type": "String", "filterable": True},
+    {"name": "reportperiod", "description": "The Report Period represents the end date of the fiscal period", "type": "Date"},
+    {"name": "dimension", "description": "Dimensional view of data (MRQ: Quarterly, MRY: annual, MRT: trailing-twelve-months)", "type": "String", "filterable": True},
+    {"name": "revenue", "description": "Total revenue from goods sold and services rendered", "type": "BigInt"},
+    {"name": "gp", "description": "Gross profit (revenue minus cost of revenue)", "type": "BigInt"},
+    {"name": "opinc", "description": "Operating income (before interest, taxes and non-operating items)", "type": "BigInt"},
+    {"name": "netinc", "description": "Net income attributable to the parent", "type": "BigInt"},
+    {"name": "ebitda", "description": "Earnings Before Interest, Taxes, Depreciation and Amortization", "type": "BigInt"},
+    {"name": "ebit", "description": "Earnings Before Interest and Tax", "type": "BigInt"},
+    {"name": "eps", "description": "Earnings per share as reported by the company", "type": "Double"},
+    {"name": "equity", "description": "Total stockholders' equity", "type": "BigInt"},
+    {"name": "assets", "description": "Total assets", "type": "BigInt"},
+    {"name": "liabilities", "description": "Total liabilities", "type": "BigInt"},
+    {"name": "cashneq", "description": "Cash and equivalents on hand", "type": "BigInt"},
+    {"name": "debt", "description": "Total debt", "type": "BigInt"},
+    {"name": "fcf", "description": "Free Cash Flow (ncfo minus capex)", "type": "BigInt"},
+    {"name": "ncfo", "description": "Cash inflow (outflow) from operating activities", "type": "BigInt"},
+    {"name": "capex", "description": "Capital expenditure", "type": "BigInt"},
+    {"name": "grossmargin", "description": "Ratio between gross profit and revenue", "type": "Double"},
+    {"name": "roic", "description": "Return on Invested Capital (EBIT/invcapavg)", "type": "Double"},
+    {"name": "ev", "description": "Enterprise value (marketcap plus debt minus cashneq)", "type": "BigInt"},
+    {"name": "evebitda", "description": "Enterprise Value to EBITDA ratio", "type": "Double"},
+    {"name": "divyield", "description": "Dividend Yield (dps/price)", "type": "Double"},
+]
+
+FUNDAMENTAL_SUMMARY_FIELDS: list[dict[str, Any]] = [
+    {"name": "calendardate", "description": "The Calendar Date represents the normalized reportperiod", "type": "Date", "filterable": True},
+    {"name": "symbol", "description": "Symbol of the company", "type": "String", "filterable": True},
+    {"name": "figi", "description": "Unique Identifier given by Bloomberg", "type": "String", "filterable": True},
+    {"name": "reportperiod", "description": "The Report Period represents the end date of the fiscal period", "type": "Date"},
+    {"name": "dimension", "description": "Dimensional view of data (MRQ: Quarterly, MRY: annual, MRT: trailing-twelve-months)", "type": "String", "filterable": True},
+    {"name": "fcfps", "description": "Free Cash Flow per Share", "type": "Double"},
+    {"name": "ps", "description": "Price to Sales ratio between marketcap and revenue", "type": "Double"},
+    {"name": "pe", "description": "Price to Earnings ratio between marketcap and netinccmn", "type": "Double"},
+    {"name": "revenue", "description": "Amount of Revenue recognized from goods sold, services rendered, etc.", "type": "BigInt"},
+    {"name": "currentratio", "description": "The ratio between assetsc and liabilitiesc", "type": "Double"},
+    {"name": "de", "description": "Debt to Equity ratio between liabilities and equity", "type": "Double"},
+    {"name": "roa", "description": "Return on Assets (netinccmn relative to total assets)", "type": "Double"},
+    {"name": "roe", "description": "Return on Equity (netinccmn as percentage of equityavg)", "type": "Double"},
+    {"name": "ros", "description": "Return on Sales (ebit divided by revenue)", "type": "Double"},
+    {"name": "gp", "description": "Gross Profit (revenue less cost of revenue)", "type": "BigInt"},
+    {"name": "opinc", "description": "Operating income (before deduction of intexp, taxexp, etc.)", "type": "BigInt"},
+    {"name": "netmargin", "description": "Net Margin (ratio between netinccmn and revenue)", "type": "Double"},
+    {"name": "ebitda", "description": "Earnings Before Interest, Taxes, Depreciation and Amortization", "type": "BigInt"},
+    {"name": "bvps", "description": "Book Value Per Share (ratio between equity and shareswa)", "type": "Double"},
+    {"name": "evebit", "description": "Enterprise Value to EBIT ratio", "type": "BigInt"},
+    {"name": "evebitda", "description": "Enterprise Value to EBITDA ratio", "type": "Double"},
+    {"name": "tbvps", "description": "Tangible Book Value Per Share", "type": "Double"},
+]
+
+REFERENCE_DATA_FIELDS: list[dict[str, Any]] = [
+    {"name": "symbol", "description": "Symbol of the company", "type": "String", "filterable": True},
+    {"name": "figi", "description": "Unique Identifier given by Bloomberg", "type": "String", "filterable": True},
+    {"name": "exchange", "description": "The exchange on which the security trades (e.g., 'NASDAQ', 'NYSE')", "type": "String"},
+    {"name": "category", "description": "Security category (e.g., 'Domestic Common Stock')", "type": "String"},
+    {"name": "cusips", "description": "Security identifier (space delimited for multiple identifiers)", "type": "String"},
+    {"name": "name", "description": "Full legal name of the company", "type": "String"},
+    {"name": "industry", "description": "Industry classification based on SIC codes", "type": "String"},
+    {"name": "companysite", "description": "URL of the company website", "type": "String"},
+    {"name": "sector", "description": "Sector classification based on SIC codes", "type": "String"},
+    {"name": "sector_1", "description": "Primary sector exposure (TIIC level 1)", "type": "String"},
+    {"name": "sector_2", "description": "Secondary sector exposure (TIIC level 1)", "type": "String"},
+    {"name": "secfilings", "description": "URL to SEC filings with Central Index Key (CIK)", "type": "String"},
+    {"name": "siccode", "description": "Standard Industrial Classification code", "type": "Integer"},
+    {"name": "location", "description": "Company location as registered with the SEC", "type": "String"},
+]
+
+FIELD_MAPPINGS: dict[str, list[dict[str, Any]]] = {
+    "balance_sheet": BALANCE_SHEET_FIELDS,
+    "cash_flow": CASH_FLOW_FIELDS,
+    "company_stats": COMPANY_STATS_FIELDS,
+    "fundamental_details": FUNDAMENTAL_DETAILS_FIELDS,
+    "fundamental_summary": FUNDAMENTAL_SUMMARY_FIELDS,
+    "reference_data": REFERENCE_DATA_FIELDS,
+}

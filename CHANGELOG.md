@@ -6,6 +6,42 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ## [Unreleased]
 
+### Added (Wave 3 — third bulk migration batch)
+
+- **5 new integrations** — 43 LangChain `@tool` actions across the
+  mid-size band, exercising every remaining auth pattern at least once:
+  - `short_io` (8 actions) — URL shortening + analytics + link metadata.
+    `api_key` (raw header, no `Bearer` prefix). Per-file `N815` ignore
+    for the camelCase outputs (`originalURL`, `shortURL`, etc.).
+  - `nasdaq` (7 actions) — financial data via the `nasdaqdatalink` SDK
+    (first non-LangChain vendor SDK in this phase). `api_key` via
+    `?api_key={api_key}` query string — re-proves the
+    `TestEndpoint.params` path introduced in Wave 2. Pandas DataFrames
+    coerced to JSON-safe records with NaN→None cleanup (handles
+    pandas 3.x behavior change).
+  - `firecrawl` (7 actions) — AI web scraping/crawling/search.
+    **First integration with paired `api_key + modulex_key` schemas**
+    (both Bearer-authed; runtime picks which credential to inject).
+    Long-running jobs use 180s timeouts.
+  - `jina_ai` (7 actions) — embeddings, rerank, reader, search, deep
+    search, segment, classify. Second paired-schemas integration. Six
+    distinct subdomains (`api.jina.ai`, `r.jina.ai`, `s.jina.ai`,
+    `deepsearch.jina.ai`, `segment.jina.ai`). Reader/Search consume
+    configuration via `X-*` request headers (legacy pattern preserved).
+  - `calendly` (11 actions) — events, invitees, event types,
+    scheduling links, availability, organization members, groups,
+    webhook subscriptions. **First `oauth2 + bearer_token` integration
+    since github/slack** (token-based runtime convention with
+    `auth_type, auth_data` first args). Auto-resolves missing
+    `user`/`organization` filters via a side call to `/users/me`.
+- 73 new tests (`isinstance(result, dict)` + roundtrip-via-
+  `model_validate` pattern, plus SDK-mock + paired-schema coverage);
+  total: 174 → 247 passing.
+- `nasdaq/dependencies.toml` declares `nasdaq-data-link>=1.0.0`.
+  Added to `[project.optional-dependencies] dev` extras so the SDK
+  module is importable for `patch.dict(sys.modules)` test mocks.
+  Pandas comes in transitively.
+
 ### Added (Wave 2 — second bulk migration batch)
 
 - **5 new integrations** — 31 LangChain `@tool` actions, mostly

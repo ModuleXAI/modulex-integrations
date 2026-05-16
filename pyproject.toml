@@ -42,6 +42,7 @@ dev = [
     # patch the SDK symbols. These also live in each integration's
     # dependencies.toml for the future assemble script.
     "langchain-tavily>=0.2.0",
+    "nasdaq-data-link>=1.0.0",  # for tests/mocking (pulls pandas transitively)
 ]
 
 [project.urls]
@@ -65,6 +66,11 @@ convertapi = "modulex_integrations.tools.convertapi"
 appdrag = "modulex_integrations.tools.appdrag"
 hackernews = "modulex_integrations.tools.hackernews"
 lemon_squeezy = "modulex_integrations.tools.lemon_squeezy"
+short_io = "modulex_integrations.tools.short_io"
+nasdaq = "modulex_integrations.tools.nasdaq"
+firecrawl = "modulex_integrations.tools.firecrawl"
+jina_ai = "modulex_integrations.tools.jina_ai"
+calendly = "modulex_integrations.tools.calendly"
 
 [tool.hatch.version]
 # Version is derived from the latest git tag matching v* (e.g. v0.1.0,
@@ -118,6 +124,16 @@ select = ["E", "F", "I", "N", "W", "B", "C4", "UP", "RUF"]
 # npm outputs mirror the upstream registry's mixedCase field names
 # (devDependencies, peerDependencies, optionalDependencies).
 "src/modulex_integrations/tools/npm/outputs.py" = ["N815"]
+# short_io outputs mirror upstream camelCase (originalURL, shortURL,
+# idString, DomainId, expiredURL, etc.).
+"src/modulex_integrations/tools/short_io/outputs.py" = ["N815"]
+# Reference-data file mirroring the legacy Nasdaq field tables; each
+# row is a one-line dict literal with long descriptions on purpose.
+"src/modulex_integrations/tools/nasdaq/fields.py" = ["E501"]
+# Test files in these tools assemble long URL literals in
+# httpx_mock setups (filter params + nested paths). Wrapping breaks
+# the readability of the URL-matches-mock contract.
+"src/modulex_integrations/tools/short_io/tests/test_short_io.py" = ["E501"]
 
 [tool.mypy]
 python_version = "3.12"
