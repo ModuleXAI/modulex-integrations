@@ -94,6 +94,7 @@ salesforce = "modulex_integrations.tools.salesforce"
 clickup = "modulex_integrations.tools.clickup"
 google_drive = "modulex_integrations.tools.google_drive"
 mailchimp = "modulex_integrations.tools.mailchimp"
+posthog = "modulex_integrations.tools.posthog"
 
 [tool.hatch.version]
 # Version is derived from the latest git tag matching v* (e.g. v0.1.0,

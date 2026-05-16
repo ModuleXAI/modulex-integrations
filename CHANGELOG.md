@@ -6,6 +6,43 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ## [Unreleased]
 
+### Added (Wave 9 — Phase 1 closeout)
+
+- **`posthog`** (78 actions) — the largest single integration in
+  the package. Two API surfaces in one module:
+  - **Project REST** (`{base_url}/api/projects/{project_id}/…`):
+    dashboards, experiments, feature flags, insights, surveys,
+    cohorts, persons, groups, session recordings, actions,
+    annotations, alerts, early-access features, definitions, query.
+    Bearer auth with personal API key.
+  - **Ingest** (`{ingest_url}/i/v0/e/`, `/batch/`, `/flags`): the
+    6 capture / identify / alias / evaluate_feature_flags /
+    group_identify / batch actions. `project_api_key` in JSON
+    body (no Bearer).
+- **`custom` auth_type with 3 env vars** (`POSTHOG_API_KEY`,
+  `POSTHOG_PROJECT_ID`, `POSTHOG_BASE_URL`) — same shape as
+  PostHog's legacy `custom` schema. Pure HTTP, zero new runtime
+  deps.
+- Legacy quirks preserved verbatim:
+  - `delete_action` falls back to a unique-name rename when
+    PostHog's soft-delete PATCH fails (upstream bug).
+  - `delete_action_by_name` does a DELETE → soft-delete → rename
+    chain; returns success even when the action isn't found.
+  - `update_feature_flag` takes a key (not ID), does a search
+    lookup first to translate to the ID.
+  - `evaluate_feature_flags` uses the `/flags?v=2` endpoint.
+  - All 78 actions return the uniform `PostHogResult(success,
+    error, result)` envelope; `result` carries raw upstream JSON.
+- 39 new tests covering each surface + the multi-step quirks.
+  Cumulative: 733 → 772 passing.
+
+### Phase 1 done
+
+**45 integrations / 590 actions** now live in `modulex-integrations`
+and discovered via the `modulex.tools` entry-point group. The
+original Phase-1 migration scope is complete. Brief #011 bundles
+the Waves 6+7+8+9 pin bump for modulex (0.1.0a8 → 0.1.0a12).
+
 ### Added (Wave 8 — eighth bulk migration batch)
 
 - **3 large integrations** — 66 LangChain `@tool` actions, all pure
