@@ -71,6 +71,11 @@ nasdaq = "modulex_integrations.tools.nasdaq"
 firecrawl = "modulex_integrations.tools.firecrawl"
 jina_ai = "modulex_integrations.tools.jina_ai"
 calendly = "modulex_integrations.tools.calendly"
+linear = "modulex_integrations.tools.linear"
+airtable = "modulex_integrations.tools.airtable"
+telegram = "modulex_integrations.tools.telegram"
+servicenow = "modulex_integrations.tools.servicenow"
+intercom = "modulex_integrations.tools.intercom"
 
 [tool.hatch.version]
 # Version is derived from the latest git tag matching v* (e.g. v0.1.0,
@@ -127,6 +132,8 @@ select = ["E", "F", "I", "N", "W", "B", "C4", "UP", "RUF"]
 # short_io outputs mirror upstream camelCase (originalURL, shortURL,
 # idString, DomainId, expiredURL, etc.).
 "src/modulex_integrations/tools/short_io/outputs.py" = ["N815"]
+# Airtable mirrors the upstream `createdTime` camelCase field name.
+"src/modulex_integrations/tools/airtable/outputs.py" = ["N815"]
 # Reference-data file mirroring the legacy Nasdaq field tables; each
 # row is a one-line dict literal with long descriptions on purpose.
 "src/modulex_integrations/tools/nasdaq/fields.py" = ["E501"]

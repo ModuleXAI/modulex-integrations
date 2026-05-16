@@ -6,6 +6,38 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ## [Unreleased]
 
+### Added (Wave 4 — fourth bulk migration batch)
+
+- **5 new integrations** — 60 LangChain `@tool` actions across the
+  mid-size band, half on the token-based runtime convention:
+  - `linear` (7 actions) — Linear project + issue management.
+    **First GraphQL integration** in the package; uses raw
+    `Authorization: <key>` (no Bearer prefix). Filter clauses
+    interpolated into the GraphQL string verbatim (matching legacy).
+  - `airtable` (7 actions) — base discovery + table CRUD. Auto-
+    batches at Airtable's 10-records-per-request limit;
+    `update_records` accepts both `{id, fields: {…}}` and
+    `{id, field_a: v}` shapes (legacy dual-shape preserved). camelCase
+    `createdTime` field silenced via per-file N815 ignore.
+  - `telegram` (17 actions) — Telegram Bot API for messaging, media,
+    chat management, moderation, and long-polling. **Unique
+    credential pattern**: bot token lives **inside the URL path**
+    (`/bot{token}/...`), not a header.
+  - `servicenow` (7 actions) — ITSM Trouble-Ticket API + Table API
+    CRUD. Paired `oauth2 + bearer_token` schemas; instance-name
+    substitution in URLs (`https://{instance_name}.service-now.com`).
+    Token-based runtime convention with `_validate` for instance +
+    token both being present.
+  - `intercom` (13 actions) — customer-communication CRUD across
+    contacts, conversations, tags, admins, and messages. Paired
+    `oauth2 + bearer_token` schemas. **Three actions chain two API
+    calls internally** — `upsert_contact` (search → PUT/POST),
+    `create_note` (/me → POST note), `send_incoming_message`
+    (/contacts → POST conversation).
+- 90 new tests (`isinstance(result, dict)` + roundtrip-via-
+  `model_validate` pattern, plus multi-call coverage for the
+  Intercom two-step workflows); total: 247 → 337 passing.
+
 ### Added (Wave 3 — third bulk migration batch)
 
 - **5 new integrations** — 43 LangChain `@tool` actions across the
