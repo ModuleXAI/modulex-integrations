@@ -18,6 +18,7 @@ import httpx
 from langchain_core.tools import tool
 from pydantic import BaseModel, Field
 
+from modulex_integrations import serialize_pydantic_return
 from modulex_integrations.tools.exa.outputs import (
     AnswerOutput,
     AnswerSource,
@@ -116,6 +117,7 @@ class AnswerInput(BaseModel):
 
 
 @tool(args_schema=SearchInput)
+@serialize_pydantic_return
 async def search(
     query: str,
     api_key: str,
@@ -200,6 +202,7 @@ async def search(
 
 
 @tool(args_schema=GetContentsInput)
+@serialize_pydantic_return
 async def get_contents(
     urls: list[str],
     api_key: str,
@@ -265,6 +268,7 @@ async def get_contents(
 
 
 @tool(args_schema=FindSimilarInput)
+@serialize_pydantic_return
 async def find_similar(
     url: str,
     api_key: str,
@@ -334,6 +338,7 @@ async def find_similar(
 
 
 @tool(args_schema=AnswerInput)
+@serialize_pydantic_return
 async def answer(
     query: str,
     api_key: str,

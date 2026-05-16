@@ -28,6 +28,31 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 - `.github/workflows/release.yml` — tag-triggered (`v*`) workflow that classifies pre-release vs stable via PEP 440, enforces branch-of-origin (stable from `main`, pre-release from `staging`), builds sdist + wheel, and publishes to PyPI via Trusted Publishing OIDC in the `release-pypi` environment.
 - `RELEASING.md` — release process, PyPI Trusted Publisher setup checklist, and the modulex-side per-branch pinning policy.
 
+### Fixed
+
+- **Critical**: `@tool` functions now return plain dicts at runtime
+  (via the new `@serialize_pydantic_return` decorator), not pydantic
+  ``BaseModel`` instances. modulex's downstream code serializes every
+  tool result via plain ``json.dumps()``, which cannot encode pydantic
+  models — calling `exa.search` or `tavily.web_search` from a modulex
+  agent crashed with ``TypeError: Object of type SearchOutput is not
+  JSON serializable``. All four integrations (github, slack, exa,
+  tavily) updated. Return-type annotations stay as pydantic classes
+  so modulex's ``package_loader.py`` can still derive the LLM-facing
+  output_schema via ``typing.get_type_hints``.
+
+### Added
+
+- `modulex_integrations.serialize_pydantic_return` — decorator that
+  auto-dumps pydantic returns to dicts. Top-level re-export.
+  Implementation in `src/modulex_integrations/_internal/serialize.py`.
+- `tests/test_serialize.py` — 4 unit tests pinning down the contract
+  (pydantic → dict; non-pydantic → passthrough; annotation preserved
+  for `get_type_hints`; nested fields dump correctly).
+- All existing tests updated to assert `isinstance(result, dict)` and
+  roundtrip through `Model.model_validate(result)` for attribute
+  access. Test count: 57 → 61.
+
 ### Added (Phase 3 — SDK pattern + further migrations)
 
 - **tavily integration** — 3 LangChain `@tool` async actions:

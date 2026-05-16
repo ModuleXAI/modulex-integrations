@@ -18,6 +18,7 @@ import httpx
 from langchain_core.tools import tool
 from pydantic import BaseModel, Field
 
+from modulex_integrations import serialize_pydantic_return
 from modulex_integrations.tools.slack.outputs import (
     AddReactionOutput,
     Channel,
@@ -134,6 +135,7 @@ class GetUserProfileInput(BaseModel):
 
 
 @tool(args_schema=ListChannelsInput)
+@serialize_pydantic_return
 async def list_channels(
     auth_type: str,
     auth_data: dict[str, Any],
@@ -183,6 +185,7 @@ async def list_channels(
 
 
 @tool(args_schema=PostMessageInput)
+@serialize_pydantic_return
 async def post_message(
     auth_type: str,
     auth_data: dict[str, Any],
@@ -214,6 +217,7 @@ async def post_message(
 
 
 @tool(args_schema=ReplyToThreadInput)
+@serialize_pydantic_return
 async def reply_to_thread(
     auth_type: str,
     auth_data: dict[str, Any],
@@ -247,6 +251,7 @@ async def reply_to_thread(
 
 
 @tool(args_schema=AddReactionInput)
+@serialize_pydantic_return
 async def add_reaction(
     auth_type: str,
     auth_data: dict[str, Any],
@@ -270,6 +275,7 @@ async def add_reaction(
 
 
 @tool(args_schema=GetChannelHistoryInput)
+@serialize_pydantic_return
 async def get_channel_history(
     auth_type: str,
     auth_data: dict[str, Any],
@@ -308,6 +314,7 @@ async def get_channel_history(
 
 
 @tool(args_schema=GetThreadRepliesInput)
+@serialize_pydantic_return
 async def get_thread_replies(
     auth_type: str,
     auth_data: dict[str, Any],
@@ -347,6 +354,7 @@ async def get_thread_replies(
 
 
 @tool(args_schema=GetUsersInput)
+@serialize_pydantic_return
 async def get_users(
     auth_type: str,
     auth_data: dict[str, Any],
@@ -393,6 +401,7 @@ async def get_users(
 
 
 @tool(args_schema=GetUserProfileInput)
+@serialize_pydantic_return
 async def get_user_profile(
     auth_type: str,
     auth_data: dict[str, Any],

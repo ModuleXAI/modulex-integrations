@@ -20,6 +20,7 @@ import httpx
 from langchain_core.tools import tool
 from pydantic import BaseModel, Field
 
+from modulex_integrations import serialize_pydantic_return
 from modulex_integrations.tools.github.outputs import (
     Branch,
     CommitCreated,
@@ -275,6 +276,7 @@ class SearchCodeInput(BaseModel):
 
 
 @tool(args_schema=ListRepositoriesInput)
+@serialize_pydantic_return
 async def list_repositories(
     auth_type: str,
     auth_data: dict[str, Any],
@@ -330,6 +332,7 @@ async def list_repositories(
 
 
 @tool(args_schema=CreateRepositoryInput)
+@serialize_pydantic_return
 async def create_repository(
     auth_type: str,
     auth_data: dict[str, Any],
@@ -367,6 +370,7 @@ async def create_repository(
 
 
 @tool(args_schema=DeleteRepositoryInput)
+@serialize_pydantic_return
 async def delete_repository(
     auth_type: str,
     auth_data: dict[str, Any],
@@ -387,6 +391,7 @@ async def delete_repository(
 
 
 @tool(args_schema=GetRepositoryInput)
+@serialize_pydantic_return
 async def get_repository(
     auth_type: str,
     auth_data: dict[str, Any],
@@ -427,6 +432,7 @@ async def get_repository(
 
 
 @tool(args_schema=ListIssuesInput)
+@serialize_pydantic_return
 async def list_issues(
     auth_type: str,
     auth_data: dict[str, Any],
@@ -484,6 +490,7 @@ async def list_issues(
 
 
 @tool(args_schema=CreateIssueInput)
+@serialize_pydantic_return
 async def create_issue(
     auth_type: str,
     auth_data: dict[str, Any],
@@ -525,6 +532,7 @@ async def create_issue(
 
 
 @tool(args_schema=GetIssueInput)
+@serialize_pydantic_return
 async def get_issue(
     auth_type: str,
     auth_data: dict[str, Any],
@@ -561,6 +569,7 @@ async def get_issue(
 
 
 @tool(args_schema=UpdateIssueInput)
+@serialize_pydantic_return
 async def update_issue(
     auth_type: str,
     auth_data: dict[str, Any],
@@ -608,6 +617,7 @@ async def update_issue(
 
 
 @tool(args_schema=ListPullRequestsInput)
+@serialize_pydantic_return
 async def list_pull_requests(
     auth_type: str,
     auth_data: dict[str, Any],
@@ -664,6 +674,7 @@ async def list_pull_requests(
 
 
 @tool(args_schema=CreatePullRequestInput)
+@serialize_pydantic_return
 async def create_pull_request(
     auth_type: str,
     auth_data: dict[str, Any],
@@ -705,6 +716,7 @@ async def create_pull_request(
 
 
 @tool(args_schema=GetPullRequestInput)
+@serialize_pydantic_return
 async def get_pull_request(
     auth_type: str,
     auth_data: dict[str, Any],
@@ -748,6 +760,7 @@ async def get_pull_request(
 
 
 @tool(args_schema=MergePullRequestInput)
+@serialize_pydantic_return
 async def merge_pull_request(
     auth_type: str,
     auth_data: dict[str, Any],
@@ -782,6 +795,7 @@ async def merge_pull_request(
 
 
 @tool(args_schema=CreateBranchInput)
+@serialize_pydantic_return
 async def create_branch(
     auth_type: str,
     auth_data: dict[str, Any],
@@ -819,6 +833,7 @@ async def create_branch(
 
 
 @tool(args_schema=GetFileContentInput)
+@serialize_pydantic_return
 async def get_file_content(
     auth_type: str,
     auth_data: dict[str, Any],
@@ -856,6 +871,7 @@ async def get_file_content(
 
 
 @tool(args_schema=CreateCommitInput)
+@serialize_pydantic_return
 async def create_commit(
     auth_type: str,
     auth_data: dict[str, Any],
@@ -929,6 +945,7 @@ async def create_commit(
 
 
 @tool(args_schema=SearchCodeInput)
+@serialize_pydantic_return
 async def search_code(
     auth_type: str,
     auth_data: dict[str, Any],

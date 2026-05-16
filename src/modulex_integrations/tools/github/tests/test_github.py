@@ -124,9 +124,11 @@ async def test_list_repositories(httpx_mock):  # type: ignore[no-untyped-def]
         ],
     )
 
-    result = await list_repositories.ainvoke(_AUTH)
+    result_dict = await list_repositories.ainvoke(_AUTH)
 
-    assert isinstance(result, ListRepositoriesOutput)
+    assert isinstance(result_dict, dict)
+
+    result = ListRepositoriesOutput.model_validate(result_dict)
     assert result.success is True
     assert result.total == 1
     assert result.repositories[0].full_name == "alice/repo-a"
@@ -154,9 +156,11 @@ async def test_create_repository(httpx_mock):  # type: ignore[no-untyped-def]
         status_code=201,
     )
 
-    result = await create_repository.ainvoke(_args(name="new-repo", private=True))
+    result_dict = await create_repository.ainvoke(_args(name="new-repo", private=True))
 
-    assert isinstance(result, CreateRepositoryOutput)
+    assert isinstance(result_dict, dict)
+
+    result = CreateRepositoryOutput.model_validate(result_dict)
     assert result.success is True
     assert result.repository.full_name == "alice/new-repo"
     assert result.repository.owner == "alice"
@@ -171,9 +175,11 @@ async def test_delete_repository(httpx_mock):  # type: ignore[no-untyped-def]
         status_code=204,
     )
 
-    result = await delete_repository.ainvoke(_args(owner="alice", repo="old-repo"))
+    result_dict = await delete_repository.ainvoke(_args(owner="alice", repo="old-repo"))
 
-    assert isinstance(result, DeleteRepositoryOutput)
+    assert isinstance(result_dict, dict)
+
+    result = DeleteRepositoryOutput.model_validate(result_dict)
     assert result.success is True
     assert "alice/old-repo" in result.message
 
@@ -205,9 +211,11 @@ async def test_get_repository(httpx_mock):  # type: ignore[no-untyped-def]
         },
     )
 
-    result = await get_repository.ainvoke(_args(owner="alice", repo="repo-a"))
+    result_dict = await get_repository.ainvoke(_args(owner="alice", repo="repo-a"))
 
-    assert isinstance(result, GetRepositoryOutput)
+    assert isinstance(result_dict, dict)
+
+    result = GetRepositoryOutput.model_validate(result_dict)
     assert result.success is True
     assert result.repository.watchers == 7
     assert result.repository.topics == ["ai", "tools"]
@@ -236,9 +244,11 @@ async def test_list_issues(httpx_mock):  # type: ignore[no-untyped-def]
         ],
     )
 
-    result = await list_issues.ainvoke(_args(owner="alice", repo="repo-a"))
+    result_dict = await list_issues.ainvoke(_args(owner="alice", repo="repo-a"))
 
-    assert isinstance(result, ListIssuesOutput)
+    assert isinstance(result_dict, dict)
+
+    result = ListIssuesOutput.model_validate(result_dict)
     assert result.issues[0].labels == ["bug", "p0"]
     assert result.issues[0].assignees == ["alice"]
     assert result.issues[0].user == "bob"
@@ -260,11 +270,13 @@ async def test_create_issue(httpx_mock):  # type: ignore[no-untyped-def]
         status_code=201,
     )
 
-    result = await create_issue.ainvoke(
+    result_dict = await create_issue.ainvoke(
         _args(owner="alice", repo="repo-a", title="new", body="body")
     )
 
-    assert isinstance(result, CreateIssueOutput)
+    assert isinstance(result_dict, dict)
+
+    result = CreateIssueOutput.model_validate(result_dict)
     assert result.issue.number == 11
     assert result.issue.url == "https://github.com/alice/repo-a/issues/11"
 
@@ -290,11 +302,13 @@ async def test_get_issue(httpx_mock):  # type: ignore[no-untyped-def]
         },
     )
 
-    result = await get_issue.ainvoke(
+    result_dict = await get_issue.ainvoke(
         _args(owner="alice", repo="repo-a", issue_number=7)
     )
 
-    assert isinstance(result, GetIssueOutput)
+    assert isinstance(result_dict, dict)
+
+    result = GetIssueOutput.model_validate(result_dict)
     assert result.issue.number == 7
     assert result.issue.user == "bob"
     assert result.issue.labels == ["bug"]
@@ -316,7 +330,7 @@ async def test_update_issue(httpx_mock):  # type: ignore[no-untyped-def]
         },
     )
 
-    result = await update_issue.ainvoke(
+    result_dict = await update_issue.ainvoke(
         _args(
             owner="alice",
             repo="repo-a",
@@ -326,7 +340,9 @@ async def test_update_issue(httpx_mock):  # type: ignore[no-untyped-def]
         )
     )
 
-    assert isinstance(result, UpdateIssueOutput)
+    assert isinstance(result_dict, dict)
+
+    result = UpdateIssueOutput.model_validate(result_dict)
     assert result.issue.state == "closed"
     assert result.issue.title == "renamed"
 
@@ -356,9 +372,11 @@ async def test_list_pull_requests(httpx_mock):  # type: ignore[no-untyped-def]
         ],
     )
 
-    result = await list_pull_requests.ainvoke(_args(owner="alice", repo="repo-a"))
+    result_dict = await list_pull_requests.ainvoke(_args(owner="alice", repo="repo-a"))
 
-    assert isinstance(result, ListPullRequestsOutput)
+    assert isinstance(result_dict, dict)
+
+    result = ListPullRequestsOutput.model_validate(result_dict)
     assert result.pull_requests[0].head == "feature/x"
     assert result.pull_requests[0].base == "main"
 
@@ -382,7 +400,7 @@ async def test_create_pull_request(httpx_mock):  # type: ignore[no-untyped-def]
         status_code=201,
     )
 
-    result = await create_pull_request.ainvoke(
+    result_dict = await create_pull_request.ainvoke(
         _args(
             owner="alice",
             repo="repo-a",
@@ -393,7 +411,9 @@ async def test_create_pull_request(httpx_mock):  # type: ignore[no-untyped-def]
         )
     )
 
-    assert isinstance(result, CreatePullRequestOutput)
+    assert isinstance(result_dict, dict)
+
+    result = CreatePullRequestOutput.model_validate(result_dict)
     assert result.pull_request.number == 9
     assert result.pull_request.head == "feature/y"
 
@@ -426,11 +446,13 @@ async def test_get_pull_request(httpx_mock):  # type: ignore[no-untyped-def]
         },
     )
 
-    result = await get_pull_request.ainvoke(
+    result_dict = await get_pull_request.ainvoke(
         _args(owner="alice", repo="repo-a", pull_number=3)
     )
 
-    assert isinstance(result, GetPullRequestOutput)
+    assert isinstance(result_dict, dict)
+
+    result = GetPullRequestOutput.model_validate(result_dict)
     assert result.pull_request.commits == 3
     assert result.pull_request.changed_files == 5
     assert result.pull_request.mergeable is True
@@ -448,11 +470,13 @@ async def test_merge_pull_request(httpx_mock):  # type: ignore[no-untyped-def]
         },
     )
 
-    result = await merge_pull_request.ainvoke(
+    result_dict = await merge_pull_request.ainvoke(
         _args(owner="alice", repo="repo-a", pull_number=3, merge_method="squash")
     )
 
-    assert isinstance(result, MergePullRequestOutput)
+    assert isinstance(result_dict, dict)
+
+    result = MergePullRequestOutput.model_validate(result_dict)
     assert result.merged is True
     assert result.sha == "deadbeef0001"
 
@@ -476,11 +500,13 @@ async def test_create_branch(httpx_mock):  # type: ignore[no-untyped-def]
         status_code=201,
     )
 
-    result = await create_branch.ainvoke(
+    result_dict = await create_branch.ainvoke(
         _args(owner="alice", repo="repo-a", branch_name="feature/new")
     )
 
-    assert isinstance(result, CreateBranchOutput)
+    assert isinstance(result_dict, dict)
+
+    result = CreateBranchOutput.model_validate(result_dict)
     assert result.branch.name == "feature/new"
     assert result.branch.sha == "cafef00d0001"
 
@@ -501,11 +527,13 @@ async def test_get_file_content(httpx_mock):  # type: ignore[no-untyped-def]
         },
     )
 
-    result = await get_file_content.ainvoke(
+    result_dict = await get_file_content.ainvoke(
         _args(owner="alice", repo="repo-a", path="src/main.py")
     )
 
-    assert isinstance(result, GetFileContentOutput)
+    assert isinstance(result_dict, dict)
+
+    result = GetFileContentOutput.model_validate(result_dict)
     assert result.file.path == "src/main.py"
     assert result.file.content == raw  # base64 was decoded for us
 
@@ -553,7 +581,7 @@ async def test_create_commit(httpx_mock):  # type: ignore[no-untyped-def]
         json={"ref": f"refs/heads/{branch}", "object": {"sha": new_commit_sha}},
     )
 
-    result = await create_commit.ainvoke(
+    result_dict = await create_commit.ainvoke(
         _args(
             owner="alice",
             repo="repo-a",
@@ -563,7 +591,9 @@ async def test_create_commit(httpx_mock):  # type: ignore[no-untyped-def]
         )
     )
 
-    assert isinstance(result, CreateCommitOutput)
+    assert isinstance(result_dict, dict)
+
+    result = CreateCommitOutput.model_validate(result_dict)
     assert result.commit.sha == new_commit_sha
     assert result.commit.message == "ci: tweak"
     assert result.commit.branch == branch
@@ -588,8 +618,10 @@ async def test_search_code(httpx_mock):  # type: ignore[no-untyped-def]
         },
     )
 
-    result = await search_code.ainvoke(_args(query="hello repo:alice/repo-a"))
+    result_dict = await search_code.ainvoke(_args(query="hello repo:alice/repo-a"))
 
-    assert isinstance(result, SearchCodeOutput)
+    assert isinstance(result_dict, dict)
+
+    result = SearchCodeOutput.model_validate(result_dict)
     assert result.total_count == 1
     assert result.items[0].repository == "alice/repo-a"

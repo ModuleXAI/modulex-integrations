@@ -89,9 +89,11 @@ async def test_list_channels(httpx_mock):  # type: ignore[no-untyped-def]
         },
     )
 
-    result = await list_channels.ainvoke(_AUTH)
+    result_dict = await list_channels.ainvoke(_AUTH)
 
-    assert isinstance(result, ListChannelsOutput)
+    assert isinstance(result_dict, dict)
+
+    result = ListChannelsOutput.model_validate(result_dict)
     assert result.success is True
     assert result.channels[0].id == "C100"
     assert result.channels[0].topic == "company-wide chat"
@@ -116,9 +118,11 @@ async def test_post_message(httpx_mock):  # type: ignore[no-untyped-def]
         },
     )
 
-    result = await post_message.ainvoke(_args(channel_id="C100", text="hello"))
+    result_dict = await post_message.ainvoke(_args(channel_id="C100", text="hello"))
 
-    assert isinstance(result, PostMessageOutput)
+    assert isinstance(result_dict, dict)
+
+    result = PostMessageOutput.model_validate(result_dict)
     assert result.success is True
     assert result.ts == "1700000000.000001"
     assert result.message is not None
@@ -143,11 +147,13 @@ async def test_reply_to_thread(httpx_mock):  # type: ignore[no-untyped-def]
         },
     )
 
-    result = await reply_to_thread.ainvoke(
+    result_dict = await reply_to_thread.ainvoke(
         _args(channel_id="C100", thread_ts="1700000000.000001", text="reply")
     )
 
-    assert isinstance(result, ReplyToThreadOutput)
+    assert isinstance(result_dict, dict)
+
+    result = ReplyToThreadOutput.model_validate(result_dict)
     assert result.success is True
     assert result.thread_ts == "1700000000.000001"
     assert result.message is not None
@@ -162,11 +168,13 @@ async def test_add_reaction(httpx_mock):  # type: ignore[no-untyped-def]
         json={"ok": True},
     )
 
-    result = await add_reaction.ainvoke(
+    result_dict = await add_reaction.ainvoke(
         _args(channel_id="C100", timestamp="1700000000.000001", reaction="thumbsup")
     )
 
-    assert isinstance(result, AddReactionOutput)
+    assert isinstance(result_dict, dict)
+
+    result = AddReactionOutput.model_validate(result_dict)
     assert result.success is True
     assert result.reaction == "thumbsup"
 
@@ -193,9 +201,11 @@ async def test_get_channel_history(httpx_mock):  # type: ignore[no-untyped-def]
         },
     )
 
-    result = await get_channel_history.ainvoke(_args(channel_id="C100"))
+    result_dict = await get_channel_history.ainvoke(_args(channel_id="C100"))
 
-    assert isinstance(result, GetChannelHistoryOutput)
+    assert isinstance(result_dict, dict)
+
+    result = GetChannelHistoryOutput.model_validate(result_dict)
     assert result.success is True
     assert result.messages[0].text == "first"
     assert result.has_more is False
@@ -232,11 +242,13 @@ async def test_get_thread_replies(httpx_mock):  # type: ignore[no-untyped-def]
         },
     )
 
-    result = await get_thread_replies.ainvoke(
+    result_dict = await get_thread_replies.ainvoke(
         _args(channel_id="C100", thread_ts="1700000000.000001")
     )
 
-    assert isinstance(result, GetThreadRepliesOutput)
+    assert isinstance(result_dict, dict)
+
+    result = GetThreadRepliesOutput.model_validate(result_dict)
     assert result.success is True
     assert len(result.messages) == 2
     assert result.messages[1].parent_user_id == "U100"
@@ -267,9 +279,11 @@ async def test_get_users(httpx_mock):  # type: ignore[no-untyped-def]
         },
     )
 
-    result = await get_users.ainvoke(_AUTH)
+    result_dict = await get_users.ainvoke(_AUTH)
 
-    assert isinstance(result, GetUsersOutput)
+    assert isinstance(result_dict, dict)
+
+    result = GetUsersOutput.model_validate(result_dict)
     assert result.success is True
     assert result.users[0].email == "alice@example.com"
     assert result.users[0].display_name == "Alice"
@@ -293,9 +307,11 @@ async def test_get_user_profile(httpx_mock):  # type: ignore[no-untyped-def]
         },
     )
 
-    result = await get_user_profile.ainvoke(_args(user_id="U100"))
+    result_dict = await get_user_profile.ainvoke(_args(user_id="U100"))
 
-    assert isinstance(result, GetUserProfileOutput)
+    assert isinstance(result_dict, dict)
+
+    result = GetUserProfileOutput.model_validate(result_dict)
     assert result.success is True
     assert result.profile is not None
     assert result.profile.title == "Engineer"
@@ -315,9 +331,11 @@ async def test_post_message_returns_error_on_slack_failure(httpx_mock):  # type:
         json={"ok": False, "error": "channel_not_found"},
     )
 
-    result = await post_message.ainvoke(_args(channel_id="C999", text="hi"))
+    result_dict = await post_message.ainvoke(_args(channel_id="C999", text="hi"))
 
-    assert isinstance(result, PostMessageOutput)
+    assert isinstance(result_dict, dict)
+
+    result = PostMessageOutput.model_validate(result_dict)
     assert result.success is False
     assert result.error == "channel_not_found"
     assert result.message is None

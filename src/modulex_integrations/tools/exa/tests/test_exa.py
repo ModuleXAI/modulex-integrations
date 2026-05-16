@@ -74,9 +74,11 @@ async def test_search(httpx_mock):  # type: ignore[no-untyped-def]
         },
     )
 
-    result = await search.ainvoke(_args(query="ai papers"))
+    result_dict = await search.ainvoke(_args(query="ai papers"))
 
-    assert isinstance(result, SearchOutput)
+    assert isinstance(result_dict, dict)
+
+    result = SearchOutput.model_validate(result_dict)
     assert result.success is True
     assert result.results[0].title == "AI paper"
     assert result.results[0].score == 0.91
@@ -106,9 +108,11 @@ async def test_get_contents(httpx_mock):  # type: ignore[no-untyped-def]
         },
     )
 
-    result = await get_contents.ainvoke(_args(urls=["https://example.com/a"]))
+    result_dict = await get_contents.ainvoke(_args(urls=["https://example.com/a"]))
 
-    assert isinstance(result, GetContentsOutput)
+    assert isinstance(result_dict, dict)
+
+    result = GetContentsOutput.model_validate(result_dict)
     assert result.success is True
     assert result.results[0].text == "Full article text here."
     assert result.total_results == 1
@@ -132,9 +136,11 @@ async def test_find_similar(httpx_mock):  # type: ignore[no-untyped-def]
         },
     )
 
-    result = await find_similar.ainvoke(_args(url="https://example.com/source"))
+    result_dict = await find_similar.ainvoke(_args(url="https://example.com/source"))
 
-    assert isinstance(result, FindSimilarOutput)
+    assert isinstance(result_dict, dict)
+
+    result = FindSimilarOutput.model_validate(result_dict)
     assert result.success is True
     assert result.source_url == "https://example.com/source"
     assert result.results[0].score == 0.85
@@ -158,9 +164,11 @@ async def test_answer(httpx_mock):  # type: ignore[no-untyped-def]
         },
     )
 
-    result = await answer.ainvoke(_args(query="ultimate answer"))
+    result_dict = await answer.ainvoke(_args(query="ultimate answer"))
 
-    assert isinstance(result, AnswerOutput)
+    assert isinstance(result_dict, dict)
+
+    result = AnswerOutput.model_validate(result_dict)
     assert result.success is True
     assert result.answer == "Forty-two."
     assert result.sources[0].title == "Hitchhiker"
@@ -180,9 +188,11 @@ async def test_search_returns_error_on_non_2xx(httpx_mock):  # type: ignore[no-u
         text="Invalid API key",
     )
 
-    result = await search.ainvoke(_args(query="anything"))
+    result_dict = await search.ainvoke(_args(query="anything"))
 
-    assert isinstance(result, SearchOutput)
+    assert isinstance(result_dict, dict)
+
+    result = SearchOutput.model_validate(result_dict)
     assert result.success is False
     assert result.error is not None
     assert "401" in result.error
@@ -191,9 +201,11 @@ async def test_search_returns_error_on_non_2xx(httpx_mock):  # type: ignore[no-u
 @pytest.mark.asyncio
 async def test_search_validates_empty_api_key() -> None:
     """Empty / whitespace-only api_key short-circuits before the HTTP call."""
-    result = await search.ainvoke({"query": "x", "api_key": ""})
+    result_dict = await search.ainvoke({"query": "x", "api_key": ""})
 
-    assert isinstance(result, SearchOutput)
+    assert isinstance(result_dict, dict)
+
+    result = SearchOutput.model_validate(result_dict)
     assert result.success is False
     assert result.error is not None
     assert "API key" in result.error

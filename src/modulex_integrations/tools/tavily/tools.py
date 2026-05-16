@@ -21,6 +21,7 @@ from typing import Any
 from langchain_core.tools import tool
 from pydantic import BaseModel, Field
 
+from modulex_integrations import serialize_pydantic_return
 from modulex_integrations.tools.tavily.outputs import (
     AnswerSearchOutput,
     NewsSearchOutput,
@@ -140,6 +141,7 @@ def _parse_results(payload: Any) -> tuple[
 
 
 @tool(args_schema=WebSearchInput)
+@serialize_pydantic_return
 async def web_search(
     query: str,
     api_key: str,
@@ -184,6 +186,7 @@ async def web_search(
 
 
 @tool(args_schema=AnswerSearchInput)
+@serialize_pydantic_return
 async def answer_search(
     query: str,
     api_key: str,
@@ -227,6 +230,7 @@ async def answer_search(
 
 
 @tool(args_schema=NewsSearchInput)
+@serialize_pydantic_return
 async def news_search(
     query: str,
     api_key: str,

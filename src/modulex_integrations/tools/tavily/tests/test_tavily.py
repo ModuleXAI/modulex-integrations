@@ -87,9 +87,11 @@ async def test_web_search() -> None:
     mock_cls = _mock_tavily_search(fake_payload)
 
     with patch.dict(sys.modules, {"langchain_tavily": MagicMock(TavilySearch=mock_cls)}):
-        result = await web_search.ainvoke(_args(query="ai papers"))
+        result_dict = await web_search.ainvoke(_args(query="ai papers"))
 
-    assert isinstance(result, WebSearchOutput)
+    assert isinstance(result_dict, dict)
+
+    result = WebSearchOutput.model_validate(result_dict)
     assert result.success is True
     assert result.query == "ai papers"
     assert result.results[0].score == 0.91
@@ -121,9 +123,11 @@ async def test_answer_search() -> None:
     mock_cls = _mock_tavily_search(fake_payload)
 
     with patch.dict(sys.modules, {"langchain_tavily": MagicMock(TavilySearch=mock_cls)}):
-        result = await answer_search.ainvoke(_args(query="ultimate answer"))
+        result_dict = await answer_search.ainvoke(_args(query="ultimate answer"))
 
-    assert isinstance(result, AnswerSearchOutput)
+    assert isinstance(result_dict, dict)
+
+    result = AnswerSearchOutput.model_validate(result_dict)
     assert result.success is True
     assert result.answer == "Forty-two."
     assert result.results[0].title == "Hitchhiker"
@@ -152,9 +156,11 @@ async def test_news_search() -> None:
     mock_cls = _mock_tavily_search(fake_payload)
 
     with patch.dict(sys.modules, {"langchain_tavily": MagicMock(TavilySearch=mock_cls)}):
-        result = await news_search.ainvoke(_args(query="tech", days=3))
+        result_dict = await news_search.ainvoke(_args(query="tech", days=3))
 
-    assert isinstance(result, NewsSearchOutput)
+    assert isinstance(result_dict, dict)
+
+    result = NewsSearchOutput.model_validate(result_dict)
     assert result.success is True
     assert result.results[0].url == "https://example.com/news"
 
@@ -170,9 +176,11 @@ async def test_news_search() -> None:
 @pytest.mark.asyncio
 async def test_web_search_short_circuits_on_empty_key() -> None:
     """Empty api_key bypasses the SDK entirely — no import, no instantiation."""
-    result = await web_search.ainvoke({"query": "x", "api_key": ""})
+    result_dict = await web_search.ainvoke({"query": "x", "api_key": ""})
 
-    assert isinstance(result, WebSearchOutput)
+    assert isinstance(result_dict, dict)
+
+    result = WebSearchOutput.model_validate(result_dict)
     assert result.success is False
     assert result.error is not None
     assert "API key" in result.error
@@ -187,9 +195,11 @@ async def test_web_search_handles_missing_sdk() -> None:
     raise ImportError per Python's import system semantics.
     """
     with patch.dict(sys.modules, {"langchain_tavily": None}):
-        result = await web_search.ainvoke(_args(query="anything"))
+        result_dict = await web_search.ainvoke(_args(query="anything"))
 
-    assert isinstance(result, WebSearchOutput)
+    assert isinstance(result_dict, dict)
+
+    result = WebSearchOutput.model_validate(result_dict)
     assert result.success is False
     assert result.error is not None
     assert "langchain-tavily" in result.error
