@@ -44,5 +44,10 @@ src/modulex_integrations/_version.py
 .env
 .env.local
 *.local
-.claude/settings.local.json
+
+# Internal-only artifacts — never push to this public repo.
+# (History was scrubbed of CLAUDE.md, external-briefs/, and .claude/
+# on 2026-05-15; see the cleanup commit on main.)
+CLAUDE.md
+.claude/
 external-briefs/
