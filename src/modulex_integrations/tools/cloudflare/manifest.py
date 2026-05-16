@@ -35,6 +35,7 @@ manifest = IntegrationManifest(
     version="1.0.0",
     author="ModuleX",
     app_url="https://cloudflare.com",
+    logo="logos:cloudflare-icon",
     categories=[
         "Developer Tools & Infrastructure",
         "security",

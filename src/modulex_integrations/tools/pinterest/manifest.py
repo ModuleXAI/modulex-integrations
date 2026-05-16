@@ -38,7 +38,7 @@ manifest = IntegrationManifest(
     ),
     version="1.0.0",
     author="ModuleX",
-    logo="https://cdn.jsdelivr.net/gh/ModuleXAI/logox@main/tools/pinterest.svg",
+    logo="logos:pinterest",
     app_url="https://www.pinterest.com",
     categories=[
         "Marketing & Email",

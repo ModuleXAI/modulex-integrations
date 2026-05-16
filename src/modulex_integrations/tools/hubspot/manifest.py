@@ -89,7 +89,7 @@ manifest = IntegrationManifest(
     ),
     version="1.0.0",
     author="ModuleX",
-    logo="logos:hubspot",
+    logo="simple-icons:hubspot",
     app_url="https://www.hubspot.com",
     categories=["CRM", "Sales", "Marketing"],
     actions=[

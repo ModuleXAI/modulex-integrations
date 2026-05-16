@@ -42,7 +42,7 @@ manifest = IntegrationManifest(
     ),
     version="1.0.0",
     author="ModuleX",
-    logo="logos:mysql",
+    logo="logos:mysql-icon",
     app_url="https://www.mysql.com/",
     categories=["Database", "Data Management", "storage"],
     actions=[

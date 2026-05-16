@@ -23,6 +23,7 @@ manifest = IntegrationManifest(
     ),
     version="1.0.0",
     author="ModuleX",
+    logo="logos:npm-icon",
     categories=[
         "Developer Tools & Infrastructure",
         "coding",

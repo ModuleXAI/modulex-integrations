@@ -61,7 +61,7 @@ manifest = IntegrationManifest(
     ),
     version="1.0.0",
     author="ModuleX",
-    logo="logos:zendesk",
+    logo="logos:zendesk-icon",
     app_url="https://www.zendesk.com",
     categories=["Customer Support", "Helpdesk", "Communication & Collaboration"],
     actions=[

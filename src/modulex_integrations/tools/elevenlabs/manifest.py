@@ -37,7 +37,7 @@ manifest = IntegrationManifest(
     ),
     version="1.0.0",
     author="ModuleX",
-    logo="elevenlabs",
+    logo="simple-icons:elevenlabs",
     app_url="https://elevenlabs.io",
     categories=["AI & Machine Learning", "Audio", "Voice"],
     actions=[

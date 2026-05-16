@@ -38,7 +38,7 @@ manifest = IntegrationManifest(
     ),
     version="1.0.0",
     author="ModuleX",
-    logo="https://cdn.jsdelivr.net/gh/ModuleXAI/logox@main/tools/lemon_squeezy.svg",
+    logo="simple-icons:lemonsqueezy",
     app_url="https://lemonsqueezy.com",
     categories=[
         "Business Services",

@@ -36,7 +36,7 @@ manifest = IntegrationManifest(
     ),
     version="1.0.0",
     author="ModuleX",
-    logo="https://cdn.jsdelivr.net/gh/ModuleXAI/logox@main/tools/customerio.svg",
+    logo="logos:customerio-icon",
     app_url="https://customer.io",
     categories=["Marketing & Email", "social_media", "customer_support"],
     actions=[

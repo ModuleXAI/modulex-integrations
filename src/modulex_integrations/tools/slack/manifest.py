@@ -35,7 +35,7 @@ manifest = IntegrationManifest(
     ),
     version="1.0.0",
     author="ModuleX",
-    logo="https://cdn.jsdelivr.net/gh/ModuleXAI/logox@main/tools/slack.svg",
+    logo="logos:slack-icon",
     app_url="https://slack.com",
     categories=["Communication & Collaboration", "collaboration", "messaging"],
     actions=[

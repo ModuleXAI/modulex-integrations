@@ -33,7 +33,7 @@ manifest = IntegrationManifest(
     ),
     version="1.0.0",
     author="ModuleX",
-    logo="logos:snowflake",
+    logo="logos:snowflake-icon",
     app_url="https://www.snowflake.com/",
     categories=["Database", "Data Warehouse", "analytics"],
     actions=[

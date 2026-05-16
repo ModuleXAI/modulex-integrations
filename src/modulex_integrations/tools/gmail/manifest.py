@@ -69,7 +69,7 @@ manifest = IntegrationManifest(
     ),
     version="1.0.0",
     author="ModuleX",
-    logo="https://cdn.jsdelivr.net/gh/ModuleXAI/logox@main/tools/gmail.svg",
+    logo="logos:google-gmail",
     app_url="https://mail.google.com",
     categories=["Communication & Collaboration", "email", "productivity"],
     actions=[

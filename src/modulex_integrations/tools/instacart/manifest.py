@@ -20,7 +20,7 @@ manifest = IntegrationManifest(
     ),
     version="1.0.0",
     author="ModuleX",
-    logo="https://cdn.jsdelivr.net/gh/ModuleXAI/logox@main/tools/instacart.svg",
+    logo="cib:instacart",
     app_url="https://www.instacart.com",
     categories=["Business Services", "grocery", "retail", "shopping"],
     actions=[

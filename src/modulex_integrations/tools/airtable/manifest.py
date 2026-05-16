@@ -24,7 +24,7 @@ manifest = IntegrationManifest(
     ),
     version="1.0.0",
     author="ModuleX",
-    logo="https://cdn.jsdelivr.net/gh/ModuleXAI/logox@main/tools/airtable.svg",
+    logo="logos:airtable",
     app_url="https://airtable.com",
     categories=[
         "Project & Task Management",

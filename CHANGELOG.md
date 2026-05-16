@@ -6,6 +6,18 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ## [Unreleased]
 
+### Changed (logo polish — 23 manifests)
+
+- Normalized `logo` fields across 23 integration manifests to use
+  Iconify identifiers (`logos:*`, `simple-icons:*`, `cib:*`) instead
+  of bespoke CDN URLs or ad-hoc strings (`"bitcoin"`,
+  `"elevenlabs"`). Display-only change — no schema delta, no
+  behavior change, no test impact.
+- Affected: airtable, calendly, clickup, cloudflare, coinbase,
+  customerio, elevenlabs, github, gmail, hubspot, instacart,
+  intercom, lemon_squeezy, linear, mailchimp, mysql, npm, pinterest,
+  semrush, slack, snowflake, telegram, zendesk.
+
 ### Added (Wave 9 — Phase 1 closeout)
 
 - **`posthog`** (78 actions) — the largest single integration in

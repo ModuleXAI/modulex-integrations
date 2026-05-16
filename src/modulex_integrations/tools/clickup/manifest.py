@@ -59,7 +59,7 @@ manifest = IntegrationManifest(
     ),
     version="1.0.0",
     author="ModuleX",
-    logo="logos:clickup-icon",
+    logo="simple-icons:clickup",
     app_url="https://clickup.com",
     categories=["Project Management", "Productivity", "Communication & Collaboration"],
     actions=[

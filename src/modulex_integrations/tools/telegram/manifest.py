@@ -50,6 +50,7 @@ manifest = IntegrationManifest(
     ),
     version="1.0.0",
     author="ModuleX",
+    logo="logos:telegram",
     app_url="https://core.telegram.org/bots/api",
     categories=[
         "Communication & Collaboration",

@@ -53,7 +53,7 @@ manifest = IntegrationManifest(
     ),
     version="1.0.0",
     author="ModuleX",
-    logo="bitcoin",
+    logo="simple-icons:coinbase",
     app_url="https://www.coinbase.com",
     categories=["Business Services", "finance", "trading", "market"],
     actions=[
