@@ -8,6 +8,10 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ### Added
 
+- `microsoft_excel` integration — 9 actions, auth: oauth2. Read, write, and
+  manage Excel workbooks stored in OneDrive via the Microsoft Graph API.
+  Producer-staged by integration-drafts; consumer-side audit applied 4
+  patches before merge.
 - `microsoft_outlook` integration — 20 actions, auth: oauth2. Send, draft,
   search, and organize email; manage contacts, folders, and categories via
   Microsoft Graph. Producer-staged by integration-drafts; consumer-side audit
