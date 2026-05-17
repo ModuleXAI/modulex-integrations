@@ -8,6 +8,10 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ### Added
 
+- `microsoft_outlook` integration — 20 actions, auth: oauth2. Send, draft,
+  search, and organize email; manage contacts, folders, and categories via
+  Microsoft Graph. Producer-staged by integration-drafts; consumer-side audit
+  applied 4 patches before merge.
 - `okta` integration — 4 actions (create_user, get_user, list_type_id_options,
   update_user), auth: custom (SSWS API token + subdomain). Pure HTTP, zero new
   runtime deps. Producer-staged by integration-drafts; consumer-side audit

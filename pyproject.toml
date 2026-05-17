@@ -102,6 +102,7 @@ salesforce = "modulex_integrations.tools.salesforce"
 clickup = "modulex_integrations.tools.clickup"
 google_drive = "modulex_integrations.tools.google_drive"
 mailchimp = "modulex_integrations.tools.mailchimp"
+microsoft_outlook = "modulex_integrations.tools.microsoft_outlook"
 posthog = "modulex_integrations.tools.posthog"
 okta = "modulex_integrations.tools.okta"
 
@@ -169,6 +170,13 @@ select = ["E", "F", "I", "N", "W", "B", "C4", "UP", "RUF"]
 # httpx_mock setups (filter params + nested paths). Wrapping breaks
 # the readability of the URL-matches-mock contract.
 "src/modulex_integrations/tools/short_io/tests/test_short_io.py" = ["E501"]
+# microsoft_outlook manifest and tools have long description string
+# literals in ParameterDef / Field kwargs that cannot be wrapped.
+"src/modulex_integrations/tools/microsoft_outlook/manifest.py" = ["E501"]
+"src/modulex_integrations/tools/microsoft_outlook/tools.py" = ["E501"]
+# microsoft_outlook outputs mirror upstream Microsoft Graph camelCase
+# field names (displayName, isDraft, parentFolderId, etc.).
+"src/modulex_integrations/tools/microsoft_outlook/outputs.py" = ["N815"]
 
 [tool.mypy]
 python_version = "3.12"
