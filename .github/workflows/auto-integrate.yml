@@ -187,10 +187,10 @@ jobs:
             AMBIGUITY POLICY: Do NOT call AskUserQuestion. For risky-semantic patches, SKIP the patch, log it for human review, continue.
 
             FAILURE POLICY:
-            - P1 (pending-release gate) hit: exit cleanly with output `skipped=true`. No commit.
-            - P2 (preselector returns NONE): exit cleanly with output `skipped=true`.
-            - Merger fails any gate: revert, exit cleanly with outputs `skipped=true, failed=true`. Worktree clean.
-            - All phases succeed: emit `tool_name=<name>` via $GITHUB_OUTPUT.
+            - P1 (pending-release gate) hit: exit cleanly. No file changes.
+            - P2 (preselector returns NONE): exit cleanly. No file changes.
+            - Merger fails any gate: revert all worktree changes, exit cleanly. Worktree must be clean.
+            - All phases succeed: the merger leaves `src/modulex_integrations/tools/<name>/` + pyproject.toml edit + CHANGELOG.md edit in the worktree. The workflow's next step detects this from filesystem state.
 
             ENVIRONMENT:
             - Consumer venv at `.venv/` (already installed editable).
@@ -223,48 +223,57 @@ jobs:
 
             AMBIGUITY POLICY: Do NOT call AskUserQuestion. For risky-semantic patches, SKIP, log, continue.
 
-            FAILURE POLICY identical to primary prompt.
+            FAILURE POLICY:
+            - P1 (pending-release gate) hit: exit cleanly. No file changes.
+            - P2 (preselector returns NONE): exit cleanly. No file changes.
+            - Merger fails any gate: revert all worktree changes, exit cleanly. Worktree must be clean.
+            - All phases succeed: the merger leaves `src/modulex_integrations/tools/<name>/` + pyproject.toml edit + CHANGELOG.md edit in the worktree. The workflow's next step detects this from filesystem state.
 
-      # ---- Aggregate run outputs from whichever path fired -----------------
-      - name: Aggregate run outputs
+      # ---- Detect pipeline result from filesystem state -------------------
+      # We deliberately do NOT rely on the Claude action emitting outputs
+      # (the action's $GITHUB_OUTPUT propagation is unreliable). Instead we
+      # inspect the worktree: a successful integration leaves a new tool
+      # directory under src/modulex_integrations/tools/ plus modifications
+      # to pyproject.toml and CHANGELOG.md. A skip / silent revert leaves
+      # the worktree clean.
+      - name: Detect pipeline result
         id: run
         if: steps.gate.outputs.skip != 'true'
-        env:
-          PRIMARY_TOOL: ${{ steps.run_primary.outputs.tool_name }}
-          PRIMARY_SKIPPED: ${{ steps.run_primary.outputs.skipped }}
-          PRIMARY_FAILED: ${{ steps.run_primary.outputs.failed }}
-          FALLBACK_TOOL: ${{ steps.run_fallback.outputs.tool_name }}
-          FALLBACK_SKIPPED: ${{ steps.run_fallback.outputs.skipped }}
-          FALLBACK_FAILED: ${{ steps.run_fallback.outputs.failed }}
-        run: |
-          TOOL="${PRIMARY_TOOL:-${FALLBACK_TOOL}}"
-          SKIPPED="${PRIMARY_SKIPPED:-${FALLBACK_SKIPPED}}"
-          FAILED="${PRIMARY_FAILED:-${FALLBACK_FAILED}}"
-          echo "tool_name=${TOOL}" >> "${GITHUB_OUTPUT}"
-          echo "skipped=${SKIPPED:-false}" >> "${GITHUB_OUTPUT}"
-          echo "failed=${FAILED:-false}" >> "${GITHUB_OUTPUT}"
-
-      # ---- Verify expected worktree shape ---------------------------------
-      - name: Verify worktree before commit
-        if: steps.gate.outputs.skip != 'true' && steps.run.outputs.skipped != 'true' && steps.run.outputs.failed != 'true'
-        env:
-          TOOL_NAME: ${{ steps.run.outputs.tool_name }}
         run: |
           set -eo pipefail
-          if [ -z "${TOOL_NAME}" ]; then
-            echo "::error::Pipeline reported success but did not emit TOOL_NAME"
-            exit 1
+          # Find any new (untracked) tool directory the merger created.
+          NEW_TOOL_DIR=$(git ls-files --others --exclude-standard --directory \
+            | grep -E '^src/modulex_integrations/tools/[a-z][a-z0-9_]*/$' \
+            | head -1 || true)
+
+          if [ -z "${NEW_TOOL_DIR}" ]; then
+            echo "::notice::Pipeline did not create a new tool directory."
+            echo "Possible reasons:"
+            echo "  - preselector returned NONE (no eligible candidates)"
+            echo "  - auditor returned REFUSE on the picked tool"
+            echo "  - merger ran into a gate failure and reverted cleanly"
+            echo "  - dry_run was true"
+            echo "tool_name=" >> "${GITHUB_OUTPUT}"
+            echo "skipped=true" >> "${GITHUB_OUTPUT}"
+            echo "failed=false" >> "${GITHUB_OUTPUT}"
+            exit 0
           fi
-          if [ ! -d "src/modulex_integrations/tools/${TOOL_NAME}" ]; then
-            echo "::error::Expected directory missing: src/modulex_integrations/tools/${TOOL_NAME}/"
-            exit 1
+
+          TOOL_NAME=$(echo "${NEW_TOOL_DIR}" | sed -E 's|^src/modulex_integrations/tools/([^/]+)/$|\1|')
+          echo "Detected new tool directory: ${NEW_TOOL_DIR}"
+          echo "Tool name: ${TOOL_NAME}"
+
+          # Sanity: pyproject.toml entry-point should be added, CHANGELOG updated.
+          if git diff --quiet pyproject.toml; then
+            echo "::warning::pyproject.toml not modified - entry-point may be missing for ${TOOL_NAME}"
           fi
-          if git diff --quiet HEAD; then
-            echo "::error::No file changes after pipeline reported SUCCESS"
-            git status
-            exit 1
+          if [ -f CHANGELOG.md ] && git diff --quiet CHANGELOG.md; then
+            echo "::notice::CHANGELOG.md not modified - consider adding an entry for ${TOOL_NAME}"
           fi
-          echo "Worktree changes look right."
+
+          echo "tool_name=${TOOL_NAME}" >> "${GITHUB_OUTPUT}"
+          echo "skipped=false" >> "${GITHUB_OUTPUT}"
+          echo "failed=false" >> "${GITHUB_OUTPUT}"
 
       # ---- Bump rc tag ----------------------------------------------------
       - name: Bump rc tag
