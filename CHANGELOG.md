@@ -8,6 +8,11 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ### Added
 
+- `google_calendar` integration — 16 actions, auth: oauth2. Manage Google
+  Calendar events, calendars, and availability via the Calendar v3 REST
+  API: create/update/delete events, list instances, query free/busy,
+  quick-add, and manage recurring event series. Producer-staged by
+  integration-drafts; consumer-side audit applied 4 patches before merge.
 - `monday` integration — 13 actions, auth: api_key. Monday.com work
   management platform for boards, items, columns, groups, and updates via
   the GraphQL API. Producer-staged by integration-drafts; consumer-side

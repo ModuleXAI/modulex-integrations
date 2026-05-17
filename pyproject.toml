@@ -89,6 +89,7 @@ apollo_io = "modulex_integrations.tools.apollo_io"
 cloudflare = "modulex_integrations.tools.cloudflare"
 semrush = "modulex_integrations.tools.semrush"
 gmail = "modulex_integrations.tools.gmail"
+google_calendar = "modulex_integrations.tools.google_calendar"
 sendgrid = "modulex_integrations.tools.sendgrid"
 coinbase = "modulex_integrations.tools.coinbase"
 postgresql = "modulex_integrations.tools.postgresql"
@@ -193,6 +194,14 @@ select = ["E", "F", "I", "N", "W", "B", "C4", "UP", "RUF"]
 "src/modulex_integrations/tools/monday/manifest.py" = ["E501"]
 "src/modulex_integrations/tools/monday/tools.py" = ["E501"]
 "src/modulex_integrations/tools/monday/tests/test_monday.py" = ["E501"]
+# google_calendar outputs mirror upstream Google Calendar API camelCase
+# field names (htmlLink, timeZone, colorId, iCalUID, recurringEventId, etc.).
+"src/modulex_integrations/tools/google_calendar/outputs.py" = ["N815"]
+# google_calendar manifest and tools have long description string
+# literals in ParameterDef / Field kwargs that cannot be wrapped.
+"src/modulex_integrations/tools/google_calendar/manifest.py" = ["E501"]
+"src/modulex_integrations/tools/google_calendar/tools.py" = ["E501"]
+"src/modulex_integrations/tools/google_calendar/tests/test_google_calendar.py" = ["E501"]
 
 [tool.mypy]
 python_version = "3.12"
