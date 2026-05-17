@@ -109,6 +109,7 @@ mailchimp = "modulex_integrations.tools.mailchimp"
 microsoft_excel = "modulex_integrations.tools.microsoft_excel"
 microsoft_onedrive = "modulex_integrations.tools.microsoft_onedrive"
 microsoft_outlook = "modulex_integrations.tools.microsoft_outlook"
+microsoft_teams = "modulex_integrations.tools.microsoft_teams"
 monday = "modulex_integrations.tools.monday"
 posthog = "modulex_integrations.tools.posthog"
 okta = "modulex_integrations.tools.okta"
@@ -204,6 +205,13 @@ select = ["E", "F", "I", "N", "W", "B", "C4", "UP", "RUF"]
 "src/modulex_integrations/tools/google_calendar/manifest.py" = ["E501"]
 "src/modulex_integrations/tools/google_calendar/tools.py" = ["E501"]
 "src/modulex_integrations/tools/google_calendar/tests/test_google_calendar.py" = ["E501"]
+# microsoft_teams outputs mirror upstream Microsoft Graph camelCase
+# field names (displayName, webUrl, chatType, createdDateTime, etc.).
+"src/modulex_integrations/tools/microsoft_teams/outputs.py" = ["N815"]
+# microsoft_teams manifest and tools have long description string
+# literals in setup_instructions and Field kwargs that cannot be wrapped.
+"src/modulex_integrations/tools/microsoft_teams/manifest.py" = ["E501"]
+"src/modulex_integrations/tools/microsoft_teams/tools.py" = ["E501"]
 
 [tool.mypy]
 python_version = "3.12"
