@@ -8,6 +8,10 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ### Added
 
+- `monday` integration — 13 actions, auth: api_key. Monday.com work
+  management platform for boards, items, columns, groups, and updates via
+  the GraphQL API. Producer-staged by integration-drafts; consumer-side
+  audit applied 3 patches before merge.
 - `google_slides` integration — 17 actions, auth: oauth2. Create and edit
   Google Slides presentations via the Slides and Drive REST APIs: manage
   slides, shapes, images, tables, text, merge data, and refresh charts.

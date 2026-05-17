@@ -106,6 +106,7 @@ mailchimp = "modulex_integrations.tools.mailchimp"
 microsoft_excel = "modulex_integrations.tools.microsoft_excel"
 microsoft_onedrive = "modulex_integrations.tools.microsoft_onedrive"
 microsoft_outlook = "modulex_integrations.tools.microsoft_outlook"
+monday = "modulex_integrations.tools.monday"
 posthog = "modulex_integrations.tools.posthog"
 okta = "modulex_integrations.tools.okta"
 
@@ -187,6 +188,11 @@ select = ["E", "F", "I", "N", "W", "B", "C4", "UP", "RUF"]
 # microsoft_outlook outputs mirror upstream Microsoft Graph camelCase
 # field names (displayName, isDraft, parentFolderId, etc.).
 "src/modulex_integrations/tools/microsoft_outlook/outputs.py" = ["N815"]
+# monday manifest and tools have long description string literals in
+# ParameterDef / Field kwargs that cannot be wrapped.
+"src/modulex_integrations/tools/monday/manifest.py" = ["E501"]
+"src/modulex_integrations/tools/monday/tools.py" = ["E501"]
+"src/modulex_integrations/tools/monday/tests/test_monday.py" = ["E501"]
 
 [tool.mypy]
 python_version = "3.12"
