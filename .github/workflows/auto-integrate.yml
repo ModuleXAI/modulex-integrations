@@ -293,8 +293,30 @@ jobs:
             -m "Run: ${RUN_ID}" \
             -m "Co-Authored-By: auto-integrate bot <bot+auto-integrate@modulex.dev>"
 
-          git push origin staging
-          echo "Pushed ${TOOL_NAME} integration to staging. No tag created."
+          # Defensive push with rebase-on-reject. The 14-minute pipeline
+          # window leaves room for a human to push to staging while the
+          # bot is working. We retry up to 3 times, rebasing against the
+          # current remote each round. A rebase conflict (rare —
+          # typically only happens if two integrations touch the same
+          # row in pyproject.toml or CHANGELOG.md) hard-fails: no silent
+          # auto-merge, the human resolves and the next cron retries.
+          for attempt in 1 2 3; do
+            if git push origin staging; then
+              echo "Pushed ${TOOL_NAME} integration to staging (attempt ${attempt}). No tag created."
+              break
+            fi
+            if [ "${attempt}" -eq 3 ]; then
+              echo "::error::Push rejected on all 3 attempts. Aborting."
+              exit 1
+            fi
+            echo "::notice::Push rejected on attempt ${attempt}; fetching + rebasing remote staging..."
+            git fetch origin staging
+            if ! git rebase origin/staging; then
+              echo "::error::Rebase conflict during push retry. Manual intervention needed."
+              git rebase --abort || true
+              exit 1
+            fi
+          done
           echo "To cut a pre-release for this integration (and any others"
           echo "queued since the last tag), trigger the release-alpha"
           echo "workflow manually or ask a human to run \`git tag vX.Y.ZaN\`"
