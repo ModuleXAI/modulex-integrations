@@ -24,7 +24,7 @@ manifest = IntegrationManifest(
     ),
     version="1.0.0",
     author="ModuleX",
-    logo="logos:linear-icon",
+    logo="modulex:linear-themed",
     app_url="https://linear.app",
     categories=["Project & Task Management", "task_management", "collaboration"],
     actions=[

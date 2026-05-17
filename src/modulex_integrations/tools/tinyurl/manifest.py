@@ -23,7 +23,7 @@ manifest = IntegrationManifest(
     ),
     version="1.0.0",
     author="ModuleX",
-    logo="https://cdn.jsdelivr.net/gh/ModuleXAI/logox@main/tools/tinyurl.svg",
+    logo="modulex:tinyurl-themed",
     app_url="https://tinyurl.com",
     categories=["Utilities", "link", "miscellaneous"],
     actions=[

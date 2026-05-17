@@ -24,7 +24,7 @@ manifest = IntegrationManifest(
     ),
     version="1.0.0",
     author="ModuleX",
-    logo="https://cdn.jsdelivr.net/gh/ModuleXAI/logox@main/tools/appdrag.svg",
+    logo="modulex:appdrag",
     app_url="https://appdrag.com",
     categories=["Developer Tools & Infrastructure", "automation", "database"],
     actions=[

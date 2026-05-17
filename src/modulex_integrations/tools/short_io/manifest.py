@@ -33,7 +33,7 @@ manifest = IntegrationManifest(
     ),
     version="1.0.0",
     author="ModuleX",
-    logo="https://cdn.jsdelivr.net/gh/ModuleXAI/logox@main/tools/shortio.svg",
+    logo="modulex:shortio-themed",
     app_url="https://short.io",
     categories=["Utilities", "link_management", "analytics"],
     actions=[

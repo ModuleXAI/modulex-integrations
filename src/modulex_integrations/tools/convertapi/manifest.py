@@ -24,7 +24,7 @@ manifest = IntegrationManifest(
     ),
     version="1.0.0",
     author="ModuleX",
-    logo="https://cdn.jsdelivr.net/gh/ModuleXAI/logox@main/tools/convertapi.svg",
+    logo="modulex:convertapi",
     app_url="https://www.convertapi.com",
     categories=["Utilities", "convert", "documents"],
     actions=[

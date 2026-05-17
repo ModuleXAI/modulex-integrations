@@ -35,7 +35,7 @@ manifest = IntegrationManifest(
     ),
     version="2.0.0",
     author="ModuleX",
-    logo="https://cdn.jsdelivr.net/gh/ModuleXAI/logox@main/tools/apollo.svg",
+    logo="modulex:apollo",
     app_url="https://www.apollo.io",
     categories=["CRM & Customer", "sales", "customer_support"],
     actions=[

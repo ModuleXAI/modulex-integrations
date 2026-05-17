@@ -43,7 +43,7 @@ manifest = IntegrationManifest(
     ),
     version="1.0.0",
     author="ModuleX",
-    logo="https://cdn.jsdelivr.net/gh/ModuleXAI/logox@main/tools/jina.svg",
+    logo="modulex:jina_ai-themed",
     app_url="https://jina.ai",
     categories=[
         "Web Search & Scraping",

@@ -24,7 +24,7 @@ manifest = IntegrationManifest(
     ),
     version="1.0.0",
     author="ModuleX",
-    logo="https://cdn.jsdelivr.net/gh/ModuleXAI/logox@main/tools/klaviyo.svg",
+    logo="modulex:klaviyo-themed",
     app_url="https://www.klaviyo.com",
     categories=["Marketing & Email", "email", "automation", "development"],
     actions=[

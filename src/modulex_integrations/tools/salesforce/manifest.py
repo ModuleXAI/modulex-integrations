@@ -58,7 +58,7 @@ manifest = IntegrationManifest(
     ),
     version="1.0.0",
     author="ModuleX",
-    logo="logos:salesforce",
+    logo="modulex:salesforce",
     app_url="https://www.salesforce.com",
     categories=["CRM", "Sales", "Customer Support"],
     actions=[

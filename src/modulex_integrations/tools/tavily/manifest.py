@@ -42,7 +42,7 @@ manifest = IntegrationManifest(
     ),
     version="1.0.0",
     author="ModuleX",
-    logo="https://cdn.jsdelivr.net/gh/ModuleXAI/logox@main/tools/tavily.svg",
+    logo="modulex:tavily",
     app_url="https://tavily.com",
     categories=["Web Search & Scraping", "research", "ai"],
     actions=[

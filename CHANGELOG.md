@@ -6,6 +6,20 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ## [Unreleased]
 
+### Changed (logo polish — 26 manifests, `modulex:*` namespace)
+
+- Migrated `logo` fields across 26 integration manifests to the
+  `modulex:*` icon namespace (a ModuleX-side icon resolver). This
+  supersedes some of the Iconify identifiers introduced in
+  `0.1.0a13` — the `modulex:*` namespace is now the canonical icon
+  source. Display-only — no schema delta, no behavior change, no
+  test impact.
+- Affected: apollo_io, appdrag, calendly, clickup, coinbase,
+  convertapi, elevenlabs, exa, firecrawl, github, hackernews,
+  hubspot, instacart, jina_ai, klaviyo, lemon_squeezy, linear,
+  mailchimp, nasdaq, salesforce, scrape_do, semrush, servicenow,
+  short_io, tavily, tinyurl.
+
 ### Changed (logo polish — 23 manifests)
 
 - Normalized `logo` fields across 23 integration manifests to use

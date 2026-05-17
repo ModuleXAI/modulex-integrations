@@ -53,7 +53,7 @@ manifest = IntegrationManifest(
     ),
     version="1.0.0",
     author="ModuleX",
-    logo="https://cdn.jsdelivr.net/gh/ModuleXAI/logox@main/tools/nasdaq.svg",
+    logo="modulex:nasdaq",
     app_url="https://data.nasdaq.com",
     categories=["finance", "data", "research", "analytics"],
     actions=[

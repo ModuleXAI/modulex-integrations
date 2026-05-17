@@ -105,7 +105,7 @@ manifest = IntegrationManifest(
     ),
     version="1.0.0",
     author="ModuleX",
-    logo="https://cdn.jsdelivr.net/gh/ModuleXAI/logox@main/tools/scrapedo.svg",
+    logo="modulex:scrapedo-themed",
     app_url="https://scrape.do",
     categories=["Web Search & Scraping", "data_extraction"],
     actions=[

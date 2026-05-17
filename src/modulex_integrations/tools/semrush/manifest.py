@@ -64,7 +64,7 @@ manifest = IntegrationManifest(
     ),
     version="1.0.0",
     author="ModuleX",
-    logo="simple-icons:semrush",
+    logo="modulex:semrush",
     app_url="https://www.semrush.com",
     categories=["Data & Analytics", "analytics", "marketing", "research"],
     actions=[

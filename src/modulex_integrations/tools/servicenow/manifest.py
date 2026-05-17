@@ -70,7 +70,7 @@ manifest = IntegrationManifest(
     ),
     version="1.0.0",
     author="ModuleX",
-    logo="https://cdn.jsdelivr.net/gh/ModuleXAI/logox@main/tools/servicenow.svg",
+    logo="modulex:servicenow",
     app_url="https://www.servicenow.com",
     categories=[
         "Developer Tools & Infrastructure",

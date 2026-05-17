@@ -45,7 +45,7 @@ manifest = IntegrationManifest(
     ),
     version="1.0.0",
     author="ModuleX",
-    logo="https://cdn.jsdelivr.net/gh/ModuleXAI/logox@main/tools/exa.svg",
+    logo="modulex:exa",
     app_url="https://exa.ai",
     categories=["Web Search & Scraping", "data", "search"],
     actions=[

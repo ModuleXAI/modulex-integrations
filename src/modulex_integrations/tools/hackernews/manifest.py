@@ -36,6 +36,7 @@ manifest = IntegrationManifest(
     ),
     version="1.0.0",
     author="ModuleX",
+    logo="modulex:hackernews",
     app_url="https://news.ycombinator.com",
     categories=["news", "social", "technology", "community"],
     actions=[

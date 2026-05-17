@@ -46,7 +46,7 @@ manifest = IntegrationManifest(
     ),
     version="1.0.0",
     author="ModuleX",
-    logo="https://cdn.jsdelivr.net/gh/ModuleXAI/logox@main/tools/firecrawl.svg",
+    logo="modulex:firecrawl",
     app_url="https://firecrawl.dev",
     categories=["Web Search & Scraping", "data", "search"],
     actions=[

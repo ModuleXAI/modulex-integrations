@@ -48,7 +48,7 @@ manifest = IntegrationManifest(
     ),
     version="1.0.0",
     author="ModuleX",
-    logo="simple-icons:calendly",
+    logo="modulex:calendly",
     app_url="https://calendly.com",
     categories=["Productivity", "calendar", "productivity", "meetings"],
     actions=[
