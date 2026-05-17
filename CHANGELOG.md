@@ -8,6 +8,10 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ### Added
 
+- `google_sheets` integration — 14 actions, auth: oauth2. Read, write, and
+  manage Google Sheets spreadsheets and worksheets via the Sheets v4 and
+  Drive v3 REST APIs. Producer-staged by integration-drafts; consumer-side
+  audit applied 4 patches before merge.
 - `google_meet` integration — 2 actions, auth: oauth2. Schedule Google Meet
   video conferences (via Google Calendar events with conferenceData) and list
   available event color options. Producer-staged by integration-drafts;
