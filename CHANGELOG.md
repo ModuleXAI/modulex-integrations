@@ -6,6 +6,13 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ## [Unreleased]
 
+### Added
+
+- `okta` integration — 4 actions (create_user, get_user, list_type_id_options,
+  update_user), auth: custom (SSWS API token + subdomain). Pure HTTP, zero new
+  runtime deps. Producer-staged by integration-drafts; consumer-side audit
+  applied 0 patches before merge.
+
 ### Changed (logo polish — 26 manifests, `modulex:*` namespace)
 
 - Migrated `logo` fields across 26 integration manifests to the
