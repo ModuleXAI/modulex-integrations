@@ -38,6 +38,19 @@ dev = [
     "pytest-httpx>=0.30.0",
     "ruff>=0.6.0",
     "mypy>=1.10.0",
+    # SDK extras needed at dev/test time so integration test mocks can
+    # patch the SDK symbols. These also live in each integration's
+    # dependencies.toml for the future assemble script.
+    "langchain-tavily>=0.2.0",
+    "nasdaq-data-link>=1.0.0",  # for tests/mocking (pulls pandas transitively)
+    # Wave 7-9 SDK extras — mirror of per-integration dependencies.toml.
+    # mypy needs these importable to type-check the integration's tools.py.
+    "aiomysql>=0.2.0",                       # mysql
+    "asyncpg>=0.29.0",                       # postgresql
+    "cryptography>=41.0",                    # coinbase (ed25519 signing)
+    "elevenlabs>=2.0.0",                     # elevenlabs
+    "hubspot-api-client>=11.0.0",            # hubspot
+    "snowflake-connector-python>=3.0.0",     # snowflake
 ]
 
 [project.urls]
@@ -47,8 +60,49 @@ Issues = "https://github.com/ModuleXAI/modulex-integrations/issues"
 
 # Entry points — each migrated tool gets one line here.
 [project.entry-points."modulex.tools"]
-# Example (added when github POC lands):
-# github = "modulex_integrations.tools.github"
+github = "modulex_integrations.tools.github"
+slack = "modulex_integrations.tools.slack"
+exa = "modulex_integrations.tools.exa"
+tavily = "modulex_integrations.tools.tavily"
+instacart = "modulex_integrations.tools.instacart"
+tinyurl = "modulex_integrations.tools.tinyurl"
+customerio = "modulex_integrations.tools.customerio"
+npm = "modulex_integrations.tools.npm"
+pinterest = "modulex_integrations.tools.pinterest"
+klaviyo = "modulex_integrations.tools.klaviyo"
+convertapi = "modulex_integrations.tools.convertapi"
+appdrag = "modulex_integrations.tools.appdrag"
+hackernews = "modulex_integrations.tools.hackernews"
+lemon_squeezy = "modulex_integrations.tools.lemon_squeezy"
+short_io = "modulex_integrations.tools.short_io"
+nasdaq = "modulex_integrations.tools.nasdaq"
+firecrawl = "modulex_integrations.tools.firecrawl"
+jina_ai = "modulex_integrations.tools.jina_ai"
+calendly = "modulex_integrations.tools.calendly"
+linear = "modulex_integrations.tools.linear"
+airtable = "modulex_integrations.tools.airtable"
+telegram = "modulex_integrations.tools.telegram"
+servicenow = "modulex_integrations.tools.servicenow"
+intercom = "modulex_integrations.tools.intercom"
+scrape_do = "modulex_integrations.tools.scrape_do"
+apollo_io = "modulex_integrations.tools.apollo_io"
+cloudflare = "modulex_integrations.tools.cloudflare"
+semrush = "modulex_integrations.tools.semrush"
+gmail = "modulex_integrations.tools.gmail"
+sendgrid = "modulex_integrations.tools.sendgrid"
+coinbase = "modulex_integrations.tools.coinbase"
+postgresql = "modulex_integrations.tools.postgresql"
+mysql = "modulex_integrations.tools.mysql"
+snowflake = "modulex_integrations.tools.snowflake"
+hubspot = "modulex_integrations.tools.hubspot"
+notion = "modulex_integrations.tools.notion"
+elevenlabs = "modulex_integrations.tools.elevenlabs"
+zendesk = "modulex_integrations.tools.zendesk"
+salesforce = "modulex_integrations.tools.salesforce"
+clickup = "modulex_integrations.tools.clickup"
+google_drive = "modulex_integrations.tools.google_drive"
+mailchimp = "modulex_integrations.tools.mailchimp"
+posthog = "modulex_integrations.tools.posthog"
 
 [tool.hatch.version]
 # Version is derived from the latest git tag matching v* (e.g. v0.1.0,
@@ -99,6 +153,21 @@ select = ["E", "F", "I", "N", "W", "B", "C4", "UP", "RUF"]
 
 [tool.ruff.lint.per-file-ignores]
 "tests/**/*.py" = ["N802", "N803", "N806"]
+# npm outputs mirror the upstream registry's mixedCase field names
+# (devDependencies, peerDependencies, optionalDependencies).
+"src/modulex_integrations/tools/npm/outputs.py" = ["N815"]
+# short_io outputs mirror upstream camelCase (originalURL, shortURL,
+# idString, DomainId, expiredURL, etc.).
+"src/modulex_integrations/tools/short_io/outputs.py" = ["N815"]
+# Airtable mirrors the upstream `createdTime` camelCase field name.
+"src/modulex_integrations/tools/airtable/outputs.py" = ["N815"]
+# Reference-data file mirroring the legacy Nasdaq field tables; each
+# row is a one-line dict literal with long descriptions on purpose.
+"src/modulex_integrations/tools/nasdaq/fields.py" = ["E501"]
+# Test files in these tools assemble long URL literals in
+# httpx_mock setups (filter params + nested paths). Wrapping breaks
+# the readability of the URL-matches-mock contract.
+"src/modulex_integrations/tools/short_io/tests/test_short_io.py" = ["E501"]
 
 [tool.mypy]
 python_version = "3.12"

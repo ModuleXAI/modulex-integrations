@@ -1,0 +1,2 @@
+# Public API, raw httpx — no extra runtime deps needed.
+dependencies = []

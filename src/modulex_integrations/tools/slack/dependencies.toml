@@ -1,0 +1,7 @@
+# Runtime dependencies for the slack integration.
+#
+# Slack Web API is hit via raw HTTP (httpx) — no vendor SDK.
+# httpx and langchain-core are already in the package's core deps;
+# nothing extra is needed here.
+
+dependencies = []

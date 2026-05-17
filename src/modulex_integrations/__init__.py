@@ -14,6 +14,7 @@ write a manifest with::
 from importlib.metadata import PackageNotFoundError
 from importlib.metadata import version as _pkg_version
 
+from modulex_integrations._internal.serialize import serialize_pydantic_return
 from modulex_integrations.schema import (
     ActionDefinition,
     ApiKeyAuthSchema,
@@ -52,4 +53,5 @@ __all__ = [
     "SuccessIndicators",
     "TestEndpoint",
     "__version__",
+    "serialize_pydantic_return",
 ]

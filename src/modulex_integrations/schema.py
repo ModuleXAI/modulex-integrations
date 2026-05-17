@@ -113,9 +113,15 @@ class SuccessIndicators(BaseModel):
 class TestEndpoint(BaseModel):
     """Endpoint hit to validate a configured credential.
 
-    Header values may contain placeholders such as ``{access_token}`` or
-    ``{token}`` which the runtime substitutes with the resolved
-    credential value.
+    URL, header, body, and query-parameter values may contain
+    placeholders such as ``{access_token}``, ``{token}``, or
+    ``{api_key}`` which the runtime substitutes with the resolved
+    credential value. ``body`` is sent as a JSON payload on non-GET
+    methods (e.g. POST-based credential checks such as Exa's
+    ``POST /search``). ``params`` is the URL query string used by
+    integrations that pass their credential as a query parameter
+    (e.g. ConvertAPI's ``?Secret={api_key}``, Nasdaq's
+    ``?api_key={api_key}``).
     """
 
     __test__ = False  # pydantic model, not a pytest test class
@@ -124,6 +130,8 @@ class TestEndpoint(BaseModel):
     url: str
     method: Literal["GET", "POST", "PUT", "DELETE", "PATCH"] = "GET"
     headers: dict[str, str] = Field(default_factory=dict)
+    params: dict[str, str] = Field(default_factory=dict)
+    body: dict[str, Any] | None = None
     success_indicators: SuccessIndicators
     cost_level: str = "free"
     description: str | None = None
@@ -133,7 +141,14 @@ class TestEndpoint(BaseModel):
 
 
 class _AuthSchemaBase(BaseModel):
-    """Fields shared by every auth_schema variant."""
+    """Fields shared by every auth_schema variant.
+
+    ``test_endpoint`` is optional: some legacy integrations (e.g.
+    instacart, hackernews) use ``modulex_key`` for a "public API"
+    that has no credential to validate, so they ship no
+    test_endpoint at all. The modulex runtime skips credential
+    testing in that case.
+    """
 
     model_config = ConfigDict(extra="forbid")
 
@@ -141,7 +156,7 @@ class _AuthSchemaBase(BaseModel):
     description: str
     setup_instructions: list[str] | None = None
     setup_environment_variables: list[EnvVar] = Field(default_factory=list)
-    test_endpoint: TestEndpoint
+    test_endpoint: TestEndpoint | None = None
 
 
 class OAuthConfig(BaseModel):

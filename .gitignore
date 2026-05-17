@@ -46,8 +46,18 @@ src/modulex_integrations/_version.py
 *.local
 
 # Internal-only artifacts — never push to this public repo.
-# (History was scrubbed of CLAUDE.md, external-briefs/, and .claude/
-# on 2026-05-15; see the cleanup commit on main.)
 CLAUDE.md
-.claude/
 external-briefs/
+# Session handoff prompts — local-only handoff docs between Claude
+# Code sessions; not part of the public package.
+NEXT_SESSION_PROMPT.md
+*_SESSION_PROMPT.md
+
+# .claude/ — selective: bot infrastructure that the auto-integrate
+# workflow needs at runtime IS committed (agents, skills, commands,
+# hooks, docs, settings.json). Local-only / sensitive files stay
+# ignored:
+.claude/settings.local.json
+.claude/*-analysis.md
+.claude/*.local.md
+.claude/.tasks-ready.txt

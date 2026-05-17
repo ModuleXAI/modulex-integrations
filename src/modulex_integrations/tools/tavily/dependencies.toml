@@ -1,0 +1,14 @@
+# Runtime dependencies for the tavily integration.
+#
+# Tavily is the first SDK-wrapping integration: it instantiates
+# `langchain_tavily.TavilySearch` rather than calling the API
+# directly. The SDK is imported lazily inside each @tool so the
+# package itself imports fine without langchain-tavily installed
+# (graceful degradation matching legacy modulex behavior). The
+# eventual scripts/assemble_dependencies.py will roll this into the
+# root pyproject's `[project.optional-dependencies] tavily` extra and
+# union it into `all`.
+
+dependencies = [
+    "langchain-tavily>=0.2.0",
+]

@@ -1,0 +1,370 @@
+name: auto-integrate
+
+# Consumer-side auto-integrate pipeline. Hourly cron picks one tool from
+# the integration-drafts producer's staging area, audits + patches it,
+# lands it in src/modulex_integrations/tools/<name>/, bumps the rc tag,
+# commits + tags + pushes to staging - which triggers release.yml.
+#
+# Configurable Repo Variables (set in Settings -> Variables):
+#   PROVIDER             "primary" (default) | "fallback"
+#   MODEL_ID             provider model identifier (primary path)
+#   FALLBACK_MODEL_ID    provider model identifier (fallback path)
+#   THINKING_BUDGET      default 32000
+#   DRAFTS_REPO          producer repo (e.g. "<org>/<repo>") — no hardcoded default
+#
+# Required Repo Secrets (set in Settings -> Secrets):
+#   AWS_ACCESS_KEY_ID    primary path credentials
+#   AWS_SECRET_ACCESS_KEY
+#   AWS_REGION
+#   CLAUDE_CODE_OAUTH_TOKEN   fallback path credentials
+#   DRAFTS_REPO_TOKEN    PAT with read scope on the producer repo (private)
+#
+# Gating: skip if release.yml has any workflow run in "waiting" state
+# (=human deployment approval pending in the release-pypi environment).
+#
+# Inputs are read via env: blocks (never inline in run:) per the
+# GitHub Actions injection-safety guidelines.
+
+on:
+  schedule:
+    - cron: '0 * * * *'
+  workflow_dispatch:
+    inputs:
+      provider:
+        description: 'Override default provider for this run'
+        type: choice
+        options: [default, primary, fallback]
+        default: default
+      override_tool:
+        description: 'Force a specific tool name (skips the preselector)'
+        required: false
+        default: ''
+      dry_run:
+        description: 'Run audit + merge but skip commit + tag + push'
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+  actions: read
+  id-token: write
+
+concurrency:
+  group: auto-integrate
+  cancel-in-progress: false
+
+jobs:
+  integrate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+
+    outputs:
+      skipped: ${{ steps.gate.outputs.skip || steps.run.outputs.skipped }}
+      new_tag: ${{ steps.bump.outputs.new_tag }}
+      tool_name: ${{ steps.run.outputs.tool_name }}
+
+    steps:
+      # ---- Gate ----------------------------------------------------------
+      - name: Check for pending release deployment
+        id: gate
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}
+        run: |
+          set -eo pipefail
+          WAITING=$(gh api \
+            "repos/${REPO}/actions/runs?status=waiting&per_page=30" \
+            --jq '[.workflow_runs[] | select(.name == "release")] | length')
+          echo "Pending release runs: ${WAITING}"
+          if [ "${WAITING}" -gt 0 ]; then
+            echo "::notice::release.yml has ${WAITING} run(s) awaiting deployment approval; skipping this cycle."
+            echo "skip=true" >> "${GITHUB_OUTPUT}"
+          else
+            echo "skip=false" >> "${GITHUB_OUTPUT}"
+          fi
+
+      # ---- Checkout consumer + producer ---------------------------------
+      - name: Checkout consumer repo (staging)
+        if: steps.gate.outputs.skip != 'true'
+        uses: actions/checkout@v4
+        with:
+          ref: staging
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Python 3.12
+        if: steps.gate.outputs.skip != 'true'
+        id: python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install consumer package editable
+        if: steps.gate.outputs.skip != 'true'
+        run: |
+          python -m pip install --upgrade pip
+          python -m venv .venv
+          .venv/bin/pip install --upgrade pip
+          .venv/bin/pip install -e ".[dev]"
+
+      - name: Clone producer repo
+        if: steps.gate.outputs.skip != 'true'
+        env:
+          GH_TOKEN: ${{ secrets.DRAFTS_REPO_TOKEN }}
+          DRAFTS_REPO: ${{ vars.DRAFTS_REPO || 'ModuleXAI/integration-drafts' }}
+        run: |
+          set -eo pipefail
+          if [ -z "${GH_TOKEN}" ]; then
+            echo "::error::DRAFTS_REPO_TOKEN not set; cannot clone producer."
+            exit 1
+          fi
+          gh repo clone "${DRAFTS_REPO}" /tmp/integration-drafts -- --depth=1
+          if [ ! -d /tmp/integration-drafts/integration-drafts ]; then
+            echo "::error::Producer repo missing integration-drafts/ subfolder."
+            exit 1
+          fi
+          STAGED_COUNT=$(find /tmp/integration-drafts/integration-drafts -mindepth 1 -maxdepth 1 -type d | wc -l)
+          echo "Producer staging: ${STAGED_COUNT} tools available"
+
+      - name: Determine provider
+        if: steps.gate.outputs.skip != 'true'
+        id: provider
+        env:
+          DEFAULT_PROVIDER: ${{ vars.PROVIDER || 'primary' }}
+          INPUT_PROVIDER: ${{ github.event.inputs.provider }}
+        run: |
+          PROVIDER="${DEFAULT_PROVIDER}"
+          if [ -n "${INPUT_PROVIDER}" ] && [ "${INPUT_PROVIDER}" != "default" ]; then
+            PROVIDER="${INPUT_PROVIDER}"
+          fi
+          echo "Using provider: ${PROVIDER}"
+          echo "provider=${PROVIDER}" >> "${GITHUB_OUTPUT}"
+
+      # ---- Run the Claude pipeline (primary) ----------------------------
+      - name: Run auto-integrate (primary)
+        id: run_primary
+        if: steps.gate.outputs.skip != 'true' && steps.provider.outputs.provider == 'primary'
+        uses: anthropics/claude-code-action@v1
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: ${{ secrets.AWS_REGION }}
+          ANTHROPIC_MODEL: ${{ vars.MODEL_ID || secrets.MODEL_ID }}
+          DRAFTS_STAGING_DIR: /tmp/integration-drafts/integration-drafts
+          OVERRIDE_TOOL: ${{ github.event.inputs.override_tool }}
+          DRY_RUN: ${{ github.event.inputs.dry_run }}
+          MODULEX_INTEGRATIONS_PYTHON: ${{ github.workspace }}/.venv/bin/python
+        with:
+          use_bedrock: 'true'
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          claude_args: --dangerously-skip-permissions
+          show_full_output: 'true'
+          prompt: |
+            You are running unattended in GitHub Actions with bypass permissions and zero user interaction. Job: perform ONE consumer-side auto-integrate cycle, then exit. Do NOT commit or push - the workflow handles that after you finish.
+
+            Procedure - follow `.claude/skills/integrate-staged-tool/SKILL.md` exactly:
+
+            1. Read the skill in full.
+            2. Read `.claude/docs/integration-audit-checklist.md` and `.claude/docs/popularity-tiers.md`.
+            3. Invoke the integrate-staged-tool flow with DRAFTS_STAGING_DIR, OVERRIDE_TOOL, DRY_RUN environment variables already set.
+
+            AMBIGUITY POLICY: Do NOT call AskUserQuestion. For risky-semantic patches, SKIP the patch, log it for human review, continue.
+
+            FAILURE POLICY:
+            - P1 (pending-release gate) hit: exit cleanly with output `skipped=true`. No commit.
+            - P2 (preselector returns NONE): exit cleanly with output `skipped=true`.
+            - Merger fails any gate: revert, exit cleanly with outputs `skipped=true, failed=true`. Worktree clean.
+            - All phases succeed: emit `tool_name=<name>` via $GITHUB_OUTPUT.
+
+            ENVIRONMENT:
+            - Consumer venv at `.venv/` (already installed editable).
+            - Producer staging at `$DRAFTS_STAGING_DIR`.
+            - Single-iteration; do not attempt a second tool.
+
+      - name: Run auto-integrate (fallback)
+        id: run_fallback
+        if: steps.gate.outputs.skip != 'true' && steps.provider.outputs.provider == 'fallback'
+        uses: anthropics/claude-code-action@v1
+        env:
+          DRAFTS_STAGING_DIR: /tmp/integration-drafts/integration-drafts
+          OVERRIDE_TOOL: ${{ github.event.inputs.override_tool }}
+          DRY_RUN: ${{ github.event.inputs.dry_run }}
+          ANTHROPIC_MODEL: ${{ vars.FALLBACK_MODEL_ID }}
+          MODULEX_INTEGRATIONS_PYTHON: ${{ github.workspace }}/.venv/bin/python
+        with:
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          claude_args: --dangerously-skip-permissions
+          show_full_output: 'true'
+          prompt: |
+            You are running unattended in GitHub Actions with bypass permissions and zero user interaction. Job: perform ONE consumer-side auto-integrate cycle, then exit. Do NOT commit or push.
+
+            Procedure - follow `.claude/skills/integrate-staged-tool/SKILL.md` exactly:
+
+            1. Read the skill in full.
+            2. Read `.claude/docs/integration-audit-checklist.md` and `.claude/docs/popularity-tiers.md`.
+            3. Invoke the integrate-staged-tool flow with DRAFTS_STAGING_DIR, OVERRIDE_TOOL, DRY_RUN environment variables already set.
+
+            AMBIGUITY POLICY: Do NOT call AskUserQuestion. For risky-semantic patches, SKIP, log, continue.
+
+            FAILURE POLICY identical to primary prompt.
+
+      # ---- Aggregate run outputs from whichever path fired -----------------
+      - name: Aggregate run outputs
+        id: run
+        if: steps.gate.outputs.skip != 'true'
+        env:
+          PRIMARY_TOOL: ${{ steps.run_primary.outputs.tool_name }}
+          PRIMARY_SKIPPED: ${{ steps.run_primary.outputs.skipped }}
+          PRIMARY_FAILED: ${{ steps.run_primary.outputs.failed }}
+          FALLBACK_TOOL: ${{ steps.run_fallback.outputs.tool_name }}
+          FALLBACK_SKIPPED: ${{ steps.run_fallback.outputs.skipped }}
+          FALLBACK_FAILED: ${{ steps.run_fallback.outputs.failed }}
+        run: |
+          TOOL="${PRIMARY_TOOL:-${FALLBACK_TOOL}}"
+          SKIPPED="${PRIMARY_SKIPPED:-${FALLBACK_SKIPPED}}"
+          FAILED="${PRIMARY_FAILED:-${FALLBACK_FAILED}}"
+          echo "tool_name=${TOOL}" >> "${GITHUB_OUTPUT}"
+          echo "skipped=${SKIPPED:-false}" >> "${GITHUB_OUTPUT}"
+          echo "failed=${FAILED:-false}" >> "${GITHUB_OUTPUT}"
+
+      # ---- Verify expected worktree shape ---------------------------------
+      - name: Verify worktree before commit
+        if: steps.gate.outputs.skip != 'true' && steps.run.outputs.skipped != 'true' && steps.run.outputs.failed != 'true'
+        env:
+          TOOL_NAME: ${{ steps.run.outputs.tool_name }}
+        run: |
+          set -eo pipefail
+          if [ -z "${TOOL_NAME}" ]; then
+            echo "::error::Pipeline reported success but did not emit TOOL_NAME"
+            exit 1
+          fi
+          if [ ! -d "src/modulex_integrations/tools/${TOOL_NAME}" ]; then
+            echo "::error::Expected directory missing: src/modulex_integrations/tools/${TOOL_NAME}/"
+            exit 1
+          fi
+          if git diff --quiet HEAD; then
+            echo "::error::No file changes after pipeline reported SUCCESS"
+            git status
+            exit 1
+          fi
+          echo "Worktree changes look right."
+
+      # ---- Bump rc tag ----------------------------------------------------
+      - name: Bump rc tag
+        id: bump
+        if: steps.gate.outputs.skip != 'true' && steps.run.outputs.skipped != 'true' && steps.run.outputs.failed != 'true' && github.event.inputs.dry_run != 'true'
+        run: |
+          set -eo pipefail
+          LATEST_TAG=$(git tag --sort=-v:refname --list 'v*' | head -1)
+          if [ -z "${LATEST_TAG}" ]; then
+            NEW_TAG="v0.1.0rc1"
+          else
+            if [[ "${LATEST_TAG}" =~ ^v([0-9]+)\.([0-9]+)\.([0-9]+)rc([0-9]+)$ ]]; then
+              MAJ="${BASH_REMATCH[1]}"
+              MIN="${BASH_REMATCH[2]}"
+              PATCH="${BASH_REMATCH[3]}"
+              RC="${BASH_REMATCH[4]}"
+              NEW_TAG="v${MAJ}.${MIN}.${PATCH}rc$((RC + 1))"
+            elif [[ "${LATEST_TAG}" =~ ^v([0-9]+)\.([0-9]+)\.([0-9]+)$ ]]; then
+              MAJ="${BASH_REMATCH[1]}"
+              MIN="${BASH_REMATCH[2]}"
+              PATCH="${BASH_REMATCH[3]}"
+              NEW_TAG="v${MAJ}.${MIN}.$((PATCH + 1))rc1"
+            else
+              echo "::error::Could not parse latest tag: ${LATEST_TAG}"
+              exit 1
+            fi
+          fi
+          echo "Latest: ${LATEST_TAG}"
+          echo "New:    ${NEW_TAG}"
+          echo "new_tag=${NEW_TAG}" >> "${GITHUB_OUTPUT}"
+
+      # ---- Commit + push branch + tag -------------------------------------
+      - name: Commit + push
+        if: steps.gate.outputs.skip != 'true' && steps.run.outputs.skipped != 'true' && steps.run.outputs.failed != 'true' && github.event.inputs.dry_run != 'true'
+        env:
+          TOOL_NAME: ${{ steps.run.outputs.tool_name }}
+          NEW_TAG: ${{ steps.bump.outputs.new_tag }}
+          PROVIDER: ${{ steps.provider.outputs.provider }}
+          RUN_ID: ${{ github.run_id }}
+        run: |
+          set -eo pipefail
+          git config user.name "auto-integrate bot"
+          git config user.email "credits+auto-integrate@modulex.dev"
+
+          PR_BODY_FILE="/tmp/integrate-pr-body-${TOOL_NAME}.md"
+          if [ ! -f "${PR_BODY_FILE}" ]; then
+            echo "::warning::PR body file missing; using minimal stub."
+            echo "Auto-integrated ${TOOL_NAME} from integration-drafts producer." > "${PR_BODY_FILE}"
+          fi
+
+          git add "src/modulex_integrations/tools/${TOOL_NAME}/"
+          git add pyproject.toml CHANGELOG.md
+
+          if git diff --cached --quiet; then
+            echo "::warning::Nothing to commit; bailing."
+            exit 0
+          fi
+
+          BODY=$(cat "${PR_BODY_FILE}")
+          git commit \
+            -m "auto-integrate: ${TOOL_NAME}" \
+            -m "${BODY}" \
+            -m "" \
+            -m "Provider: ${PROVIDER}" \
+            -m "Run: ${RUN_ID}" \
+            -m "Co-Authored-By: auto-integrate bot <bot+auto-integrate@modulex.dev>"
+
+          git push origin staging
+          git tag "${NEW_TAG}"
+          git push origin "${NEW_TAG}"
+
+          echo "Pushed: staging + ${NEW_TAG}"
+
+      # ---- Step summary ---------------------------------------------------
+      - name: Step summary
+        if: always()
+        env:
+          SKIP: ${{ steps.gate.outputs.skip }}
+          TOOL_NAME: ${{ steps.run.outputs.tool_name }}
+          SKIPPED: ${{ steps.run.outputs.skipped }}
+          FAILED: ${{ steps.run.outputs.failed }}
+          NEW_TAG: ${{ steps.bump.outputs.new_tag }}
+          PROVIDER: ${{ steps.provider.outputs.provider }}
+          DRY_RUN: ${{ github.event.inputs.dry_run }}
+          REPO: ${{ github.repository }}
+        run: |
+          {
+            echo "## auto-integrate run summary"
+            echo ""
+            if [ "${SKIP}" = "true" ]; then
+              echo "**Outcome:** Skipped - release.yml has pending deployment(s) awaiting approval."
+              echo ""
+              echo "Approve the pending PyPI release at"
+              echo "https://github.com/${REPO}/actions to clear the gate."
+            elif [ "${SKIPPED}" = "true" ]; then
+              echo "**Outcome:** Skipped (pipeline)."
+              echo ""
+              echo "Reason: preselector returned NONE, or P1 in-skill gate fired."
+            elif [ "${FAILED}" = "true" ]; then
+              echo "**Outcome:** Pipeline failed - working tree reverted."
+              echo ""
+              echo "Tool attempted: \`${TOOL_NAME:-unknown}\`"
+              echo ""
+              echo "Next cron will try a different candidate."
+            elif [ -n "${TOOL_NAME}" ]; then
+              if [ "${DRY_RUN}" = "true" ]; then
+                echo "**Outcome:** Dry run - no commit/tag/push."
+              else
+                echo "**Outcome:** Integrated \`${TOOL_NAME}\` -> tag \`${NEW_TAG}\` pushed."
+                echo ""
+                echo "release.yml is now paused at \`release-pypi\` environment."
+                echo "Approve at https://github.com/${REPO}/actions to publish."
+              fi
+              echo ""
+              echo "**Provider:** ${PROVIDER}"
+            else
+              echo "**Outcome:** Unknown - pipeline did not emit a tool name."
+            fi
+          } >> "${GITHUB_STEP_SUMMARY}"

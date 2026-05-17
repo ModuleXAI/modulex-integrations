@@ -1,0 +1,12 @@
+# Runtime dependencies for the nasdaq integration.
+#
+# nasdaq is the first non-LangChain SDK integration: it wraps the
+# ``nasdaqdatalink`` package. The SDK is imported lazily inside each
+# @tool so the package itself imports fine without it installed
+# (graceful degradation matching legacy modulex behavior). ``pandas``
+# arrives transitively with ``nasdaq-data-link`` but we don't
+# explicitly depend on it.
+
+dependencies = [
+    "nasdaq-data-link>=1.0.0",
+]
