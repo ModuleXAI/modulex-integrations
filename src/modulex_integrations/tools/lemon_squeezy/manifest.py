@@ -38,7 +38,7 @@ manifest = IntegrationManifest(
     ),
     version="1.0.0",
     author="ModuleX",
-    logo="modulex:lemonsqueezy",
+    logo="modulex:lemon-squeezy",
     app_url="https://lemonsqueezy.com",
     categories=[
         "Business Services",

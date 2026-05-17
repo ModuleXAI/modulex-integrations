@@ -42,7 +42,7 @@ manifest = IntegrationManifest(
     ),
     version="1.0.0",
     author="ModuleX",
-    logo="logos:intercom-icon",
+    logo="modulex:intercom-themed",
     app_url="https://www.intercom.com",
     categories=[
         "CRM & Customer",
