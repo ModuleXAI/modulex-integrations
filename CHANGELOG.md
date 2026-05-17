@@ -8,6 +8,10 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ### Added
 
+- `google_meet` integration — 2 actions, auth: oauth2. Schedule Google Meet
+  video conferences (via Google Calendar events with conferenceData) and list
+  available event color options. Producer-staged by integration-drafts;
+  consumer-side audit applied 1 patch before merge.
 - `google_calendar` integration — 16 actions, auth: oauth2. Manage Google
   Calendar events, calendars, and availability via the Calendar v3 REST
   API: create/update/delete events, list instances, query free/busy,
