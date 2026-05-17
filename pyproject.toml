@@ -43,6 +43,14 @@ dev = [
     # dependencies.toml for the future assemble script.
     "langchain-tavily>=0.2.0",
     "nasdaq-data-link>=1.0.0",  # for tests/mocking (pulls pandas transitively)
+    # Wave 7-9 SDK extras — mirror of per-integration dependencies.toml.
+    # mypy needs these importable to type-check the integration's tools.py.
+    "aiomysql>=0.2.0",                       # mysql
+    "asyncpg>=0.29.0",                       # postgresql
+    "cryptography>=41.0",                    # coinbase (ed25519 signing)
+    "elevenlabs>=2.0.0",                     # elevenlabs
+    "hubspot-api-client>=11.0.0",            # hubspot
+    "snowflake-connector-python>=3.0.0",     # snowflake
 ]
 
 [project.urls]
