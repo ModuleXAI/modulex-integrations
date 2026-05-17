@@ -265,6 +265,44 @@ Grep `tests/test_<name>.py` for `def _args(`. If missing AND the test
 file has any `await <action>.ainvoke({...})` calls with literal dict
 spread, FIX — add the helper and rewrite call sites.
 
+#### §8.9 — Logo convention enforcement (NEW)
+
+Project-wide rule: every integration's `manifest.logo` value MUST be
+exactly `"modulex:<name>-themed"`, where `<name>` is the integration's
+folder/manifest name. The producer's recipe emits arbitrary logo values
+(CDN URLs like `https://cdn.jsdelivr.net/...`, Iconify identifiers like
+`logos:vendor-icon`, or `modulex:<name>` without the `-themed` suffix).
+We normalize on the consumer side.
+
+Detection:
+
+```bash
+# Inside the staged folder:
+EXPECTED="modulex:${TOOL_NAME}-themed"
+ACTUAL=$(grep -oE 'logo="[^"]*"' manifest.py | head -1 | sed -E 's/logo="([^"]*)"/\1/')
+if [ "${ACTUAL}" != "${EXPECTED}" ]; then
+  # FIX
+fi
+```
+
+Patch strategy: mechanical, one-line replacement. Always applied.
+Always FIX (never WARN) — no per-integration exceptions. If a future
+integration genuinely needs a different logo (vendor brand requirements
+etc.), the human can override after merger lands the canonical form,
+and that override would be a separate manual commit.
+
+Emit the patch as:
+
+```diff
+-    logo="<whatever the producer wrote>",
++    logo="modulex:<tool_name>-themed",
+```
+
+Apply this check IN ADDITION to the existing manifest validity checks
+in §1 — `extra="forbid"` lets any string value through for `logo`, so
+pydantic alone won't catch a non-conforming value. This drift check is
+the only place enforcing the convention.
+
 ### §9 — Consumer-environment gates
 
 **Defer §9 to the merger.** §9 requires the files to be copied into
