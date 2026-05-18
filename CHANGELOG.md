@@ -8,6 +8,11 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ### Added
 
+- `linkedin` integration — 18 actions, auth: oauth2. LinkedIn social
+  networking platform for professional connections, posts, and organization
+  management: create text/image posts, comment, like, manage organizations,
+  fetch profiles, and search via the LinkedIn REST API. Producer-staged by
+  integration-drafts; consumer-side audit applied 4 patches before merge.
 - `microsoft_bookings` integration — 10 actions, auth: oauth2. Create and
   manage Microsoft Bookings businesses, services, staff members, customers,
   and appointments via the Microsoft Graph API. Producer-staged by
