@@ -8,6 +8,11 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ### Added
 
+- `aws` integration — 21 actions, auth: custom (access key + secret).
+  Interact with AWS services including DynamoDB, S3, Lambda, SNS, SQS,
+  EventBridge, CloudWatch Logs, and Redshift via the boto3 SDK.
+  Producer-staged by integration-drafts; consumer-side audit applied
+  7 patches before merge (2 risky-semantic skipped for human review).
 - `zoom` integration — 23 actions, auth: oauth2. Video conferencing platform
   for meetings, webinars, recordings, chat, and user management via the Zoom
   REST API. Producer-staged by integration-drafts; consumer-side audit applied
