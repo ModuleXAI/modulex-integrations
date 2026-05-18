@@ -25,7 +25,7 @@ manifest = IntegrationManifest(
     ),
     version="1.0.0",
     author="ModuleX",
-    logo="modulex:google_analytics-themed",
+    logo="logos:google-analytics",
     app_url="https://analytics.google.com",
     categories=[
         "Analytics & Reporting",

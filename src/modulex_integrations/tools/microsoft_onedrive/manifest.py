@@ -25,7 +25,7 @@ manifest = IntegrationManifest(
     ),
     version="1.0.0",
     author="ModuleX",
-    logo="modulex:microsoft_onedrive-themed",
+    logo="logos:microsoft-onedrive",
     app_url="https://onedrive.live.com",
     categories=["file-storage", "productivity"],
     actions=[

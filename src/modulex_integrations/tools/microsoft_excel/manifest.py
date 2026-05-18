@@ -24,7 +24,7 @@ manifest = IntegrationManifest(
     ),
     version="1.0.0",
     author="ModuleX",
-    logo="modulex:microsoft_excel-themed",
+    logo="modulex:microsoft_excel",
     app_url="https://www.microsoft.com/en-us/microsoft-365/excel",
     categories=["Productivity & Collaboration", "Spreadsheets"],
     actions=[

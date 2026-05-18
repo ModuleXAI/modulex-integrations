@@ -24,7 +24,7 @@ manifest = IntegrationManifest(
     ),
     version="1.0.0",
     author="ModuleX",
-    logo="modulex:microsoft_bookings-themed",
+    logo="modulex:microsoft_bookings",
     app_url="https://www.microsoft.com/en-us/microsoft-365/business/scheduling-and-booking-app",
     categories=["Productivity & Collaboration", "Scheduling", "Business Services"],
     actions=[

@@ -25,7 +25,7 @@ manifest = IntegrationManifest(
     ),
     version="1.0.0",
     author="ModuleX",
-    logo="modulex:google_slides-themed",
+    logo="modulex:google_slides",
     app_url="https://slides.google.com",
     categories=[
         "Productivity & Collaboration",

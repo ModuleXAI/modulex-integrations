@@ -25,7 +25,7 @@ manifest = IntegrationManifest(
     ),
     version="1.0.0",
     author="ModuleX",
-    logo="modulex:microsoft_teams-themed",
+    logo="logos:microsoft-teams",
     app_url="https://www.microsoft.com/microsoft-teams",
     categories=["Communication", "Productivity & Collaboration"],
     actions=[
