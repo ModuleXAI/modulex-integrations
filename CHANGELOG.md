@@ -8,6 +8,10 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ### Added
 
+- `microsoft_bookings` integration — 10 actions, auth: oauth2. Create and
+  manage Microsoft Bookings businesses, services, staff members, customers,
+  and appointments via the Microsoft Graph API. Producer-staged by
+  integration-drafts; consumer-side audit applied 2 patches before merge.
 - `jira` integration — 38 actions, auth: oauth2. Atlassian Jira Cloud
   project tracking and issue management: create/update/search issues,
   manage sprints/boards/epics, transition issues, manage comments,
