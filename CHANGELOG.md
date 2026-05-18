@@ -8,6 +8,9 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ### Added
 
+- `docusign` integration — 12 actions, auth: oauth2. Electronic signature and
+  agreement management via the DocuSign eSignature REST API. Producer-staged by
+  integration-drafts; consumer-side audit applied 3 patches before merge.
 - `twilio` integration — 17 actions, auth: custom (Account SID + Auth Token).
   Cloud communications platform for SMS, voice calls, phone number lookup,
   and verification via the Twilio REST API. Producer-staged by
