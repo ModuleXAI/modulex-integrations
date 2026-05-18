@@ -8,6 +8,10 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ### Added
 
+- `twilio` integration — 17 actions, auth: custom (Account SID + Auth Token).
+  Cloud communications platform for SMS, voice calls, phone number lookup,
+  and verification via the Twilio REST API. Producer-staged by
+  integration-drafts; consumer-side audit applied 2 patches before merge.
 - `aws` integration — 21 actions, auth: custom (access key + secret).
   Interact with AWS services including DynamoDB, S3, Lambda, SNS, SQS,
   EventBridge, CloudWatch Logs, and Redshift via the boto3 SDK.
