@@ -2,8 +2,8 @@ name: auto-integrate
 
 # Consumer-side auto-integrate pipeline. Hourly cron picks one tool from
 # the integration-drafts producer's staging area, audits + patches it,
-# lands it in src/modulex_integrations/tools/<name>/, bumps the rc tag,
-# commits + tags + pushes to staging - which triggers release.yml.
+# lands it in src/modulex_integrations/tools/<name>/, commits to
+# staging only. Tagging is a manual operation (release-on-demand model).
 #
 # Configurable Repo Variables (set in Settings -> Variables):
 #   PROVIDER             "primary" (default) | "fallback"
@@ -19,8 +19,8 @@ name: auto-integrate
 #   CLAUDE_CODE_OAUTH_TOKEN   fallback path credentials
 #   DRAFTS_REPO_TOKEN    PAT with read scope on the producer repo (private)
 #
-# Gating: skip if release.yml has any workflow run in "waiting" state
-# (=human deployment approval pending in the release-pypi environment).
+# No gating. Cron runs unconditionally; tagging and release cutting
+# are manual operations triggered by a human when ready.
 #
 # Inputs are read via env: blocks (never inline in run:) per the
 # GitHub Actions injection-safety guidelines.
@@ -40,7 +40,7 @@ on:
         required: false
         default: ''
       dry_run:
-        description: 'Run audit + merge but skip commit + tag + push'
+        description: 'Run audit + merge but skip the commit + push to staging'
         type: boolean
         default: false
 
@@ -59,33 +59,16 @@ jobs:
     timeout-minutes: 90
 
     outputs:
-      skipped: ${{ steps.gate.outputs.skip || steps.run.outputs.skipped }}
-      new_tag: ${{ steps.bump.outputs.new_tag }}
+      skipped: ${{ steps.run.outputs.skipped }}
       tool_name: ${{ steps.run.outputs.tool_name }}
 
     steps:
-      # ---- Gate ----------------------------------------------------------
-      - name: Check for pending release deployment
-        id: gate
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          REPO: ${{ github.repository }}
-        run: |
-          set -eo pipefail
-          WAITING=$(gh api \
-            "repos/${REPO}/actions/runs?status=waiting&per_page=30" \
-            --jq '[.workflow_runs[] | select(.name == "release")] | length')
-          echo "Pending release runs: ${WAITING}"
-          if [ "${WAITING}" -gt 0 ]; then
-            echo "::notice::release.yml has ${WAITING} run(s) awaiting deployment approval; skipping this cycle."
-            echo "skip=true" >> "${GITHUB_OUTPUT}"
-          else
-            echo "skip=false" >> "${GITHUB_OUTPUT}"
-          fi
-
       # ---- Checkout consumer + producer ---------------------------------
+      # No external gate. Bot integrates tools to staging; tagging and
+      # release cutting are manual operations (release-on-demand model).
+      # The hourly cron runs unconditionally; in-pipeline checks decide
+      # whether there is actually work to do.
       - name: Checkout consumer repo (staging)
-        if: steps.gate.outputs.skip != 'true'
         uses: actions/checkout@v4
         with:
           ref: staging
@@ -93,14 +76,12 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Setup Python 3.12
-        if: steps.gate.outputs.skip != 'true'
         id: python
         uses: actions/setup-python@v5
         with:
           python-version: '3.12'
 
       - name: Install consumer package editable
-        if: steps.gate.outputs.skip != 'true'
         run: |
           python -m pip install --upgrade pip
           python -m venv .venv
@@ -108,7 +89,6 @@ jobs:
           .venv/bin/pip install -e ".[dev]"
 
       - name: Clone producer repo
-        if: steps.gate.outputs.skip != 'true'
         env:
           GH_TOKEN: ${{ secrets.DRAFTS_REPO_TOKEN }}
           DRAFTS_REPO: ${{ vars.DRAFTS_REPO }}
@@ -143,7 +123,6 @@ jobs:
           echo "DRAFTS_DIR=${DRAFTS_DIR}" >> "${GITHUB_ENV}"
 
       - name: Determine provider
-        if: steps.gate.outputs.skip != 'true'
         id: provider
         env:
           DEFAULT_PROVIDER: ${{ vars.PROVIDER || 'primary' }}
@@ -159,7 +138,7 @@ jobs:
       # ---- Run the Claude pipeline (primary) ----------------------------
       - name: Run auto-integrate (primary)
         id: run_primary
-        if: steps.gate.outputs.skip != 'true' && steps.provider.outputs.provider == 'primary'
+        if: steps.provider.outputs.provider == 'primary'
         uses: anthropics/claude-code-action@v1
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
@@ -199,7 +178,7 @@ jobs:
 
       - name: Run auto-integrate (fallback)
         id: run_fallback
-        if: steps.gate.outputs.skip != 'true' && steps.provider.outputs.provider == 'fallback'
+        if: steps.provider.outputs.provider == 'fallback'
         uses: anthropics/claude-code-action@v1
         env:
           DRAFTS_STAGING_DIR: ${{ env.DRAFTS_DIR }}
@@ -238,7 +217,6 @@ jobs:
       # the worktree clean.
       - name: Detect pipeline result
         id: run
-        if: steps.gate.outputs.skip != 'true'
         run: |
           set -eo pipefail
           # Find any new (untracked) tool directory the merger created.
@@ -275,45 +253,16 @@ jobs:
           echo "skipped=false" >> "${GITHUB_OUTPUT}"
           echo "failed=false" >> "${GITHUB_OUTPUT}"
 
-      # ---- Bump rc tag ----------------------------------------------------
-      - name: Bump rc tag
-        id: bump
-        if: steps.gate.outputs.skip != 'true' && steps.run.outputs.skipped != 'true' && steps.run.outputs.failed != 'true' && github.event.inputs.dry_run != 'true'
-        run: |
-          set -eo pipefail
-          LATEST_TAG=$(git tag --sort=-v:refname --list 'v*' | head -1)
-          if [ -z "${LATEST_TAG}" ]; then
-            NEW_TAG="v0.1.0a1"
-          else
-            # Handle alpha/beta/rc suffixes — preserve the suffix kind in use.
-            if [[ "${LATEST_TAG}" =~ ^v([0-9]+)\.([0-9]+)\.([0-9]+)(a|b|rc)([0-9]+)$ ]]; then
-              MAJ="${BASH_REMATCH[1]}"
-              MIN="${BASH_REMATCH[2]}"
-              PATCH="${BASH_REMATCH[3]}"
-              SUFFIX="${BASH_REMATCH[4]}"
-              NUM="${BASH_REMATCH[5]}"
-              NEW_TAG="v${MAJ}.${MIN}.${PATCH}${SUFFIX}$((NUM + 1))"
-            elif [[ "${LATEST_TAG}" =~ ^v([0-9]+)\.([0-9]+)\.([0-9]+)$ ]]; then
-              # Latest is a stable release — start a new alpha cycle on the next patch.
-              MAJ="${BASH_REMATCH[1]}"
-              MIN="${BASH_REMATCH[2]}"
-              PATCH="${BASH_REMATCH[3]}"
-              NEW_TAG="v${MAJ}.${MIN}.$((PATCH + 1))a1"
-            else
-              echo "::error::Could not parse latest tag: ${LATEST_TAG}"
-              exit 1
-            fi
-          fi
-          echo "Latest: ${LATEST_TAG}"
-          echo "New:    ${NEW_TAG}"
-          echo "new_tag=${NEW_TAG}" >> "${GITHUB_OUTPUT}"
-
-      # ---- Commit + push branch + tag -------------------------------------
-      - name: Commit + push
-        if: steps.gate.outputs.skip != 'true' && steps.run.outputs.skipped != 'true' && steps.run.outputs.failed != 'true' && github.event.inputs.dry_run != 'true'
+      # ---- Commit + push to staging (NO TAGGING) ---------------------------
+      # Release-on-demand model: bot only commits the new integration to
+      # staging. Tagging (alpha pre-release, stable) is a separate manual
+      # operation triggered by the human when they decide to cut a release.
+      # This avoids the GITHUB_TOKEN tag-push limitation entirely and keeps
+      # PyPI cadence under human control.
+      - name: Commit + push to staging
+        if: steps.run.outputs.skipped != 'true' && steps.run.outputs.failed != 'true' && github.event.inputs.dry_run != 'true'
         env:
           TOOL_NAME: ${{ steps.run.outputs.tool_name }}
-          NEW_TAG: ${{ steps.bump.outputs.new_tag }}
           PROVIDER: ${{ steps.provider.outputs.provider }}
           RUN_ID: ${{ github.run_id }}
         run: |
@@ -344,21 +293,42 @@ jobs:
             -m "Run: ${RUN_ID}" \
             -m "Co-Authored-By: auto-integrate bot <bot+auto-integrate@modulex.dev>"
 
-          git push origin staging
-          git tag "${NEW_TAG}"
-          git push origin "${NEW_TAG}"
-
-          echo "Pushed: staging + ${NEW_TAG}"
+          # Defensive push with rebase-on-reject. The 14-minute pipeline
+          # window leaves room for a human to push to staging while the
+          # bot is working. We retry up to 3 times, rebasing against the
+          # current remote each round. A rebase conflict (rare —
+          # typically only happens if two integrations touch the same
+          # row in pyproject.toml or CHANGELOG.md) hard-fails: no silent
+          # auto-merge, the human resolves and the next cron retries.
+          for attempt in 1 2 3; do
+            if git push origin staging; then
+              echo "Pushed ${TOOL_NAME} integration to staging (attempt ${attempt}). No tag created."
+              break
+            fi
+            if [ "${attempt}" -eq 3 ]; then
+              echo "::error::Push rejected on all 3 attempts. Aborting."
+              exit 1
+            fi
+            echo "::notice::Push rejected on attempt ${attempt}; fetching + rebasing remote staging..."
+            git fetch origin staging
+            if ! git rebase origin/staging; then
+              echo "::error::Rebase conflict during push retry. Manual intervention needed."
+              git rebase --abort || true
+              exit 1
+            fi
+          done
+          echo "To cut a pre-release for this integration (and any others"
+          echo "queued since the last tag), trigger the release-alpha"
+          echo "workflow manually or ask a human to run \`git tag vX.Y.ZaN\`"
+          echo "from a local checkout."
 
       # ---- Step summary ---------------------------------------------------
       - name: Step summary
         if: always()
         env:
-          SKIP: ${{ steps.gate.outputs.skip }}
           TOOL_NAME: ${{ steps.run.outputs.tool_name }}
           SKIPPED: ${{ steps.run.outputs.skipped }}
           FAILED: ${{ steps.run.outputs.failed }}
-          NEW_TAG: ${{ steps.bump.outputs.new_tag }}
           PROVIDER: ${{ steps.provider.outputs.provider }}
           DRY_RUN: ${{ github.event.inputs.dry_run }}
           REPO: ${{ github.repository }}
@@ -366,12 +336,7 @@ jobs:
           {
             echo "## auto-integrate run summary"
             echo ""
-            if [ "${SKIP}" = "true" ]; then
-              echo "**Outcome:** Skipped - release.yml has pending deployment(s) awaiting approval."
-              echo ""
-              echo "Approve the pending PyPI release at"
-              echo "https://github.com/${REPO}/actions to clear the gate."
-            elif [ "${SKIPPED}" = "true" ]; then
+            if [ "${SKIPPED}" = "true" ]; then
               echo "**Outcome:** Skipped (pipeline)."
               echo ""
               echo "Reason: preselector returned NONE, or P1 in-skill gate fired."
@@ -383,12 +348,22 @@ jobs:
               echo "Next cron will try a different candidate."
             elif [ -n "${TOOL_NAME}" ]; then
               if [ "${DRY_RUN}" = "true" ]; then
-                echo "**Outcome:** Dry run - no commit/tag/push."
+                echo "**Outcome:** Dry run - no commit/push."
               else
-                echo "**Outcome:** Integrated \`${TOOL_NAME}\` -> tag \`${NEW_TAG}\` pushed."
+                echo "**Outcome:** Integrated \`${TOOL_NAME}\` -> commit pushed to staging."
                 echo ""
-                echo "release.yml is now paused at \`release-pypi\` environment."
-                echo "Approve at https://github.com/${REPO}/actions to publish."
+                echo "**No tag was created.** Tagging is a manual step in the"
+                echo "release-on-demand model. When you are ready to cut an"
+                echo "alpha pre-release, ask Claude in a chat session, or run"
+                echo "from a local terminal:"
+                echo ""
+                echo "    git fetch origin"
+                echo "    git checkout staging && git pull"
+                echo "    git tag vX.Y.ZaN   # bump from latest"
+                echo "    git push origin vX.Y.ZaN"
+                echo ""
+                echo "The tag push will fire release.yml and await your"
+                echo "deployment approval at the release-pypi environment."
               fi
               echo ""
               echo "**Provider:** ${PROVIDER}"

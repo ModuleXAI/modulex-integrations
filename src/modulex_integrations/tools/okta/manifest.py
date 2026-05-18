@@ -21,7 +21,7 @@ manifest = IntegrationManifest(
     ),
     version="1.0.0",
     author="ModuleX",
-    logo="https://cdn.jsdelivr.net/gh/ModuleXAI/logox@main/tools/okta.svg",
+    logo="modulex:okta-themed",
     app_url="https://www.okta.com",
     categories=["Identity & Access Management", "Productivity & Collaboration"],
     actions=[

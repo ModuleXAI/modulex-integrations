@@ -8,6 +8,85 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ### Added
 
+- `google_analytics` integration — 6 actions, auth: oauth2. Manage Google
+  Analytics 4 properties, list accounts, configure key events, and run
+  analytics reports via the Admin and Data APIs. Producer-staged by
+  integration-drafts; consumer-side audit applied 2 patches before merge.
+- `docusign` integration — 12 actions, auth: oauth2. Electronic signature and
+  agreement management via the DocuSign eSignature REST API. Producer-staged by
+  integration-drafts; consumer-side audit applied 3 patches before merge.
+- `twilio` integration — 17 actions, auth: custom (Account SID + Auth Token).
+  Cloud communications platform for SMS, voice calls, phone number lookup,
+  and verification via the Twilio REST API. Producer-staged by
+  integration-drafts; consumer-side audit applied 2 patches before merge.
+- `aws` integration — 21 actions, auth: custom (access key + secret).
+  Interact with AWS services including DynamoDB, S3, Lambda, SNS, SQS,
+  EventBridge, CloudWatch Logs, and Redshift via the boto3 SDK.
+  Producer-staged by integration-drafts; consumer-side audit applied
+  7 patches before merge (2 risky-semantic skipped for human review).
+- `zoom` integration — 23 actions, auth: oauth2. Video conferencing platform
+  for meetings, webinars, recordings, chat, and user management via the Zoom
+  REST API. Producer-staged by integration-drafts; consumer-side audit applied
+  3 patches before merge.
+- `shopify` integration — 39 actions, auth: custom. E-commerce platform for
+  managing products, orders, customers, and content via the Shopify Admin
+  GraphQL API. Producer-staged by integration-drafts; consumer-side audit
+  applied 3 patches before merge.
+- `linkedin` integration — 18 actions, auth: oauth2. LinkedIn social
+  networking platform for professional connections, posts, and organization
+  management: create text/image posts, comment, like, manage organizations,
+  fetch profiles, and search via the LinkedIn REST API. Producer-staged by
+  integration-drafts; consumer-side audit applied 4 patches before merge.
+- `microsoft_bookings` integration — 10 actions, auth: oauth2. Create and
+  manage Microsoft Bookings businesses, services, staff members, customers,
+  and appointments via the Microsoft Graph API. Producer-staged by
+  integration-drafts; consumer-side audit applied 2 patches before merge.
+- `jira` integration — 38 actions, auth: oauth2. Atlassian Jira Cloud
+  project tracking and issue management: create/update/search issues,
+  manage sprints/boards/epics, transition issues, manage comments,
+  attachments, watchers, versions, and users via the Jira REST and Agile
+  APIs. Producer-staged by integration-drafts; consumer-side audit applied
+  1 patch before merge.
+- `microsoft_teams` integration -- 12 actions, auth: oauth2. Create channels,
+  send channel and chat messages, list teams/channels/chats/messages/shifts,
+  search messages, and retrieve the current user via Microsoft Graph.
+  Producer-staged by integration-drafts; consumer-side audit applied 8
+  patches before merge.
+- `google_sheets` integration — 14 actions, auth: oauth2. Read, write, and
+  manage Google Sheets spreadsheets and worksheets via the Sheets v4 and
+  Drive v3 REST APIs. Producer-staged by integration-drafts; consumer-side
+  audit applied 4 patches before merge.
+- `google_meet` integration — 2 actions, auth: oauth2. Schedule Google Meet
+  video conferences (via Google Calendar events with conferenceData) and list
+  available event color options. Producer-staged by integration-drafts;
+  consumer-side audit applied 1 patch before merge.
+- `google_calendar` integration — 16 actions, auth: oauth2. Manage Google
+  Calendar events, calendars, and availability via the Calendar v3 REST
+  API: create/update/delete events, list instances, query free/busy,
+  quick-add, and manage recurring event series. Producer-staged by
+  integration-drafts; consumer-side audit applied 4 patches before merge.
+- `monday` integration — 13 actions, auth: api_key. Monday.com work
+  management platform for boards, items, columns, groups, and updates via
+  the GraphQL API. Producer-staged by integration-drafts; consumer-side
+  audit applied 3 patches before merge.
+- `google_slides` integration — 17 actions, auth: oauth2. Create and edit
+  Google Slides presentations via the Slides and Drive REST APIs: manage
+  slides, shapes, images, tables, text, merge data, and refresh charts.
+  Producer-staged by integration-drafts; consumer-side audit applied 3
+  patches before merge.
+- `microsoft_onedrive` integration — 11 actions, auth: oauth2. Access and
+  manage files in Microsoft OneDrive via the Microsoft Graph API: search,
+  list, upload, download, create folders, and create sharing links.
+  Producer-staged by integration-drafts; consumer-side audit applied 6
+  patches before merge.
+- `microsoft_excel` integration — 9 actions, auth: oauth2. Read, write, and
+  manage Excel workbooks stored in OneDrive via the Microsoft Graph API.
+  Producer-staged by integration-drafts; consumer-side audit applied 4
+  patches before merge.
+- `microsoft_outlook` integration — 20 actions, auth: oauth2. Send, draft,
+  search, and organize email; manage contacts, folders, and categories via
+  Microsoft Graph. Producer-staged by integration-drafts; consumer-side audit
+  applied 4 patches before merge.
 - `okta` integration — 4 actions (create_user, get_user, list_type_id_options,
   update_user), auth: custom (SSWS API token + subdomain). Pure HTTP, zero new
   runtime deps. Producer-staged by integration-drafts; consumer-side audit

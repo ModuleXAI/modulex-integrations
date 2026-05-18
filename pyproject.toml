@@ -47,6 +47,7 @@ dev = [
     # mypy needs these importable to type-check the integration's tools.py.
     "aiomysql>=0.2.0",                       # mysql
     "asyncpg>=0.29.0",                       # postgresql
+    "boto3>=1.34.0",                         # aws
     "cryptography>=41.0",                    # coinbase (ed25519 signing)
     "elevenlabs>=2.0.0",                     # elevenlabs
     "hubspot-api-client>=11.0.0",            # hubspot
@@ -60,6 +61,7 @@ Issues = "https://github.com/ModuleXAI/modulex-integrations/issues"
 
 # Entry points — each migrated tool gets one line here.
 [project.entry-points."modulex.tools"]
+aws = "modulex_integrations.tools.aws"
 github = "modulex_integrations.tools.github"
 slack = "modulex_integrations.tools.slack"
 exa = "modulex_integrations.tools.exa"
@@ -71,6 +73,7 @@ npm = "modulex_integrations.tools.npm"
 pinterest = "modulex_integrations.tools.pinterest"
 klaviyo = "modulex_integrations.tools.klaviyo"
 convertapi = "modulex_integrations.tools.convertapi"
+docusign = "modulex_integrations.tools.docusign"
 appdrag = "modulex_integrations.tools.appdrag"
 hackernews = "modulex_integrations.tools.hackernews"
 lemon_squeezy = "modulex_integrations.tools.lemon_squeezy"
@@ -78,10 +81,13 @@ short_io = "modulex_integrations.tools.short_io"
 nasdaq = "modulex_integrations.tools.nasdaq"
 firecrawl = "modulex_integrations.tools.firecrawl"
 jina_ai = "modulex_integrations.tools.jina_ai"
+jira = "modulex_integrations.tools.jira"
 calendly = "modulex_integrations.tools.calendly"
 linear = "modulex_integrations.tools.linear"
+linkedin = "modulex_integrations.tools.linkedin"
 airtable = "modulex_integrations.tools.airtable"
 telegram = "modulex_integrations.tools.telegram"
+twilio = "modulex_integrations.tools.twilio"
 servicenow = "modulex_integrations.tools.servicenow"
 intercom = "modulex_integrations.tools.intercom"
 scrape_do = "modulex_integrations.tools.scrape_do"
@@ -89,6 +95,8 @@ apollo_io = "modulex_integrations.tools.apollo_io"
 cloudflare = "modulex_integrations.tools.cloudflare"
 semrush = "modulex_integrations.tools.semrush"
 gmail = "modulex_integrations.tools.gmail"
+google_analytics = "modulex_integrations.tools.google_analytics"
+google_calendar = "modulex_integrations.tools.google_calendar"
 sendgrid = "modulex_integrations.tools.sendgrid"
 coinbase = "modulex_integrations.tools.coinbase"
 postgresql = "modulex_integrations.tools.postgresql"
@@ -101,9 +109,20 @@ zendesk = "modulex_integrations.tools.zendesk"
 salesforce = "modulex_integrations.tools.salesforce"
 clickup = "modulex_integrations.tools.clickup"
 google_drive = "modulex_integrations.tools.google_drive"
+google_meet = "modulex_integrations.tools.google_meet"
+google_sheets = "modulex_integrations.tools.google_sheets"
+google_slides = "modulex_integrations.tools.google_slides"
 mailchimp = "modulex_integrations.tools.mailchimp"
+microsoft_bookings = "modulex_integrations.tools.microsoft_bookings"
+microsoft_excel = "modulex_integrations.tools.microsoft_excel"
+microsoft_onedrive = "modulex_integrations.tools.microsoft_onedrive"
+microsoft_outlook = "modulex_integrations.tools.microsoft_outlook"
+microsoft_teams = "modulex_integrations.tools.microsoft_teams"
+monday = "modulex_integrations.tools.monday"
 posthog = "modulex_integrations.tools.posthog"
 okta = "modulex_integrations.tools.okta"
+shopify = "modulex_integrations.tools.shopify"
+zoom = "modulex_integrations.tools.zoom"
 
 [tool.hatch.version]
 # Version is derived from the latest git tag matching v* (e.g. v0.1.0,
@@ -169,6 +188,77 @@ select = ["E", "F", "I", "N", "W", "B", "C4", "UP", "RUF"]
 # httpx_mock setups (filter params + nested paths). Wrapping breaks
 # the readability of the URL-matches-mock contract.
 "src/modulex_integrations/tools/short_io/tests/test_short_io.py" = ["E501"]
+# microsoft_outlook manifest and tools have long description string
+# literals in ParameterDef / Field kwargs that cannot be wrapped.
+"src/modulex_integrations/tools/microsoft_outlook/manifest.py" = ["E501"]
+"src/modulex_integrations/tools/microsoft_outlook/tools.py" = ["E501"]
+# microsoft_onedrive manifest and tools have long description string
+# literals in ParameterDef / Field kwargs that cannot be wrapped.
+"src/modulex_integrations/tools/microsoft_onedrive/manifest.py" = ["E501"]
+"src/modulex_integrations/tools/microsoft_onedrive/tools.py" = ["E501"]
+# microsoft_onedrive outputs mirror upstream Microsoft Graph camelCase
+# field names (webUrl, createdDateTime, lastModifiedDateTime, driveType, etc.).
+"src/modulex_integrations/tools/microsoft_onedrive/outputs.py" = ["N815"]
+# microsoft_outlook outputs mirror upstream Microsoft Graph camelCase
+# field names (displayName, isDraft, parentFolderId, etc.).
+"src/modulex_integrations/tools/microsoft_outlook/outputs.py" = ["N815"]
+# monday manifest and tools have long description string literals in
+# ParameterDef / Field kwargs that cannot be wrapped.
+"src/modulex_integrations/tools/monday/manifest.py" = ["E501"]
+"src/modulex_integrations/tools/monday/tools.py" = ["E501"]
+"src/modulex_integrations/tools/monday/tests/test_monday.py" = ["E501"]
+# google_calendar outputs mirror upstream Google Calendar API camelCase
+# field names (htmlLink, timeZone, colorId, iCalUID, recurringEventId, etc.).
+"src/modulex_integrations/tools/google_calendar/outputs.py" = ["N815"]
+# google_calendar manifest and tools have long description string
+# literals in ParameterDef / Field kwargs that cannot be wrapped.
+"src/modulex_integrations/tools/google_calendar/manifest.py" = ["E501"]
+"src/modulex_integrations/tools/google_calendar/tools.py" = ["E501"]
+"src/modulex_integrations/tools/google_calendar/tests/test_google_calendar.py" = ["E501"]
+# microsoft_teams outputs mirror upstream Microsoft Graph camelCase
+# field names (displayName, webUrl, chatType, createdDateTime, etc.).
+"src/modulex_integrations/tools/microsoft_teams/outputs.py" = ["N815"]
+# microsoft_teams manifest and tools have long description string
+# literals in setup_instructions and Field kwargs that cannot be wrapped.
+"src/modulex_integrations/tools/microsoft_teams/manifest.py" = ["E501"]
+"src/modulex_integrations/tools/microsoft_teams/tools.py" = ["E501"]
+# jira manifest and tools have long description string literals in
+# ParameterDef / Field kwargs that cannot be wrapped.
+"src/modulex_integrations/tools/jira/manifest.py" = ["E501"]
+"src/modulex_integrations/tools/jira/tools.py" = ["E501"]
+"src/modulex_integrations/tools/jira/tests/test_jira.py" = ["E501"]
+# linkedin manifest and tools have long description string literals in
+# ParameterDef / Field kwargs that cannot be wrapped.
+"src/modulex_integrations/tools/linkedin/manifest.py" = ["E501"]
+"src/modulex_integrations/tools/linkedin/tools.py" = ["E501"]
+"src/modulex_integrations/tools/linkedin/tests/test_linkedin.py" = ["E501"]
+# microsoft_bookings manifest and tools have long description string
+# literals in ParameterDef / Field kwargs that cannot be wrapped.
+"src/modulex_integrations/tools/microsoft_bookings/manifest.py" = ["E501"]
+"src/modulex_integrations/tools/microsoft_bookings/tools.py" = ["E501"]
+# shopify manifest, tools, and tests have long description string
+# literals in ParameterDef / Field kwargs and mock JSON that cannot be wrapped.
+"src/modulex_integrations/tools/shopify/manifest.py" = ["E501"]
+"src/modulex_integrations/tools/shopify/tools.py" = ["E501"]
+"src/modulex_integrations/tools/shopify/tests/test_shopify.py" = ["E501"]
+# zoom manifest and tools have long description string literals in
+# ParameterDef / Field kwargs that cannot be wrapped.
+"src/modulex_integrations/tools/zoom/manifest.py" = ["E501"]
+"src/modulex_integrations/tools/zoom/tools.py" = ["E501"]
+# aws manifest and tools have long description string literals in
+# ParameterDef / Field kwargs and credential guard lines that cannot be wrapped.
+"src/modulex_integrations/tools/aws/manifest.py" = ["E501"]
+"src/modulex_integrations/tools/aws/tools.py" = ["E501"]
+"src/modulex_integrations/tools/aws/tests/test_aws.py" = ["E501"]
+# twilio manifest, tools, and tests have long description string literals
+# in ParameterDef / Field kwargs and credential guard lines that cannot be wrapped.
+"src/modulex_integrations/tools/twilio/manifest.py" = ["E501"]
+"src/modulex_integrations/tools/twilio/tools.py" = ["E501"]
+"src/modulex_integrations/tools/twilio/tests/test_twilio.py" = ["E501"]
+# docusign manifest and tools have long description string literals in
+# ParameterDef / Field kwargs and credential guard lines that cannot be wrapped.
+"src/modulex_integrations/tools/docusign/manifest.py" = ["E501"]
+"src/modulex_integrations/tools/docusign/tools.py" = ["E501"]
 
 [tool.mypy]
 python_version = "3.12"

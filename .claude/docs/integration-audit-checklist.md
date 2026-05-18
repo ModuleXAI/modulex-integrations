@@ -156,6 +156,7 @@ audit findings. Each one corresponds to a finding in
 | 8.6 | README references at most ONE auth shape (no leftover dual-auth boilerplate when the manifest is single-auth) | Sometimes the producer emits README with both OAuth and api_key sections | grep H3 count under `## Authentication` | FIX | mechanical (drop the extra section) |
 | 8.7 | `populate_by_name=True` only present when ≥1 outputs.py field declares `Field(alias=…)` | L1 — purposeful, not accidental | AST cross-check | WARN | mechanical (remove if unused) |
 | 8.8 | tests/test_<name>.py uses `_args(**extra)` helper, not direct dict-literal-spread, on `.ainvoke(...)` calls | Bypasses mypy TypedDict-spread issue | grep | FIX | mechanical (add helper + replace call sites) |
+| 8.9 | `manifest.logo` equals exactly `"modulex:<name>-themed"` where `<name>` is the integration folder/manifest name | Project-wide logo convention — every integration must use the modulex-themed Iconify identifier so the docs site and UI render a consistent themed icon set. The producer emits arbitrary logo values (CDN URLs, `logos:vendor-icon`, etc.) — we normalize on the consumer side. | grep manifest.py for `logo=` line; compare against expected string | FIX | mechanical (rewrite the `logo=...` line to `logo="modulex:<name>-themed"`) |
 
 ---
 
