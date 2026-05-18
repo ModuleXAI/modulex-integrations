@@ -116,6 +116,7 @@ microsoft_teams = "modulex_integrations.tools.microsoft_teams"
 monday = "modulex_integrations.tools.monday"
 posthog = "modulex_integrations.tools.posthog"
 okta = "modulex_integrations.tools.okta"
+shopify = "modulex_integrations.tools.shopify"
 
 [tool.hatch.version]
 # Version is derived from the latest git tag matching v* (e.g. v0.1.0,
@@ -229,6 +230,11 @@ select = ["E", "F", "I", "N", "W", "B", "C4", "UP", "RUF"]
 # literals in ParameterDef / Field kwargs that cannot be wrapped.
 "src/modulex_integrations/tools/microsoft_bookings/manifest.py" = ["E501"]
 "src/modulex_integrations/tools/microsoft_bookings/tools.py" = ["E501"]
+# shopify manifest, tools, and tests have long description string
+# literals in ParameterDef / Field kwargs and mock JSON that cannot be wrapped.
+"src/modulex_integrations/tools/shopify/manifest.py" = ["E501"]
+"src/modulex_integrations/tools/shopify/tools.py" = ["E501"]
+"src/modulex_integrations/tools/shopify/tests/test_shopify.py" = ["E501"]
 
 [tool.mypy]
 python_version = "3.12"

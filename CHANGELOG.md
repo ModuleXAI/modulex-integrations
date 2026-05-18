@@ -8,6 +8,10 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ### Added
 
+- `shopify` integration — 39 actions, auth: custom. E-commerce platform for
+  managing products, orders, customers, and content via the Shopify Admin
+  GraphQL API. Producer-staged by integration-drafts; consumer-side audit
+  applied 3 patches before merge.
 - `linkedin` integration — 18 actions, auth: oauth2. LinkedIn social
   networking platform for professional connections, posts, and organization
   management: create text/image posts, comment, like, manage organizations,
