@@ -8,6 +8,10 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ### Added
 
+- `google_analytics` integration — 6 actions, auth: oauth2. Manage Google
+  Analytics 4 properties, list accounts, configure key events, and run
+  analytics reports via the Admin and Data APIs. Producer-staged by
+  integration-drafts; consumer-side audit applied 2 patches before merge.
 - `docusign` integration — 12 actions, auth: oauth2. Electronic signature and
   agreement management via the DocuSign eSignature REST API. Producer-staged by
   integration-drafts; consumer-side audit applied 3 patches before merge.
