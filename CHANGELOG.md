@@ -8,6 +8,10 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ### Added
 
+- `zoom` integration — 23 actions, auth: oauth2. Video conferencing platform
+  for meetings, webinars, recordings, chat, and user management via the Zoom
+  REST API. Producer-staged by integration-drafts; consumer-side audit applied
+  3 patches before merge.
 - `shopify` integration — 39 actions, auth: custom. E-commerce platform for
   managing products, orders, customers, and content via the Shopify Admin
   GraphQL API. Producer-staged by integration-drafts; consumer-side audit

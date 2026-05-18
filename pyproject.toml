@@ -117,6 +117,7 @@ monday = "modulex_integrations.tools.monday"
 posthog = "modulex_integrations.tools.posthog"
 okta = "modulex_integrations.tools.okta"
 shopify = "modulex_integrations.tools.shopify"
+zoom = "modulex_integrations.tools.zoom"
 
 [tool.hatch.version]
 # Version is derived from the latest git tag matching v* (e.g. v0.1.0,
@@ -235,6 +236,10 @@ select = ["E", "F", "I", "N", "W", "B", "C4", "UP", "RUF"]
 "src/modulex_integrations/tools/shopify/manifest.py" = ["E501"]
 "src/modulex_integrations/tools/shopify/tools.py" = ["E501"]
 "src/modulex_integrations/tools/shopify/tests/test_shopify.py" = ["E501"]
+# zoom manifest and tools have long description string literals in
+# ParameterDef / Field kwargs that cannot be wrapped.
+"src/modulex_integrations/tools/zoom/manifest.py" = ["E501"]
+"src/modulex_integrations/tools/zoom/tools.py" = ["E501"]
 
 [tool.mypy]
 python_version = "3.12"
