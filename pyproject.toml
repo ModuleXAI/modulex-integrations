@@ -78,6 +78,7 @@ short_io = "modulex_integrations.tools.short_io"
 nasdaq = "modulex_integrations.tools.nasdaq"
 firecrawl = "modulex_integrations.tools.firecrawl"
 jina_ai = "modulex_integrations.tools.jina_ai"
+jira = "modulex_integrations.tools.jira"
 calendly = "modulex_integrations.tools.calendly"
 linear = "modulex_integrations.tools.linear"
 airtable = "modulex_integrations.tools.airtable"
@@ -212,6 +213,11 @@ select = ["E", "F", "I", "N", "W", "B", "C4", "UP", "RUF"]
 # literals in setup_instructions and Field kwargs that cannot be wrapped.
 "src/modulex_integrations/tools/microsoft_teams/manifest.py" = ["E501"]
 "src/modulex_integrations/tools/microsoft_teams/tools.py" = ["E501"]
+# jira manifest and tools have long description string literals in
+# ParameterDef / Field kwargs that cannot be wrapped.
+"src/modulex_integrations/tools/jira/manifest.py" = ["E501"]
+"src/modulex_integrations/tools/jira/tools.py" = ["E501"]
+"src/modulex_integrations/tools/jira/tests/test_jira.py" = ["E501"]
 
 [tool.mypy]
 python_version = "3.12"

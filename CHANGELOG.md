@@ -8,6 +8,12 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ### Added
 
+- `jira` integration — 38 actions, auth: oauth2. Atlassian Jira Cloud
+  project tracking and issue management: create/update/search issues,
+  manage sprints/boards/epics, transition issues, manage comments,
+  attachments, watchers, versions, and users via the Jira REST and Agile
+  APIs. Producer-staged by integration-drafts; consumer-side audit applied
+  1 patch before merge.
 - `microsoft_teams` integration -- 12 actions, auth: oauth2. Create channels,
   send channel and chat messages, list teams/channels/chats/messages/shifts,
   search messages, and retrieve the current user via Microsoft Graph.
