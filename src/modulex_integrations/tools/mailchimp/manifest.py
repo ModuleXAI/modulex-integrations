@@ -50,7 +50,7 @@ manifest = IntegrationManifest(
     ),
     version="1.0.0",
     author="ModuleX",
-    logo="modulex:mailchimp",
+    logo="logos:mailgun-icon",
     app_url="https://mailchimp.com",
     categories=["Marketing & Email", "Email Marketing", "CRM"],
     actions=[
