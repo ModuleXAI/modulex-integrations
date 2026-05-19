@@ -4,6 +4,17 @@ Work management platform for creating and managing boards, items, columns, group
 
 ## Authentication
 
+Two auth flavours are supported. The modulex runtime picks one per connected credential and injects it into every tool call.
+
+### OAuth2 (recommended)
+
+- Create a Monday.com OAuth app and configure the redirect URL.
+- Required env vars (only when self-hosting the OAuth app): `MONDAY_OAUTH2_CLIENT_ID`, `MONDAY_OAUTH2_CLIENT_SECRET`.
+- Authorize URL: `https://auth.monday.com/oauth2/authorize`
+- Token URL: `https://auth.monday.com/oauth2/token`
+- Default scopes: `me:read`, `boards:read`, `boards:write`, `workspaces:read`.
+- Reference: <https://developer.monday.com/apps/docs/oauth>
+
 ### API Key Authentication
 
 - Sign in to Monday.com, click your avatar (bottom left) and select **Developers**.
@@ -29,7 +40,7 @@ Work management platform for creating and managing boards, items, columns, group
 | `update_column_values` | Updates multiple column values for an item | `board_id`, `item_id`, `column_values` |
 | `update_item_name` | Updates an item's name | `board_id`, `item_id`, `item_name` |
 
-Every tool takes an additional `api_key` parameter that the runtime fills in from the resolved credential.
+Every tool takes `auth_type` and `auth_data` as its first two parameters; the runtime fills them in from the resolved credential. `auth_data` contains either `{"access_token": "..."}` for OAuth2 or `{"api_key": "..."}` for the personal-token flow.
 
 ## Limits & Quotas
 
