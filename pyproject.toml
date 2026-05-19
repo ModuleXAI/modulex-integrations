@@ -70,6 +70,7 @@ tavily = "modulex_integrations.tools.tavily"
 instacart = "modulex_integrations.tools.instacart"
 tinyurl = "modulex_integrations.tools.tinyurl"
 customerio = "modulex_integrations.tools.customerio"
+digital_ocean = "modulex_integrations.tools.digital_ocean"
 npm = "modulex_integrations.tools.npm"
 pinterest = "modulex_integrations.tools.pinterest"
 klaviyo = "modulex_integrations.tools.klaviyo"
@@ -276,6 +277,11 @@ select = ["E", "F", "I", "N", "W", "B", "C4", "UP", "RUF"]
 "src/modulex_integrations/tools/gitlab/manifest.py" = ["E501"]
 "src/modulex_integrations/tools/gitlab/tools.py" = ["E501"]
 "src/modulex_integrations/tools/gitlab/tests/test_gitlab.py" = ["E501"]
+# digital_ocean manifest, tools, and tests have long description string
+# literals in ParameterDef / Field kwargs that cannot be wrapped.
+"src/modulex_integrations/tools/digital_ocean/manifest.py" = ["E501"]
+"src/modulex_integrations/tools/digital_ocean/tools.py" = ["E501"]
+"src/modulex_integrations/tools/digital_ocean/tests/test_digital_ocean.py" = ["E501"]
 # godaddy manifest and tools have long description string literals in
 # ParameterDef / Field kwargs that cannot be wrapped.
 "src/modulex_integrations/tools/godaddy/manifest.py" = ["E501"]
