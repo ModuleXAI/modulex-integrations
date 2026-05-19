@@ -8,6 +8,11 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ### Added
 
+- `supabase` integration — 8 actions (select_row, insert_row, update_row,
+  delete_row, batch_insert_rows, remote_procedure_call, count_rows,
+  upsert_row), auth: api_key. Open-source Firebase alternative providing
+  Postgres database operations via the Supabase REST API. Producer-staged
+  by integration-drafts; consumer-side audit applied 2 patches before merge.
 - `canva` integration — 5 actions, auth: oauth2. Design platform for
   creating, importing, exporting, listing, and uploading assets via the
   Canva Connect REST API. Producer-staged by integration-drafts;

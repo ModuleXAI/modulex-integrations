@@ -106,6 +106,7 @@ coinbase = "modulex_integrations.tools.coinbase"
 postgresql = "modulex_integrations.tools.postgresql"
 mysql = "modulex_integrations.tools.mysql"
 snowflake = "modulex_integrations.tools.snowflake"
+supabase = "modulex_integrations.tools.supabase"
 hubspot = "modulex_integrations.tools.hubspot"
 notion = "modulex_integrations.tools.notion"
 elevenlabs = "modulex_integrations.tools.elevenlabs"
@@ -296,6 +297,11 @@ select = ["E", "F", "I", "N", "W", "B", "C4", "UP", "RUF"]
 # ParameterDef / Field kwargs that cannot be wrapped.
 "src/modulex_integrations/tools/canva/manifest.py" = ["E501"]
 "src/modulex_integrations/tools/canva/tools.py" = ["E501"]
+# supabase manifest and tools have long description string literals in
+# ParameterDef / Field kwargs and credential guard lines that cannot be wrapped.
+"src/modulex_integrations/tools/supabase/manifest.py" = ["E501"]
+"src/modulex_integrations/tools/supabase/tools.py" = ["E501"]
+"src/modulex_integrations/tools/supabase/tests/test_supabase.py" = ["E501"]
 
 [tool.mypy]
 python_version = "3.12"
