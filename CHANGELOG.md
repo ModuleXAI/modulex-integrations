@@ -8,6 +8,9 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ### Added
 
+- `medium` integration — 1 action, auth: oauth2. Publish posts to Medium
+  via the Medium REST API. Producer-staged by integration-drafts;
+  consumer-side audit applied 3 patches before merge.
 - `digital_ocean` integration — 6 actions, auth: oauth2. Cloud
   infrastructure platform for deploying and managing Droplets, domains,
   and SSH keys via the DigitalOcean API. Producer-staged by
