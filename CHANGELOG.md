@@ -8,6 +8,12 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ### Added
 
+- `mailgun` integration — 9 actions (send_email, verify_email,
+  create_mailinglist_member, create_route, delete_mailinglist_member,
+  list_domains, list_mailinglist_members, retrieve_mailinglist_member,
+  suppress_email), auth: api_key. Transactional email API for sending,
+  receiving, and tracking email via the Mailgun REST API. Producer-staged
+  by integration-drafts; consumer-side audit applied 2 patches before merge.
 - `google_tag_manager` integration — 6 actions, auth: oauth2. Manage tags,
   variables, and workspaces in Google Tag Manager containers via the Tag
   Manager v2 REST API. Producer-staged by integration-drafts; consumer-side
