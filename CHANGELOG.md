@@ -8,6 +8,10 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ### Added
 
+- `canva` integration — 5 actions, auth: oauth2. Design platform for
+  creating, importing, exporting, listing, and uploading assets via the
+  Canva Connect REST API. Producer-staged by integration-drafts;
+  consumer-side audit applied 1 patch before merge.
 - `medium` integration — 1 action, auth: oauth2. Publish posts to Medium
   via the Medium REST API. Producer-staged by integration-drafts;
   consumer-side audit applied 3 patches before merge.
