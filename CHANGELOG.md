@@ -8,6 +8,10 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ### Added
 
+- `godaddy` integration — 5 actions, auth: custom (API Key + Secret).
+  Domain registration, availability checking, and management via the
+  GoDaddy API. Producer-staged by integration-drafts; consumer-side audit
+  applied 2 patches before merge.
 - `gitlab` integration — 12 actions, auth: oauth2. GitLab repository and
   project management platform: branches, issues, epics, commits, groups,
   and members via the REST v4 API. Producer-staged by integration-drafts;

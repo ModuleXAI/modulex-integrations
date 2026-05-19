@@ -96,6 +96,7 @@ apollo_io = "modulex_integrations.tools.apollo_io"
 cloudflare = "modulex_integrations.tools.cloudflare"
 semrush = "modulex_integrations.tools.semrush"
 gmail = "modulex_integrations.tools.gmail"
+godaddy = "modulex_integrations.tools.godaddy"
 google_analytics = "modulex_integrations.tools.google_analytics"
 google_calendar = "modulex_integrations.tools.google_calendar"
 sendgrid = "modulex_integrations.tools.sendgrid"
@@ -275,6 +276,10 @@ select = ["E", "F", "I", "N", "W", "B", "C4", "UP", "RUF"]
 "src/modulex_integrations/tools/gitlab/manifest.py" = ["E501"]
 "src/modulex_integrations/tools/gitlab/tools.py" = ["E501"]
 "src/modulex_integrations/tools/gitlab/tests/test_gitlab.py" = ["E501"]
+# godaddy manifest and tools have long description string literals in
+# ParameterDef / Field kwargs that cannot be wrapped.
+"src/modulex_integrations/tools/godaddy/manifest.py" = ["E501"]
+"src/modulex_integrations/tools/godaddy/tools.py" = ["E501"]
 
 [tool.mypy]
 python_version = "3.12"
