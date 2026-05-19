@@ -8,6 +8,11 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ### Added
 
+- `postman` integration — 4 actions (create_environment,
+  list_workspace_id_options, run_monitor, update_variable), auth:
+  api_key. API development and testing platform for building, monitoring,
+  and managing APIs via the Postman REST API. Producer-staged by
+  integration-drafts; consumer-side audit applied 2 patches before merge.
 - `supabase` integration — 8 actions (select_row, insert_row, update_row,
   delete_row, batch_insert_rows, remote_procedure_call, count_rows,
   upsert_row), auth: api_key. Open-source Firebase alternative providing
