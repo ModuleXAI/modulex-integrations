@@ -62,6 +62,7 @@ Issues = "https://github.com/ModuleXAI/modulex-integrations/issues"
 # Entry points — each migrated tool gets one line here.
 [project.entry-points."modulex.tools"]
 aws = "modulex_integrations.tools.aws"
+bloomerang = "modulex_integrations.tools.bloomerang"
 github = "modulex_integrations.tools.github"
 gitlab = "modulex_integrations.tools.gitlab"
 slack = "modulex_integrations.tools.slack"
@@ -342,6 +343,10 @@ select = ["E", "F", "I", "N", "W", "B", "C4", "UP", "RUF"]
 # ParameterDef / Field kwargs that cannot be wrapped.
 "src/modulex_integrations/tools/hootsuite/manifest.py" = ["E501"]
 "src/modulex_integrations/tools/hootsuite/tools.py" = ["E501"]
+# bloomerang manifest and tools have long description string literals in
+# ParameterDef / Field kwargs that cannot be wrapped.
+"src/modulex_integrations/tools/bloomerang/manifest.py" = ["E501"]
+"src/modulex_integrations/tools/bloomerang/tools.py" = ["E501"]
 
 [tool.mypy]
 python_version = "3.12"

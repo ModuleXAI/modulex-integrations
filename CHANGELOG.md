@@ -8,6 +8,11 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ### Added
 
+- `bloomerang` integration — 3 actions, auth: api_key. Nonprofit donor
+  management and fundraising CRM platform for creating constituents,
+  donations, and interactions via the Bloomerang REST API v2.
+  Producer-staged by integration-drafts; consumer-side audit applied
+  1 patch before merge.
 - `google_cloud` integration — 11 actions, auth: custom (service account key).
   Google Cloud Platform services including Cloud Storage, BigQuery, Compute
   Engine, and Cloud Logging via GCP REST APIs. Producer-staged by
