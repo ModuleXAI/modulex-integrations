@@ -8,6 +8,10 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ### Added
 
+- `sentry` integration — 4 actions (list_issue_events, list_project_events,
+  list_project_issues, update_issue), auth: bearer_token. Error tracking and
+  performance monitoring platform via the Sentry REST API. Producer-staged
+  by integration-drafts; consumer-side audit applied 6 patches before merge.
 - `google_workspace` integration — 4 actions (list_activities_by_admin,
   list_activities_by_event_and_admin, list_activities_by_event_name,
   list_all_activities), auth: oauth2. Retrieve admin audit activity
