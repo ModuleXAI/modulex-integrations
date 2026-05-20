@@ -8,6 +8,10 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ### Added
 
+- `databricks` integration — 41 actions, auth: custom (personal access token).
+  Manage Databricks jobs, runs, SQL warehouses, and vector search indexes.
+  Producer-staged by integration-drafts; consumer-side audit applied 4 patches
+  before merge.
 - `sentry` integration — 4 actions (list_issue_events, list_project_events,
   list_project_issues, update_issue), auth: bearer_token. Error tracking and
   performance monitoring platform via the Sentry REST API. Producer-staged
