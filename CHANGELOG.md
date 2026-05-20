@@ -8,6 +8,11 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ### Added
 
+- `crunchbase` integration — 2 actions, auth: api_key. Access Crunchbase
+  company and organization data for business intelligence and research
+  (get_organization, search_organizations) via the Crunchbase REST API v4.
+  Producer-staged by integration-drafts; consumer-side audit applied
+  1 patch before merge.
 - `google_appsheet` integration — 4 actions, auth: api_key. Manage rows
   in Google AppSheet tables (add_row, delete_row, get_rows, update_row)
   via the AppSheet API. Producer-staged by integration-drafts;

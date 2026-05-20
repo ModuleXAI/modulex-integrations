@@ -76,6 +76,7 @@ npm = "modulex_integrations.tools.npm"
 pinterest = "modulex_integrations.tools.pinterest"
 klaviyo = "modulex_integrations.tools.klaviyo"
 convertapi = "modulex_integrations.tools.convertapi"
+crunchbase = "modulex_integrations.tools.crunchbase"
 docusign = "modulex_integrations.tools.docusign"
 appdrag = "modulex_integrations.tools.appdrag"
 hackernews = "modulex_integrations.tools.hackernews"
@@ -353,6 +354,10 @@ select = ["E", "F", "I", "N", "W", "B", "C4", "UP", "RUF"]
 "src/modulex_integrations/tools/google_appsheet/manifest.py" = ["E501"]
 "src/modulex_integrations/tools/google_appsheet/tools.py" = ["E501"]
 "src/modulex_integrations/tools/google_appsheet/tests/test_google_appsheet.py" = ["E501"]
+# crunchbase manifest and tools have long description string literals in
+# ParameterDef / Field kwargs that cannot be wrapped.
+"src/modulex_integrations/tools/crunchbase/manifest.py" = ["E501"]
+"src/modulex_integrations/tools/crunchbase/tools.py" = ["E501"]
 
 [tool.mypy]
 python_version = "3.12"
