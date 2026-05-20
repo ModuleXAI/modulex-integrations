@@ -8,6 +8,10 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ### Added
 
+- `apify` integration — 7 actions, auth: bearer_token. Web scraping,
+  automation, and data extraction platform via the Apify REST API.
+  Producer-staged by integration-drafts; consumer-side audit applied
+  9 patches before merge.
 - `databricks` integration — 41 actions, auth: custom (personal access token).
   Manage Databricks jobs, runs, SQL warehouses, and vector search indexes.
   Producer-staged by integration-drafts; consumer-side audit applied 4 patches
