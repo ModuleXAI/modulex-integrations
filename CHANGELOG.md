@@ -8,6 +8,10 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ### Added
 
+- `google_cloud` integration — 11 actions, auth: custom (service account key).
+  Google Cloud Platform services including Cloud Storage, BigQuery, Compute
+  Engine, and Cloud Logging via GCP REST APIs. Producer-staged by
+  integration-drafts; consumer-side audit applied 3 patches before merge.
 - `hootsuite` integration — 4 actions, auth: oauth2. Social media management
   platform for scheduling posts, uploading media, and managing social profiles
   via the Hootsuite REST API. Producer-staged by integration-drafts;

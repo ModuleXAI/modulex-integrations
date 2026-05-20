@@ -48,7 +48,7 @@ dev = [
     "aiomysql>=0.2.0",                       # mysql
     "asyncpg>=0.29.0",                       # postgresql
     "boto3>=1.34.0",                         # aws
-    "cryptography>=41.0",                    # coinbase (ed25519 signing)
+    "cryptography>=41.0",                    # coinbase (ed25519 signing), google_cloud (JWT signing)
     "elevenlabs>=2.0.0",                     # elevenlabs
     "hubspot-api-client>=11.0.0",            # hubspot
     "snowflake-connector-python>=3.0.0",     # snowflake
@@ -101,6 +101,7 @@ cloudflare = "modulex_integrations.tools.cloudflare"
 semrush = "modulex_integrations.tools.semrush"
 gmail = "modulex_integrations.tools.gmail"
 godaddy = "modulex_integrations.tools.godaddy"
+google_cloud = "modulex_integrations.tools.google_cloud"
 google_analytics = "modulex_integrations.tools.google_analytics"
 google_calendar = "modulex_integrations.tools.google_calendar"
 sendgrid = "modulex_integrations.tools.sendgrid"
@@ -331,6 +332,12 @@ select = ["E", "F", "I", "N", "W", "B", "C4", "UP", "RUF"]
 # ParameterDef / Field kwargs that cannot be wrapped.
 "src/modulex_integrations/tools/apify/manifest.py" = ["E501"]
 "src/modulex_integrations/tools/apify/tools.py" = ["E501"]
+# google_cloud manifest, tools, and tests have long description string
+# literals in ParameterDef / Field kwargs, URL f-strings with quote() calls,
+# and test fixture key material that cannot be wrapped.
+"src/modulex_integrations/tools/google_cloud/manifest.py" = ["E501"]
+"src/modulex_integrations/tools/google_cloud/tools.py" = ["E501"]
+"src/modulex_integrations/tools/google_cloud/tests/test_google_cloud.py" = ["E501"]
 # hootsuite manifest and tools have long description string literals in
 # ParameterDef / Field kwargs that cannot be wrapped.
 "src/modulex_integrations/tools/hootsuite/manifest.py" = ["E501"]
