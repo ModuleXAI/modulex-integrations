@@ -6,6 +6,8 @@ from modulex_integrations.schema import (
     ApiKeyAuthSchema,
     EnvVar,
     IntegrationManifest,
+    OAuth2AuthSchema,
+    OAuthConfig,
     ParameterDef,
     SuccessIndicators,
     TestEndpoint,
@@ -328,6 +330,53 @@ manifest = IntegrationManifest(
         ),
     ],
     auth_schemas=[
+        OAuth2AuthSchema(
+            display_name="OAuth2 Authentication",
+            description="Connect using Monday.com OAuth (recommended for most use cases)",
+            setup_environment_variables=[
+                EnvVar(
+                    name="MONDAY_OAUTH2_CLIENT_ID",
+                    display_name="Client ID",
+                    description="Monday.com OAuth App Client ID",
+                    required=True,
+                    sensitive=False,
+                    only_for_custom=True,
+                    sample_format="xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+                    about_url="https://developer.monday.com/apps/docs/oauth",
+                ),
+                EnvVar(
+                    name="MONDAY_OAUTH2_CLIENT_SECRET",
+                    display_name="Client Secret",
+                    description="Monday.com OAuth App Client Secret",
+                    required=True,
+                    sensitive=True,
+                    only_for_custom=True,
+                    sample_format="x" * 40,
+                    about_url="https://developer.monday.com/apps/docs/oauth",
+                ),
+            ],
+            oauth_config=OAuthConfig(
+                auth_url="https://auth.monday.com/oauth2/authorize",
+                token_url="https://auth.monday.com/oauth2/token",
+                scopes=["me:read", "boards:read", "boards:write", "workspaces:read"],
+                token_auth_method="body",
+            ),
+            test_endpoint=TestEndpoint(
+                url="https://api.monday.com/v2",
+                method="POST",
+                headers={
+                    "Authorization": "Bearer {access_token}",
+                    "Content-Type": "application/json",
+                },
+                body={"query": "{ me { id name } }"},
+                success_indicators=SuccessIndicators(
+                    status_codes=[200],
+                    response_fields=["data"],
+                ),
+                cost_level="free",
+                description="Validates the OAuth token by querying the current user",
+            ),
+        ),
         ApiKeyAuthSchema(
             display_name="API Key Authentication",
             description="Authenticate using your Monday.com API token",

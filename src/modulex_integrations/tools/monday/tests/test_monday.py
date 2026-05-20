@@ -1,4 +1,10 @@
-"""Happy-path tests for every monday @tool, plus a manifest sanity check."""
+"""Happy-path tests for every monday @tool, plus manifest sanity checks.
+
+Every tool takes ``auth_type`` + ``auth_data`` as the first two
+arguments. The shared ``_AUTH`` dict uses the api_key flavour; an
+extra OAuth2 happy-path test asserts the header switches to
+``Authorization: Bearer …`` when the credential type changes.
+"""
 from __future__ import annotations
 
 from typing import Any
@@ -40,11 +46,23 @@ from modulex_integrations.tools.monday.outputs import (
 
 API = "https://api.monday.com/v2"
 
-_API_KEY = "fake-monday-api-token"
+# Shared api-key credential used by the bulk of the tests.
+# Annotated as ``dict[str, Any]`` to escape LangChain's typed
+# ``StructuredTool.ainvoke`` overload.
+_AUTH: dict[str, Any] = {
+    "auth_type": "api_key",
+    "auth_data": {"api_key": "fake-monday-api-token"},
+}
+
+_OAUTH_AUTH: dict[str, Any] = {
+    "auth_type": "oauth2",
+    "auth_data": {"access_token": "fake-oauth-access-token"},
+}
 
 
 def _args(**extra: Any) -> dict[str, Any]:
-    return dict(api_key=_API_KEY, **extra)
+    """Build a ``.ainvoke()`` input dict: api-key auth + per-test extras."""
+    return dict(_AUTH, **extra)
 
 
 # --- Manifest sanity --------------------------------------------------------
@@ -57,8 +75,8 @@ class TestManifest:
     def test_manifest_actions_match_tools_tuple(self) -> None:
         assert {a.name for a in manifest.actions} == {t.name for t in TOOLS}
 
-    def test_manifest_has_api_key_auth(self) -> None:
-        assert {a.auth_type for a in manifest.auth_schemas} == {"api_key"}
+    def test_manifest_has_oauth2_and_api_key_auth(self) -> None:
+        assert {a.auth_type for a in manifest.auth_schemas} == {"oauth2", "api_key"}
 
 
 # --- Per-action happy-path tests -------------------------------------------
@@ -82,6 +100,29 @@ async def test_create_board(httpx_mock) -> None:  # type: ignore[no-untyped-def]
     result = CreateBoardOutput.model_validate(result_dict)
     assert result.success is True
     assert result.id == "12345"
+    # api_key credential reached the API as a raw Authorization header
+    sent = httpx_mock.get_requests()[0]
+    assert sent.headers["Authorization"] == "fake-monday-api-token"
+
+
+@pytest.mark.asyncio
+async def test_create_board_oauth2(httpx_mock) -> None:  # type: ignore[no-untyped-def]
+    """OAuth2 credentials should produce a ``Bearer …`` Authorization header."""
+    httpx_mock.add_response(
+        method="POST",
+        url=API,
+        json={"data": {"create_board": {"id": "oauth_board"}}},
+    )
+
+    result_dict = await create_board.ainvoke(
+        dict(_OAUTH_AUTH, board_name="OAuth Board", board_kind="public")
+    )
+
+    result = CreateBoardOutput.model_validate(result_dict)
+    assert result.success is True
+    assert result.id == "oauth_board"
+    sent = httpx_mock.get_requests()[0]
+    assert sent.headers["Authorization"] == "Bearer fake-oauth-access-token"
 
 
 @pytest.mark.asyncio
@@ -392,8 +433,28 @@ async def test_update_item_name(httpx_mock) -> None:  # type: ignore[no-untyped-
 @pytest.mark.asyncio
 async def test_create_board_validates_empty_api_key() -> None:
     result_dict = await create_board.ainvoke(
-        {"board_name": "x", "board_kind": "public", "api_key": ""}
+        {
+            "auth_type": "api_key",
+            "auth_data": {"api_key": ""},
+            "board_name": "x",
+            "board_kind": "public",
+        }
     )
     result = CreateBoardOutput.model_validate(result_dict)
     assert result.success is False
     assert "API key" in (result.error or "")
+
+
+@pytest.mark.asyncio
+async def test_create_board_validates_empty_oauth_token() -> None:
+    result_dict = await create_board.ainvoke(
+        {
+            "auth_type": "oauth2",
+            "auth_data": {"access_token": ""},
+            "board_name": "x",
+            "board_kind": "public",
+        }
+    )
+    result = CreateBoardOutput.model_validate(result_dict)
+    assert result.success is False
+    assert "access_token" in (result.error or "")

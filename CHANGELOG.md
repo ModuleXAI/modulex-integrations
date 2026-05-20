@@ -8,6 +8,59 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ### Added
 
+- `databricks` integration — 41 actions, auth: custom (personal access token).
+  Manage Databricks jobs, runs, SQL warehouses, and vector search indexes.
+  Producer-staged by integration-drafts; consumer-side audit applied 4 patches
+  before merge.
+- `sentry` integration — 4 actions (list_issue_events, list_project_events,
+  list_project_issues, update_issue), auth: bearer_token. Error tracking and
+  performance monitoring platform via the Sentry REST API. Producer-staged
+  by integration-drafts; consumer-side audit applied 6 patches before merge.
+- `google_workspace` integration — 4 actions (list_activities_by_admin,
+  list_activities_by_event_and_admin, list_activities_by_event_name,
+  list_all_activities), auth: oauth2. Retrieve admin audit activity
+  reports from Google Workspace via the Admin SDK Reports API.
+  Producer-staged by integration-drafts; consumer-side audit applied
+  2 patches before merge.
+- `postman` integration — 4 actions (create_environment,
+  list_workspace_id_options, run_monitor, update_variable), auth:
+  api_key. API development and testing platform for building, monitoring,
+  and managing APIs via the Postman REST API. Producer-staged by
+  integration-drafts; consumer-side audit applied 2 patches before merge.
+- `supabase` integration — 8 actions (select_row, insert_row, update_row,
+  delete_row, batch_insert_rows, remote_procedure_call, count_rows,
+  upsert_row), auth: api_key. Open-source Firebase alternative providing
+  Postgres database operations via the Supabase REST API. Producer-staged
+  by integration-drafts; consumer-side audit applied 2 patches before merge.
+- `canva` integration — 5 actions, auth: oauth2. Design platform for
+  creating, importing, exporting, listing, and uploading assets via the
+  Canva Connect REST API. Producer-staged by integration-drafts;
+  consumer-side audit applied 1 patch before merge.
+- `medium` integration — 1 action, auth: oauth2. Publish posts to Medium
+  via the Medium REST API. Producer-staged by integration-drafts;
+  consumer-side audit applied 3 patches before merge.
+- `digital_ocean` integration — 6 actions, auth: oauth2. Cloud
+  infrastructure platform for deploying and managing Droplets, domains,
+  and SSH keys via the DigitalOcean API. Producer-staged by
+  integration-drafts; consumer-side audit applied 3 patches before merge.
+- `godaddy` integration — 5 actions, auth: custom (API Key + Secret).
+  Domain registration, availability checking, and management via the
+  GoDaddy API. Producer-staged by integration-drafts; consumer-side audit
+  applied 2 patches before merge.
+- `gitlab` integration — 12 actions, auth: oauth2. GitLab repository and
+  project management platform: branches, issues, epics, commits, groups,
+  and members via the REST v4 API. Producer-staged by integration-drafts;
+  consumer-side audit applied 2 patches before merge.
+- `mailgun` integration — 9 actions (send_email, verify_email,
+  create_mailinglist_member, create_route, delete_mailinglist_member,
+  list_domains, list_mailinglist_members, retrieve_mailinglist_member,
+  suppress_email), auth: api_key. Transactional email API for sending,
+  receiving, and tracking email via the Mailgun REST API. Producer-staged
+  by integration-drafts; consumer-side audit applied 2 patches before merge.
+- `google_tag_manager` integration — 6 actions, auth: oauth2. Manage tags,
+  variables, and workspaces in Google Tag Manager containers via the Tag
+  Manager v2 REST API. Producer-staged by integration-drafts; consumer-side
+  audit applied 1 patch before merge.
 - `google_analytics` integration — 6 actions, auth: oauth2. Manage Google
   Analytics 4 properties, list accounts, configure key events, and run
   analytics reports via the Admin and Data APIs. Producer-staged by
