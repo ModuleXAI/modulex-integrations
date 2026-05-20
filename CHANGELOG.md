@@ -8,6 +8,10 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ### Added
 
+- `hootsuite` integration — 4 actions, auth: oauth2. Social media management
+  platform for scheduling posts, uploading media, and managing social profiles
+  via the Hootsuite REST API. Producer-staged by integration-drafts;
+  consumer-side audit applied 6 patches before merge.
 - `apify` integration — 7 actions, auth: bearer_token. Web scraping,
   automation, and data extraction platform via the Apify REST API.
   Producer-staged by integration-drafts; consumer-side audit applied
