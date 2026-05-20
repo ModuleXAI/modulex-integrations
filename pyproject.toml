@@ -104,6 +104,7 @@ gmail = "modulex_integrations.tools.gmail"
 godaddy = "modulex_integrations.tools.godaddy"
 google_cloud = "modulex_integrations.tools.google_cloud"
 google_analytics = "modulex_integrations.tools.google_analytics"
+google_appsheet = "modulex_integrations.tools.google_appsheet"
 google_calendar = "modulex_integrations.tools.google_calendar"
 sendgrid = "modulex_integrations.tools.sendgrid"
 sentry = "modulex_integrations.tools.sentry"
@@ -347,6 +348,11 @@ select = ["E", "F", "I", "N", "W", "B", "C4", "UP", "RUF"]
 # ParameterDef / Field kwargs that cannot be wrapped.
 "src/modulex_integrations/tools/bloomerang/manifest.py" = ["E501"]
 "src/modulex_integrations/tools/bloomerang/tools.py" = ["E501"]
+# google_appsheet manifest, tools, and tests have long description string
+# literals in ParameterDef / Field kwargs that cannot be wrapped.
+"src/modulex_integrations/tools/google_appsheet/manifest.py" = ["E501"]
+"src/modulex_integrations/tools/google_appsheet/tools.py" = ["E501"]
+"src/modulex_integrations/tools/google_appsheet/tests/test_google_appsheet.py" = ["E501"]
 
 [tool.mypy]
 python_version = "3.12"
