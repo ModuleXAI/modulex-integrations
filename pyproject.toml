@@ -118,6 +118,7 @@ google_meet = "modulex_integrations.tools.google_meet"
 google_sheets = "modulex_integrations.tools.google_sheets"
 google_slides = "modulex_integrations.tools.google_slides"
 google_tag_manager = "modulex_integrations.tools.google_tag_manager"
+google_workspace = "modulex_integrations.tools.google_workspace"
 mailchimp = "modulex_integrations.tools.mailchimp"
 mailgun = "modulex_integrations.tools.mailgun"
 medium = "modulex_integrations.tools.medium"
@@ -308,6 +309,11 @@ select = ["E", "F", "I", "N", "W", "B", "C4", "UP", "RUF"]
 "src/modulex_integrations/tools/postman/manifest.py" = ["E501"]
 "src/modulex_integrations/tools/postman/tools.py" = ["E501"]
 "src/modulex_integrations/tools/postman/tests/test_postman.py" = ["E501"]
+# google_workspace manifest, tools, and tests have long description string
+# literals in ParameterDef / Field kwargs that cannot be wrapped.
+"src/modulex_integrations/tools/google_workspace/manifest.py" = ["E501"]
+"src/modulex_integrations/tools/google_workspace/tools.py" = ["E501"]
+"src/modulex_integrations/tools/google_workspace/tests/test_google_workspace.py" = ["E501"]
 
 [tool.mypy]
 python_version = "3.12"

@@ -8,6 +8,12 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ### Added
 
+- `google_workspace` integration — 4 actions (list_activities_by_admin,
+  list_activities_by_event_and_admin, list_activities_by_event_name,
+  list_all_activities), auth: oauth2. Retrieve admin audit activity
+  reports from Google Workspace via the Admin SDK Reports API.
+  Producer-staged by integration-drafts; consumer-side audit applied
+  2 patches before merge.
 - `postman` integration — 4 actions (create_environment,
   list_workspace_id_options, run_monitor, update_variable), auth:
   api_key. API development and testing platform for building, monitoring,
