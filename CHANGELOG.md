@@ -8,6 +8,12 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ### Added
 
+- `google_my_business` integration — 6 actions, auth: oauth2. Manage
+  Google Business Profile posts, reviews, and replies via the Google My
+  Business API (create_post, create_update_reply_to_review,
+  get_reviews_multiple_locations, get_specific_review, list_all_reviews,
+  list_posts). Producer-staged by integration-drafts; consumer-side audit
+  applied 3 patches before merge.
 - `google_merchant_center` integration — 2 actions, auth: oauth2. Manage
   product listings in Google Merchant Center via the Shopping Content API
   (create_product, update_product). Producer-staged by integration-drafts;
