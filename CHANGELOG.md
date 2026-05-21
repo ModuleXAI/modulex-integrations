@@ -8,6 +8,10 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ### Added
 
+- `google_maps_platform` integration — 2 actions, auth: api_key. Search for
+  places and retrieve place details using the Google Places API (New)
+  (search_places, get_place_details). Producer-staged by integration-drafts;
+  consumer-side audit applied 1 patch before merge.
 - `google_ad_manager` integration — 2 actions, auth: oauth2. Programmatic
   advertising platform for managing ad inventory and reporting via the
   Google Ad Manager API (create_report, list_network_options).
