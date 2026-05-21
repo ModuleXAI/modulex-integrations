@@ -8,6 +8,12 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ### Added
 
+- `google_docs` integration — 12 actions, auth: oauth2. Create, read, and
+  edit Google Docs documents via the Google Docs API (append_image,
+  append_text, create_document, create_document_from_template, find_document,
+  get_document, get_tab_content, insert_page_break, insert_table, insert_text,
+  replace_image, replace_text). Producer-staged by integration-drafts;
+  consumer-side audit applied 3 patches before merge.
 - `google_directory` integration — 7 actions, auth: oauth2. Manage users,
   groups, and group memberships in Google Workspace via the Admin SDK
   Directory API (add_member_to_group, create_group, create_user, get_group,
