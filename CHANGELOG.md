@@ -8,6 +8,10 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ### Added
 
+- `google_merchant_center` integration — 2 actions, auth: oauth2. Manage
+  product listings in Google Merchant Center via the Shopping Content API
+  (create_product, update_product). Producer-staged by integration-drafts;
+  consumer-side audit applied 5 patches before merge.
 - `google_maps_platform` integration — 2 actions, auth: api_key. Search for
   places and retrieve place details using the Google Places API (New)
   (search_places, get_place_details). Producer-staged by integration-drafts;

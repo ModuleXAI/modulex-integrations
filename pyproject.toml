@@ -126,6 +126,7 @@ salesforce = "modulex_integrations.tools.salesforce"
 clickup = "modulex_integrations.tools.clickup"
 google_drive = "modulex_integrations.tools.google_drive"
 google_maps_platform = "modulex_integrations.tools.google_maps_platform"
+google_merchant_center = "modulex_integrations.tools.google_merchant_center"
 google_meet = "modulex_integrations.tools.google_meet"
 google_sheets = "modulex_integrations.tools.google_sheets"
 google_slides = "modulex_integrations.tools.google_slides"
@@ -378,6 +379,11 @@ select = ["E", "F", "I", "N", "W", "B", "C4", "UP", "RUF"]
 # ParameterDef / Field kwargs that cannot be wrapped.
 "src/modulex_integrations/tools/google_maps_platform/manifest.py" = ["E501"]
 "src/modulex_integrations/tools/google_maps_platform/tools.py" = ["E501"]
+# google_merchant_center manifest, tools, and tests have long description string
+# literals in ParameterDef / Field kwargs that cannot be wrapped.
+"src/modulex_integrations/tools/google_merchant_center/manifest.py" = ["E501"]
+"src/modulex_integrations/tools/google_merchant_center/tools.py" = ["E501"]
+"src/modulex_integrations/tools/google_merchant_center/tests/test_google_merchant_center.py" = ["E501"]
 
 [tool.mypy]
 python_version = "3.12"
