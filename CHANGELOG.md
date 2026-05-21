@@ -8,6 +8,11 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ### Added
 
+- `google_directory` integration — 7 actions, auth: oauth2. Manage users,
+  groups, and group memberships in Google Workspace via the Admin SDK
+  Directory API (add_member_to_group, create_group, create_user, get_group,
+  get_user, list_groups, list_users). Producer-staged by integration-drafts;
+  consumer-side audit applied 1 patch before merge.
 - `crunchbase` integration — 2 actions, auth: api_key. Access Crunchbase
   company and organization data for business intelligence and research
   (get_organization, search_organizations) via the Crunchbase REST API v4.
