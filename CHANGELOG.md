@@ -8,6 +8,48 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ### Added
 
+- `google_ad_manager` integration — 2 actions, auth: oauth2. Programmatic
+  advertising platform for managing ad inventory and reporting via the
+  Google Ad Manager API (create_report, list_network_options).
+  Producer-staged by integration-drafts; consumer-side audit applied
+  4 patches before merge.
+- `google_docs` integration — 12 actions, auth: oauth2. Create, read, and
+  edit Google Docs documents via the Google Docs API (append_image,
+  append_text, create_document, create_document_from_template, find_document,
+  get_document, get_tab_content, insert_page_break, insert_table, insert_text,
+  replace_image, replace_text). Producer-staged by integration-drafts;
+  consumer-side audit applied 3 patches before merge.
+- `google_directory` integration — 7 actions, auth: oauth2. Manage users,
+  groups, and group memberships in Google Workspace via the Admin SDK
+  Directory API (add_member_to_group, create_group, create_user, get_group,
+  get_user, list_groups, list_users). Producer-staged by integration-drafts;
+  consumer-side audit applied 1 patch before merge.
+- `crunchbase` integration — 2 actions, auth: api_key. Access Crunchbase
+  company and organization data for business intelligence and research
+  (get_organization, search_organizations) via the Crunchbase REST API v4.
+  Producer-staged by integration-drafts; consumer-side audit applied
+  1 patch before merge.
+- `google_appsheet` integration — 4 actions, auth: api_key. Manage rows
+  in Google AppSheet tables (add_row, delete_row, get_rows, update_row)
+  via the AppSheet API. Producer-staged by integration-drafts;
+  consumer-side audit applied 1 patch before merge.
+- `bloomerang` integration — 3 actions, auth: api_key. Nonprofit donor
+  management and fundraising CRM platform for creating constituents,
+  donations, and interactions via the Bloomerang REST API v2.
+  Producer-staged by integration-drafts; consumer-side audit applied
+  1 patch before merge.
+- `google_cloud` integration — 11 actions, auth: custom (service account key).
+  Google Cloud Platform services including Cloud Storage, BigQuery, Compute
+  Engine, and Cloud Logging via GCP REST APIs. Producer-staged by
+  integration-drafts; consumer-side audit applied 3 patches before merge.
+- `hootsuite` integration — 4 actions, auth: oauth2. Social media management
+  platform for scheduling posts, uploading media, and managing social profiles
+  via the Hootsuite REST API. Producer-staged by integration-drafts;
+  consumer-side audit applied 6 patches before merge.
+- `apify` integration — 7 actions, auth: bearer_token. Web scraping,
+  automation, and data extraction platform via the Apify REST API.
+  Producer-staged by integration-drafts; consumer-side audit applied
+  9 patches before merge.
 - `databricks` integration — 41 actions, auth: custom (personal access token).
   Manage Databricks jobs, runs, SQL warehouses, and vector search indexes.
   Producer-staged by integration-drafts; consumer-side audit applied 4 patches

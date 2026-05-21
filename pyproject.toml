@@ -48,7 +48,7 @@ dev = [
     "aiomysql>=0.2.0",                       # mysql
     "asyncpg>=0.29.0",                       # postgresql
     "boto3>=1.34.0",                         # aws
-    "cryptography>=41.0",                    # coinbase (ed25519 signing)
+    "cryptography>=41.0",                    # coinbase (ed25519 signing), google_cloud (JWT signing)
     "elevenlabs>=2.0.0",                     # elevenlabs
     "hubspot-api-client>=11.0.0",            # hubspot
     "snowflake-connector-python>=3.0.0",     # snowflake
@@ -62,6 +62,7 @@ Issues = "https://github.com/ModuleXAI/modulex-integrations/issues"
 # Entry points — each migrated tool gets one line here.
 [project.entry-points."modulex.tools"]
 aws = "modulex_integrations.tools.aws"
+bloomerang = "modulex_integrations.tools.bloomerang"
 github = "modulex_integrations.tools.github"
 gitlab = "modulex_integrations.tools.gitlab"
 slack = "modulex_integrations.tools.slack"
@@ -75,9 +76,11 @@ npm = "modulex_integrations.tools.npm"
 pinterest = "modulex_integrations.tools.pinterest"
 klaviyo = "modulex_integrations.tools.klaviyo"
 convertapi = "modulex_integrations.tools.convertapi"
+crunchbase = "modulex_integrations.tools.crunchbase"
 docusign = "modulex_integrations.tools.docusign"
 appdrag = "modulex_integrations.tools.appdrag"
 hackernews = "modulex_integrations.tools.hackernews"
+hootsuite = "modulex_integrations.tools.hootsuite"
 lemon_squeezy = "modulex_integrations.tools.lemon_squeezy"
 short_io = "modulex_integrations.tools.short_io"
 nasdaq = "modulex_integrations.tools.nasdaq"
@@ -89,6 +92,7 @@ canva = "modulex_integrations.tools.canva"
 linear = "modulex_integrations.tools.linear"
 linkedin = "modulex_integrations.tools.linkedin"
 airtable = "modulex_integrations.tools.airtable"
+apify = "modulex_integrations.tools.apify"
 telegram = "modulex_integrations.tools.telegram"
 twilio = "modulex_integrations.tools.twilio"
 servicenow = "modulex_integrations.tools.servicenow"
@@ -99,8 +103,13 @@ cloudflare = "modulex_integrations.tools.cloudflare"
 semrush = "modulex_integrations.tools.semrush"
 gmail = "modulex_integrations.tools.gmail"
 godaddy = "modulex_integrations.tools.godaddy"
+google_cloud = "modulex_integrations.tools.google_cloud"
+google_ad_manager = "modulex_integrations.tools.google_ad_manager"
 google_analytics = "modulex_integrations.tools.google_analytics"
+google_appsheet = "modulex_integrations.tools.google_appsheet"
 google_calendar = "modulex_integrations.tools.google_calendar"
+google_directory = "modulex_integrations.tools.google_directory"
+google_docs = "modulex_integrations.tools.google_docs"
 sendgrid = "modulex_integrations.tools.sendgrid"
 sentry = "modulex_integrations.tools.sentry"
 coinbase = "modulex_integrations.tools.coinbase"
@@ -325,6 +334,45 @@ select = ["E", "F", "I", "N", "W", "B", "C4", "UP", "RUF"]
 "src/modulex_integrations/tools/databricks/manifest.py" = ["E501"]
 "src/modulex_integrations/tools/databricks/tools.py" = ["E501"]
 "src/modulex_integrations/tools/databricks/tests/test_databricks.py" = ["E501"]
+# apify manifest and tools have long description string literals in
+# ParameterDef / Field kwargs that cannot be wrapped.
+"src/modulex_integrations/tools/apify/manifest.py" = ["E501"]
+"src/modulex_integrations/tools/apify/tools.py" = ["E501"]
+# google_cloud manifest, tools, and tests have long description string
+# literals in ParameterDef / Field kwargs, URL f-strings with quote() calls,
+# and test fixture key material that cannot be wrapped.
+"src/modulex_integrations/tools/google_cloud/manifest.py" = ["E501"]
+"src/modulex_integrations/tools/google_cloud/tools.py" = ["E501"]
+"src/modulex_integrations/tools/google_cloud/tests/test_google_cloud.py" = ["E501"]
+# hootsuite manifest and tools have long description string literals in
+# ParameterDef / Field kwargs that cannot be wrapped.
+"src/modulex_integrations/tools/hootsuite/manifest.py" = ["E501"]
+"src/modulex_integrations/tools/hootsuite/tools.py" = ["E501"]
+# bloomerang manifest and tools have long description string literals in
+# ParameterDef / Field kwargs that cannot be wrapped.
+"src/modulex_integrations/tools/bloomerang/manifest.py" = ["E501"]
+"src/modulex_integrations/tools/bloomerang/tools.py" = ["E501"]
+# google_appsheet manifest, tools, and tests have long description string
+# literals in ParameterDef / Field kwargs that cannot be wrapped.
+"src/modulex_integrations/tools/google_appsheet/manifest.py" = ["E501"]
+"src/modulex_integrations/tools/google_appsheet/tools.py" = ["E501"]
+"src/modulex_integrations/tools/google_appsheet/tests/test_google_appsheet.py" = ["E501"]
+# crunchbase manifest and tools have long description string literals in
+# ParameterDef / Field kwargs that cannot be wrapped.
+"src/modulex_integrations/tools/crunchbase/manifest.py" = ["E501"]
+"src/modulex_integrations/tools/crunchbase/tools.py" = ["E501"]
+# google_directory manifest and tools have long description string literals in
+# ParameterDef / Field kwargs that cannot be wrapped.
+"src/modulex_integrations/tools/google_directory/manifest.py" = ["E501"]
+"src/modulex_integrations/tools/google_directory/tools.py" = ["E501"]
+# google_ad_manager manifest and tools have long description string literals in
+# ParameterDef / Field kwargs that cannot be wrapped.
+"src/modulex_integrations/tools/google_ad_manager/manifest.py" = ["E501"]
+"src/modulex_integrations/tools/google_ad_manager/tools.py" = ["E501"]
+# google_docs manifest and tools have long description string literals in
+# ParameterDef / Field kwargs that cannot be wrapped.
+"src/modulex_integrations/tools/google_docs/manifest.py" = ["E501"]
+"src/modulex_integrations/tools/google_docs/tools.py" = ["E501"]
 
 [tool.mypy]
 python_version = "3.12"
