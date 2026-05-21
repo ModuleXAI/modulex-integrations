@@ -8,6 +8,11 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ### Added
 
+- `google_ad_manager` integration — 2 actions, auth: oauth2. Programmatic
+  advertising platform for managing ad inventory and reporting via the
+  Google Ad Manager API (create_report, list_network_options).
+  Producer-staged by integration-drafts; consumer-side audit applied
+  4 patches before merge.
 - `google_docs` integration — 12 actions, auth: oauth2. Create, read, and
   edit Google Docs documents via the Google Docs API (append_image,
   append_text, create_document, create_document_from_template, find_document,
