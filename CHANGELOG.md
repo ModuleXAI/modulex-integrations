@@ -8,6 +8,11 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ### Added
 
+- `google_tasks` integration — 8 actions, auth: oauth2. Manage tasks and
+  task lists using the Google Tasks API (create_task, create_task_list,
+  delete_task, delete_task_list, list_tasks, list_task_lists, update_task,
+  update_task_list). Producer-staged by integration-drafts; consumer-side
+  audit applied 2 patches before merge.
 - `ahrefs` integration — 3 actions, auth: oauth2. SEO backlink analysis
   and referring domain data via the Ahrefs REST API v3 (get_backlinks,
   get_backlinks_one_per_domain, get_referring_domains). Producer-staged
