@@ -8,6 +8,10 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ### Added
 
+- `pipedrive` integration — 26 actions, auth: oauth2. Sales CRM and
+  pipeline management: deals, contacts, leads, activities, notes,
+  organizations, labels, and search. Producer-staged by
+  integration-drafts; consumer-side audit applied 6 patches before merge.
 - `google_ads` integration — 10 actions, auth: oauth2. Google Ads API
   integration: GAQL reports across Campaigns, Ad Groups, Ads, and
   Customers; Customer Match list management; offline conversion uploads;
