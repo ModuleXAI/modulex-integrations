@@ -104,6 +104,7 @@ semrush = "modulex_integrations.tools.semrush"
 gmail = "modulex_integrations.tools.gmail"
 godaddy = "modulex_integrations.tools.godaddy"
 google_cloud = "modulex_integrations.tools.google_cloud"
+google_contacts = "modulex_integrations.tools.google_contacts"
 google_ad_manager = "modulex_integrations.tools.google_ad_manager"
 google_analytics = "modulex_integrations.tools.google_analytics"
 google_appsheet = "modulex_integrations.tools.google_appsheet"
@@ -403,6 +404,10 @@ select = ["E", "F", "I", "N", "W", "B", "C4", "UP", "RUF"]
 # literals in ParameterDef / Field kwargs that cannot be wrapped.
 "src/modulex_integrations/tools/google_search_console/manifest.py" = ["E501"]
 "src/modulex_integrations/tools/google_search_console/tools.py" = ["E501"]
+# google_contacts manifest and tools have long description string literals in
+# ParameterDef / Field kwargs that cannot be wrapped.
+"src/modulex_integrations/tools/google_contacts/manifest.py" = ["E501"]
+"src/modulex_integrations/tools/google_contacts/tools.py" = ["E501"]
 
 [tool.mypy]
 python_version = "3.12"

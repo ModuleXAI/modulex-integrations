@@ -8,6 +8,11 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ### Added
 
+- `google_contacts` integration — 6 actions, auth: oauth2. Manage Google
+  People (Contacts) via the People API v1 (create_contact, delete_contact,
+  get_contact, list_contacts, list_directory_contacts, update_contact).
+  Producer-staged by integration-drafts; consumer-side audit applied
+  2 patches before merge.
 - `google_search_console` integration — 2 actions, auth: oauth2. Access
   Google Search Console search analytics and submit URLs for indexing via
   the Search Console and Indexing APIs (retrieve_site_performance_data,
