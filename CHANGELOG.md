@@ -8,6 +8,10 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ### Added
 
+- `algolia` integration — 4 actions, auth: api_key. Search and indexing
+  platform (browse_records, delete_records, list_index_name_options,
+  save_records) via the Algolia REST API. Producer-staged by
+  integration-drafts; consumer-side audit applied 1 patch before merge.
 - `pipedrive` integration — 26 actions, auth: oauth2. Sales CRM and
   pipeline management: deals, contacts, leads, activities, notes,
   organizations, labels, and search. Producer-staged by
