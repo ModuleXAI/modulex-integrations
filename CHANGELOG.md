@@ -8,6 +8,10 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ### Added
 
+- `ahrefs` integration — 3 actions, auth: oauth2. SEO backlink analysis
+  and referring domain data via the Ahrefs REST API v3 (get_backlinks,
+  get_backlinks_one_per_domain, get_referring_domains). Producer-staged
+  by integration-drafts; consumer-side audit applied 5 patches before merge.
 - `algolia` integration — 4 actions, auth: api_key. Search and indexing
   platform (browse_records, delete_records, list_index_name_options,
   save_records) via the Algolia REST API. Producer-staged by
