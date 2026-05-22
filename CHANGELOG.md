@@ -8,6 +8,10 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ### Added
 
+- `mixpanel` integration — 1 action, auth: api_key. Product analytics
+  platform for tracking user events via the Mixpanel /track API
+  (emit_event_to). Producer-staged by integration-drafts; consumer-side
+  audit applied 1 patch before merge.
 - `google_contacts` integration — 6 actions, auth: oauth2. Manage Google
   People (Contacts) via the People API v1 (create_contact, delete_contact,
   get_contact, list_contacts, list_directory_contacts, update_contact).
