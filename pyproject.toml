@@ -125,6 +125,7 @@ zendesk = "modulex_integrations.tools.zendesk"
 salesforce = "modulex_integrations.tools.salesforce"
 clickup = "modulex_integrations.tools.clickup"
 google_drive = "modulex_integrations.tools.google_drive"
+google_forms = "modulex_integrations.tools.google_forms"
 google_maps_platform = "modulex_integrations.tools.google_maps_platform"
 google_merchant_center = "modulex_integrations.tools.google_merchant_center"
 google_my_business = "modulex_integrations.tools.google_my_business"
@@ -389,6 +390,14 @@ select = ["E", "F", "I", "N", "W", "B", "C4", "UP", "RUF"]
 # literals in ParameterDef / Field kwargs that cannot be wrapped.
 "src/modulex_integrations/tools/google_my_business/manifest.py" = ["E501"]
 "src/modulex_integrations/tools/google_my_business/tools.py" = ["E501"]
+# google_forms manifest, tools, and tests have long description string
+# literals in ParameterDef / Field kwargs that cannot be wrapped.
+# google_forms outputs mirror upstream Google Forms API camelCase field
+# names (formId, responderUri, revisionId, documentTitle, etc.).
+"src/modulex_integrations/tools/google_forms/manifest.py" = ["E501"]
+"src/modulex_integrations/tools/google_forms/tools.py" = ["E501"]
+"src/modulex_integrations/tools/google_forms/tests/test_google_forms.py" = ["E501"]
+"src/modulex_integrations/tools/google_forms/outputs.py" = ["N815"]
 
 [tool.mypy]
 python_version = "3.12"

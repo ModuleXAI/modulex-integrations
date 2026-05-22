@@ -8,6 +8,11 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ### Added
 
+- `google_forms` integration — 6 actions, auth: oauth2. Create, update,
+  and read Google Forms and their responses via the Google Forms API
+  (create_form, create_text_question, get_form, get_form_response,
+  list_form_responses, update_form_title). Producer-staged by
+  integration-drafts; consumer-side audit applied 2 patches before merge.
 - `google_my_business` integration — 6 actions, auth: oauth2. Manage
   Google Business Profile posts, reviews, and replies via the Google My
   Business API (create_post, create_update_reply_to_review,
