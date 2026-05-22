@@ -8,6 +8,11 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ### Added
 
+- `google_ads` integration — 10 actions, auth: oauth2. Google Ads API
+  integration: GAQL reports across Campaigns, Ad Groups, Ads, and
+  Customers; Customer Match list management; offline conversion uploads;
+  keyword idea generation. Producer-staged by integration-drafts;
+  consumer-side audit applied 2 patches before merge.
 - `mixpanel` integration — 1 action, auth: api_key. Product analytics
   platform for tracking user events via the Mixpanel /track API
   (emit_event_to). Producer-staged by integration-drafts; consumer-side
