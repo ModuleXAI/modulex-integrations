@@ -129,6 +129,7 @@ google_forms = "modulex_integrations.tools.google_forms"
 google_maps_platform = "modulex_integrations.tools.google_maps_platform"
 google_merchant_center = "modulex_integrations.tools.google_merchant_center"
 google_my_business = "modulex_integrations.tools.google_my_business"
+google_search_console = "modulex_integrations.tools.google_search_console"
 google_meet = "modulex_integrations.tools.google_meet"
 google_sheets = "modulex_integrations.tools.google_sheets"
 google_slides = "modulex_integrations.tools.google_slides"
@@ -398,6 +399,10 @@ select = ["E", "F", "I", "N", "W", "B", "C4", "UP", "RUF"]
 "src/modulex_integrations/tools/google_forms/tools.py" = ["E501"]
 "src/modulex_integrations/tools/google_forms/tests/test_google_forms.py" = ["E501"]
 "src/modulex_integrations/tools/google_forms/outputs.py" = ["N815"]
+# google_search_console manifest and tools have long description string
+# literals in ParameterDef / Field kwargs that cannot be wrapped.
+"src/modulex_integrations/tools/google_search_console/manifest.py" = ["E501"]
+"src/modulex_integrations/tools/google_search_console/tools.py" = ["E501"]
 
 [tool.mypy]
 python_version = "3.12"
