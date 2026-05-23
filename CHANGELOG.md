@@ -8,6 +8,10 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ### Added
 
+- `fal_ai` integration — 4 actions, auth: api_key. Queue-based AI model
+  inference via the fal.ai platform (add_request_to_queue, cancel_request,
+  get_request_response, get_request_status). Producer-staged by
+  integration-drafts; consumer-side audit applied 1 patch before merge.
 - `heroku` integration — 1 action, auth: oauth2. Cloud platform management
   via the Heroku Platform API (list_apps). Producer-staged by
   integration-drafts; consumer-side audit applied 1 patch before merge.
