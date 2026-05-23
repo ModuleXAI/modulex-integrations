@@ -8,6 +8,10 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ### Added
 
+- `mintlify` integration — 3 actions, auth: custom. Documentation platform
+  with AI-powered assistant, semantic search, and project update triggers
+  (chat_with_assistant, search_documentation, trigger_update). Producer-staged
+  by integration-drafts; consumer-side audit applied 2 patches before merge.
 - `google_tasks` integration — 8 actions, auth: oauth2. Manage tasks and
   task lists using the Google Tasks API (create_task, create_task_list,
   delete_task, delete_task_list, list_tasks, list_task_lists, update_task,

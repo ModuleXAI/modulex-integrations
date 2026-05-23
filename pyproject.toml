@@ -149,6 +149,7 @@ microsoft_excel = "modulex_integrations.tools.microsoft_excel"
 microsoft_onedrive = "modulex_integrations.tools.microsoft_onedrive"
 microsoft_outlook = "modulex_integrations.tools.microsoft_outlook"
 microsoft_teams = "modulex_integrations.tools.microsoft_teams"
+mintlify = "modulex_integrations.tools.mintlify"
 mixpanel = "modulex_integrations.tools.mixpanel"
 monday = "modulex_integrations.tools.monday"
 posthog = "modulex_integrations.tools.posthog"
@@ -435,6 +436,11 @@ select = ["E", "F", "I", "N", "W", "B", "C4", "UP", "RUF"]
 # ParameterDef / Field kwargs that cannot be wrapped.
 "src/modulex_integrations/tools/google_tasks/manifest.py" = ["E501"]
 "src/modulex_integrations/tools/google_tasks/tools.py" = ["E501"]
+# mintlify manifest, tools, and tests have long description string literals in
+# ParameterDef / Field kwargs that cannot be wrapped.
+"src/modulex_integrations/tools/mintlify/manifest.py" = ["E501"]
+"src/modulex_integrations/tools/mintlify/tools.py" = ["E501"]
+"src/modulex_integrations/tools/mintlify/tests/test_mintlify.py" = ["E501"]
 
 [tool.mypy]
 python_version = "3.12"
