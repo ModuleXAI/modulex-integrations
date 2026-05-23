@@ -8,6 +8,11 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ### Added
 
+- `cal_com` integration — 6 actions, auth: api_key. Scheduling and booking
+  management via the Cal.com v2 API (create_booking, delete_booking,
+  get_all_bookings, get_bookable_slots, get_booking,
+  list_event_type_id_options). Producer-staged by integration-drafts;
+  consumer-side audit applied 2 patches before merge.
 - `dropbox` integration — 12 actions, auth: oauth2. Cloud file storage,
   sharing, and collaboration platform: create/delete/move/rename folders and
   files, search, list contents, create text files, manage shared links, and
