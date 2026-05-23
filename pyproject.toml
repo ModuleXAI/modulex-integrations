@@ -66,6 +66,7 @@ bloomerang = "modulex_integrations.tools.bloomerang"
 github = "modulex_integrations.tools.github"
 gitlab = "modulex_integrations.tools.gitlab"
 slack = "modulex_integrations.tools.slack"
+etsy = "modulex_integrations.tools.etsy"
 exa = "modulex_integrations.tools.exa"
 tavily = "modulex_integrations.tools.tavily"
 instacart = "modulex_integrations.tools.instacart"
@@ -447,6 +448,10 @@ select = ["E", "F", "I", "N", "W", "B", "C4", "UP", "RUF"]
 "src/modulex_integrations/tools/segment/manifest.py" = ["E501"]
 "src/modulex_integrations/tools/segment/tools.py" = ["E501"]
 "src/modulex_integrations/tools/segment/tests/test_segment.py" = ["E501"]
+# etsy manifest and tests have long description string literals in
+# ParameterDef / Field kwargs that cannot be wrapped.
+"src/modulex_integrations/tools/etsy/manifest.py" = ["E501"]
+"src/modulex_integrations/tools/etsy/tests/test_etsy.py" = ["E501"]
 
 [tool.mypy]
 python_version = "3.12"

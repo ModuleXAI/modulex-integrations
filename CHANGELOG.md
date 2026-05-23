@@ -8,6 +8,11 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ### Added
 
+- `etsy` integration — 6 actions, auth: oauth2. Etsy marketplace listing
+  management via the Open API v3 (create_draft_listing_product,
+  delete_listing, get_listing, get_listing_inventory,
+  update_listing_inventory, update_listing_property). Producer-staged
+  by integration-drafts; consumer-side audit applied 1 patch before merge.
 - `segment` integration — 6 actions, auth: api_key. Customer data
   platform for collecting and routing user analytics via the Segment
   Tracking API (alias, group, identify, page, screen, track).
