@@ -8,6 +8,9 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ### Added
 
+- `heroku` integration — 1 action, auth: oauth2. Cloud platform management
+  via the Heroku Platform API (list_apps). Producer-staged by
+  integration-drafts; consumer-side audit applied 1 patch before merge.
 - `cal_com` integration — 6 actions, auth: api_key. Scheduling and booking
   management via the Cal.com v2 API (create_booking, delete_booking,
   get_all_bookings, get_bookable_slots, get_booking,
