@@ -8,6 +8,10 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ### Added
 
+- `amazon_alexa` integration — 2 actions, auth: oauth2. Simulate and test
+  Alexa skills via the Alexa Skills Management API (simulate_skill,
+  get_simulation_results). Producer-staged by integration-drafts;
+  consumer-side audit applied 4 patches before merge.
 - `fal_ai` integration — 4 actions, auth: api_key. Queue-based AI model
   inference via the fal.ai platform (add_request_to_queue, cancel_request,
   get_request_response, get_request_status). Producer-staged by
