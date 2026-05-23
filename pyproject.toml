@@ -79,6 +79,7 @@ pipedrive = "modulex_integrations.tools.pipedrive"
 klaviyo = "modulex_integrations.tools.klaviyo"
 convertapi = "modulex_integrations.tools.convertapi"
 crunchbase = "modulex_integrations.tools.crunchbase"
+dropbox = "modulex_integrations.tools.dropbox"
 docusign = "modulex_integrations.tools.docusign"
 appdrag = "modulex_integrations.tools.appdrag"
 hackernews = "modulex_integrations.tools.hackernews"
@@ -452,6 +453,10 @@ select = ["E", "F", "I", "N", "W", "B", "C4", "UP", "RUF"]
 # ParameterDef / Field kwargs that cannot be wrapped.
 "src/modulex_integrations/tools/etsy/manifest.py" = ["E501"]
 "src/modulex_integrations/tools/etsy/tests/test_etsy.py" = ["E501"]
+# dropbox manifest and tools have long description string literals in
+# ParameterDef / Field kwargs that cannot be wrapped.
+"src/modulex_integrations/tools/dropbox/manifest.py" = ["E501"]
+"src/modulex_integrations/tools/dropbox/tools.py" = ["E501"]
 
 [tool.mypy]
 python_version = "3.12"

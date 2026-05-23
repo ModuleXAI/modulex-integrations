@@ -8,6 +8,12 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ### Added
 
+- `dropbox` integration — 12 actions, auth: oauth2. Cloud file storage,
+  sharing, and collaboration platform: create/delete/move/rename folders and
+  files, search, list contents, create text files, manage shared links, and
+  list file revisions via the Dropbox HTTP API. Producer-staged by
+  integration-drafts; consumer-side audit applied 3 patches before merge.
+
 - `etsy` integration — 6 actions, auth: oauth2. Etsy marketplace listing
   management via the Open API v3 (create_draft_listing_product,
   delete_listing, get_listing, get_listing_inventory,
