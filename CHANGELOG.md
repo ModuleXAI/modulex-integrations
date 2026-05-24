@@ -8,6 +8,10 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ### Added
 
+- `metaphor` integration — 3 actions, auth: api_key. AI-powered web search,
+  similarity matching, and document content retrieval via the Metaphor API
+  (search, find_similar_links, get_documents_content). Producer-staged by
+  integration-drafts; consumer-side audit applied 1 patch before merge.
 - `microsoft_power_bi` integration — 10 actions, auth: oauth2. Business
   intelligence and analytics platform for interactive visualizations,
   reports, and dashboards via the Power BI REST API. Producer-staged by
