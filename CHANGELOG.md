@@ -8,6 +8,10 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ### Added
 
+- `microsoft_365_people` integration — 3 actions, auth: oauth2. Manage
+  contacts and contact folders via the Microsoft Graph API (create_contact,
+  create_contact_folder, update_contact). Producer-staged by
+  integration-drafts; consumer-side audit applied 2 patches before merge.
 - `metaphor` integration — 3 actions, auth: api_key. AI-powered web search,
   similarity matching, and document content retrieval via the Metaphor API
   (search, find_similar_links, get_documents_content). Producer-staged by
