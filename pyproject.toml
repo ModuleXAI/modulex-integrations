@@ -153,6 +153,7 @@ mailchimp = "modulex_integrations.tools.mailchimp"
 mailgun = "modulex_integrations.tools.mailgun"
 medium = "modulex_integrations.tools.medium"
 microsoft_bookings = "modulex_integrations.tools.microsoft_bookings"
+microsoft_dynamics_365_sales = "modulex_integrations.tools.microsoft_dynamics_365_sales"
 microsoft_excel = "modulex_integrations.tools.microsoft_excel"
 microsoft_onedrive = "modulex_integrations.tools.microsoft_onedrive"
 microsoft_outlook = "modulex_integrations.tools.microsoft_outlook"
@@ -481,6 +482,11 @@ select = ["E", "F", "I", "N", "W", "B", "C4", "UP", "RUF"]
 "src/modulex_integrations/tools/amazon_alexa/tools.py" = ["E501"]
 "src/modulex_integrations/tools/amazon_alexa/outputs.py" = ["E501"]
 "src/modulex_integrations/tools/amazon_alexa/tests/test_amazon_alexa.py" = ["E501"]
+# microsoft_dynamics_365_sales manifest, tools, and tests have long description
+# string literals in ParameterDef / Field kwargs that cannot be wrapped.
+"src/modulex_integrations/tools/microsoft_dynamics_365_sales/manifest.py" = ["E501"]
+"src/modulex_integrations/tools/microsoft_dynamics_365_sales/tools.py" = ["E501"]
+"src/modulex_integrations/tools/microsoft_dynamics_365_sales/tests/test_microsoft_dynamics_365_sales.py" = ["E501"]
 
 [tool.mypy]
 python_version = "3.12"

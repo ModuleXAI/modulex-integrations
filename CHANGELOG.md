@@ -8,6 +8,10 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ### Added
 
+- `microsoft_dynamics_365_sales` integration — 11 actions, auth: oauth2.
+  CRM platform for managing accounts, contacts, appointments, and custom
+  entities via the Dynamics 365 Web API. Producer-staged by
+  integration-drafts; consumer-side audit applied 5 patches before merge.
 - `microsoft_sql_server` integration — 4 actions, auth: custom. Execute
   queries and manage data in Microsoft SQL Server databases via pymssql
   (execute_raw_query, execute_query, insert_row, list_table_options).
