@@ -157,6 +157,7 @@ microsoft_dynamics_365_sales = "modulex_integrations.tools.microsoft_dynamics_36
 microsoft_excel = "modulex_integrations.tools.microsoft_excel"
 microsoft_onedrive = "modulex_integrations.tools.microsoft_onedrive"
 microsoft_outlook = "modulex_integrations.tools.microsoft_outlook"
+microsoft_power_bi = "modulex_integrations.tools.microsoft_power_bi"
 microsoft_sql_server = "modulex_integrations.tools.microsoft_sql_server"
 microsoft_teams = "modulex_integrations.tools.microsoft_teams"
 mintlify = "modulex_integrations.tools.mintlify"
@@ -487,6 +488,11 @@ select = ["E", "F", "I", "N", "W", "B", "C4", "UP", "RUF"]
 "src/modulex_integrations/tools/microsoft_dynamics_365_sales/manifest.py" = ["E501"]
 "src/modulex_integrations/tools/microsoft_dynamics_365_sales/tools.py" = ["E501"]
 "src/modulex_integrations/tools/microsoft_dynamics_365_sales/tests/test_microsoft_dynamics_365_sales.py" = ["E501"]
+# microsoft_power_bi manifest and tools have long description string
+# literals in ParameterDef / Field kwargs and credential guard lines
+# that cannot be wrapped.
+"src/modulex_integrations/tools/microsoft_power_bi/manifest.py" = ["E501"]
+"src/modulex_integrations/tools/microsoft_power_bi/tools.py" = ["E501"]
 
 [tool.mypy]
 python_version = "3.12"
