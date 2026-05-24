@@ -8,6 +8,14 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ### Added
 
+- `amazon_selling_partner` integration — 8 actions, auth: oauth2. Amazon
+  Selling Partner API for managing orders, inventory, pricing, and reports
+  on Amazon marketplaces (check_fba_inventory_levels,
+  fetch_orders_by_date_range, generate_sales_inventory_reports,
+  get_order_details, list_inbound_shipments, list_marketplace_id_options,
+  optimize_product_pricing, retrieve_sales_performance_reports).
+  Producer-staged by integration-drafts; consumer-side audit applied
+  4 patches before merge.
 - `microsoft_365_people` integration — 3 actions, auth: oauth2. Manage
   contacts and contact folders via the Microsoft Graph API (create_contact,
   create_contact_folder, update_contact). Producer-staged by
