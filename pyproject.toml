@@ -43,6 +43,7 @@ dev = [
     # dependencies.toml for the future assemble script.
     "langchain-tavily>=0.2.0",
     "nasdaq-data-link>=1.0.0",  # for tests/mocking (pulls pandas transitively)
+    "pymssql>=2.2.8",                           # microsoft_sql_server
     # Wave 7-9 SDK extras — mirror of per-integration dependencies.toml.
     # mypy needs these importable to type-check the integration's tools.py.
     "aiomysql>=0.2.0",                       # mysql
@@ -155,6 +156,7 @@ microsoft_bookings = "modulex_integrations.tools.microsoft_bookings"
 microsoft_excel = "modulex_integrations.tools.microsoft_excel"
 microsoft_onedrive = "modulex_integrations.tools.microsoft_onedrive"
 microsoft_outlook = "modulex_integrations.tools.microsoft_outlook"
+microsoft_sql_server = "modulex_integrations.tools.microsoft_sql_server"
 microsoft_teams = "modulex_integrations.tools.microsoft_teams"
 mintlify = "modulex_integrations.tools.mintlify"
 mixpanel = "modulex_integrations.tools.mixpanel"
@@ -470,6 +472,9 @@ select = ["E", "F", "I", "N", "W", "B", "C4", "UP", "RUF"]
 # ParameterDef / Field kwargs that cannot be wrapped.
 "src/modulex_integrations/tools/cal_com/manifest.py" = ["E501"]
 "src/modulex_integrations/tools/cal_com/tools.py" = ["E501"]
+# microsoft_sql_server manifest has long description string literals in
+# ParameterDef / EnvVar kwargs that cannot be wrapped.
+"src/modulex_integrations/tools/microsoft_sql_server/manifest.py" = ["E501"]
 # amazon_alexa manifest, tools, outputs, and tests have long description string
 # literals in ParameterDef / Field kwargs that cannot be wrapped.
 "src/modulex_integrations/tools/amazon_alexa/manifest.py" = ["E501"]

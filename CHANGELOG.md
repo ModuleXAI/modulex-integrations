@@ -8,6 +8,11 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ### Added
 
+- `microsoft_sql_server` integration — 4 actions, auth: custom. Execute
+  queries and manage data in Microsoft SQL Server databases via pymssql
+  (execute_raw_query, execute_query, insert_row, list_table_options).
+  Producer-staged by integration-drafts; consumer-side audit applied
+  3 patches before merge.
 - `amazon_alexa` integration — 2 actions, auth: oauth2. Simulate and test
   Alexa skills via the Alexa Skills Management API (simulate_skill,
   get_simulation_results). Producer-staged by integration-drafts;
