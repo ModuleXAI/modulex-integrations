@@ -186,10 +186,10 @@ manifest = IntegrationManifest(
                 ),
             ],
             test_endpoint=TestEndpoint(
-                url="https://{subdomain}.okta.com/api/v1/users?limit=1",
+                url="https://{OKTA_SUBDOMAIN}.okta.com/api/v1/users?limit=1",
                 method="GET",
                 headers={
-                    "Authorization": "SSWS {api_token}",
+                    "Authorization": "SSWS {OKTA_API_TOKEN}",
                     "Accept": "application/json",
                 },
                 success_indicators=SuccessIndicators(status_codes=[200]),

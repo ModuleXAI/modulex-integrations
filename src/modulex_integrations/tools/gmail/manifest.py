@@ -255,7 +255,7 @@ manifest = IntegrationManifest(
                 ),
             ],
             test_endpoint=_profile_test_endpoint(
-                "token",
+                "bearer_token",
                 "Validates token by fetching Gmail profile information",
             ),
         ),

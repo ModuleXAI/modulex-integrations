@@ -1103,10 +1103,10 @@ manifest = IntegrationManifest(
                 ),
             ],
             test_endpoint=TestEndpoint(
-                url="https://{shop_id}.myshopify.com/admin/api/2024-01/shop.json",
+                url="https://{SHOPIFY_SHOP_ID}.myshopify.com/admin/api/2024-01/shop.json",
                 method="GET",
                 headers={
-                    "X-Shopify-Access-Token": "{access_token}",
+                    "X-Shopify-Access-Token": "{SHOPIFY_ACCESS_TOKEN}",
                     "Accept": "application/json",
                 },
                 success_indicators=SuccessIndicators(

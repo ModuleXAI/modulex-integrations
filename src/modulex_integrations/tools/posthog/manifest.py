@@ -955,10 +955,10 @@ manifest = IntegrationManifest(
                 ),
             ],
             test_endpoint=TestEndpoint(
-                url="{base_url}/api/projects/",
+                url="{POSTHOG_BASE_URL}/api/projects/",
                 method="GET",
                 headers={
-                    "Authorization": "Bearer {api_key}",
+                    "Authorization": "Bearer {POSTHOG_API_KEY}",
                     "Accept": "application/json",
                 },
                 success_indicators=SuccessIndicators(
@@ -967,8 +967,10 @@ manifest = IntegrationManifest(
                 cost_level="free",
                 description=(
                     "Validates API key by listing projects on the user's "
-                    "PostHog instance ({base_url} resolves to "
-                    "POSTHOG_BASE_URL — supports US/EU cloud and self-hosted)"
+                    "PostHog instance. Placeholders use the raw EnvVar "
+                    "names because the modulex credential UI ships "
+                    "custom-auth field values keyed by EnvVar.name "
+                    "(e.g. POSTHOG_BASE_URL, not base_url)."
                 ),
             ),
         ),

@@ -168,9 +168,9 @@ manifest = IntegrationManifest(
                 ),
             ],
             test_endpoint=TestEndpoint(
-                url="{base_url}/api/0/",
+                url="{SENTRY_BASE_URL}/api/0/",
                 method="GET",
-                headers={"Authorization": "Bearer {token}"},
+                headers={"Authorization": "Bearer {bearer_token}"},
                 success_indicators=SuccessIndicators(
                     status_codes=[200],
                 ),

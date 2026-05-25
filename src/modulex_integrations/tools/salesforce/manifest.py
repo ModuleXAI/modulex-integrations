@@ -35,11 +35,16 @@ def _additional_fields() -> ParameterDef:
 
 
 # Identity endpoint is the conventional Salesforce health check.
-def _test_endpoint() -> TestEndpoint:
+def _test_endpoint(placeholder: str) -> TestEndpoint:
+    # Salesforce's OAuth userinfo endpoint validates any valid access
+    # token. The placeholder name matches the auth_data key the modulex
+    # credential service ships:
+    #   - "access_token" for OAuth2 (set by the OAuth2 flow)
+    #   - "bearer_token" for the BearerTokenAuthSchema (sent by the UI)
     return TestEndpoint(
         url="https://login.salesforce.com/services/oauth2/userinfo",
         method="GET",
-        headers={"Authorization": "Bearer {access_token}"},
+        headers={"Authorization": f"Bearer {{{placeholder}}}"},
         success_indicators=SuccessIndicators(
             status_codes=[200], response_fields=["user_id"]
         ),
@@ -372,7 +377,7 @@ manifest = IntegrationManifest(
                 scopes=["api", "refresh_token", "offline_access"],
                 token_auth_method="body",
             ),
-            test_endpoint=_test_endpoint(),
+            test_endpoint=_test_endpoint("access_token"),
         ),
         BearerTokenAuthSchema(
             display_name="Session ID / Access Token",
@@ -400,7 +405,7 @@ manifest = IntegrationManifest(
                     sample_format="https://your-org.my.salesforce.com",
                 ),
             ],
-            test_endpoint=_test_endpoint(),
+            test_endpoint=_test_endpoint("bearer_token"),
         ),
     ],
 )

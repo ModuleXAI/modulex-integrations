@@ -370,22 +370,14 @@ manifest = IntegrationManifest(
                 scopes=["read", "write"],
                 token_auth_method="body",
             ),
-            test_endpoint=TestEndpoint(
-                url="https://{subdomain}.zendesk.com/api/v2/users/me.json",
-                method="GET",
-                headers={
-                    "Authorization": "Bearer {access_token}",
-                    "Accept": "application/json",
-                },
-                success_indicators=SuccessIndicators(
-                    status_codes=[200], response_fields=["user"]
-                ),
-                cost_level="free",
-                description=(
-                    "Validates the OAuth access token by fetching the "
-                    "authenticated user on the configured Zendesk subdomain"
-                ),
-            ),
+            # No test_endpoint for OAuth2: the test URL would need to
+            # interpolate {ZENDESK_SUBDOMAIN} (tenant-specific) but the
+            # modulex OAuth callback only stores OAuth tokens in
+            # auth_data. The api_key schema below still gets a working
+            # test because UI custom-fields ship the subdomain with the
+            # api_key credential. tools.py reads the subdomain from
+            # auth_data at action call time for both schemas.
+            test_endpoint=None,
         ),
         ApiKeyAuthSchema(
             display_name="API Token Authentication",
@@ -419,7 +411,7 @@ manifest = IntegrationManifest(
                 ),
             ],
             test_endpoint=TestEndpoint(
-                url="https://{subdomain}.zendesk.com/api/v2/users/me.json",
+                url="https://{ZENDESK_SUBDOMAIN}.zendesk.com/api/v2/users/me.json",
                 method="GET",
                 # Zendesk API tokens use HTTP Basic Auth
                 # base64("{email}/token:{api_token}"). The credential

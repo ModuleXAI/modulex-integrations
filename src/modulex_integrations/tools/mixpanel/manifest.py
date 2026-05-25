@@ -82,7 +82,7 @@ manifest = IntegrationManifest(
                 ),
             ],
             test_endpoint=TestEndpoint(
-                url="{base_url}/engage",
+                url="{MIXPANEL_BASE_URL}/engage",
                 method="POST",
                 headers={"Content-Type": "application/json"},
                 body={

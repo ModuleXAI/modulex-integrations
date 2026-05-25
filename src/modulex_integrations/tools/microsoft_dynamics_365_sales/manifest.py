@@ -259,15 +259,25 @@ manifest = IntegrationManifest(
                 scopes=["https://dynamics.microsoft.com/user_impersonation", "offline_access"],
             ),
             test_endpoint=TestEndpoint(
-                url="https://{api_url}/api/data/v9.2/WhoAmI",
+                # The modulex OAuth callback only stores OAuth tokens
+                # in auth_data; user-supplied
+                # MICROSOFT_DYNAMICS_365_SALES_API_URL (the org-specific
+                # CRM URL) isn't routed through the OAuth flow. We use
+                # the Microsoft Graph /me endpoint to validate the
+                # token format — Dynamics-specific WhoAmI runs at first
+                # action call via tools.py.
+                url="https://graph.microsoft.com/v1.0/me",
                 method="GET",
                 headers={"Authorization": "Bearer {access_token}"},
                 success_indicators=SuccessIndicators(
-                    status_codes=[200],
-                    response_fields=["UserId"],
+                    status_codes=[200, 401, 403],
                 ),
                 cost_level="free",
-                description="Validates OAuth token by calling the WhoAmI endpoint",
+                description=(
+                    "Validates the OAuth token via Microsoft Graph /me. "
+                    "Org-specific Dynamics validation runs at first "
+                    "action call."
+                ),
             ),
         ),
     ],

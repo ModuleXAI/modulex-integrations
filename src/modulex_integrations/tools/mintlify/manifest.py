@@ -113,10 +113,10 @@ manifest = IntegrationManifest(
                 ),
             ],
             test_endpoint=TestEndpoint(
-                url="https://api-dsc.mintlify.com/v1/chat/{project_id}/topic",
+                url="https://api-dsc.mintlify.com/v1/chat/{MINTLIFY_PROJECT_ID}/topic",
                 method="POST",
                 headers={
-                    "Authorization": "Bearer {assistant_api_key}",
+                    "Authorization": "Bearer {MINTLIFY_ASSISTANT_API_KEY}",
                     "Content-Type": "application/json",
                 },
                 body={"messages": []},

@@ -44,8 +44,10 @@ def _table_query_params() -> dict[str, ParameterDef]:
 
 
 def _test_endpoint(placeholder: str, description: str) -> TestEndpoint:
+    # {SERVICENOW_INSTANCE_NAME} uses the raw EnvVar name because the
+    # modulex credential UI ships custom-field values keyed by EnvVar.name.
     return TestEndpoint(
-        url="https://{instance_name}.service-now.com/api/now/table/sys_user?sysparm_limit=1",
+        url="https://{SERVICENOW_INSTANCE_NAME}.service-now.com/api/now/table/sys_user?sysparm_limit=1",
         method="GET",
         headers={
             "Authorization": f"Bearer {{{placeholder}}}",
@@ -347,10 +349,15 @@ manifest = IntegrationManifest(
                     sample_format="dev12345",
                 ),
             ],
-            test_endpoint=_test_endpoint(
-                "access_token",
-                "Validates OAuth access by retrieving a single user record",
-            ),
+            # No test_endpoint for OAuth2: the test URL would need to
+            # interpolate {SERVICENOW_INSTANCE_NAME} (tenant-specific),
+            # but the modulex OAuth callback only stores OAuth tokens
+            # in auth_data. The bearer_token schema below still gets a
+            # working test because UI custom-fields ship the instance
+            # name with the bearer_token credential. tools.py reads the
+            # instance_name from auth_data at action call time for
+            # both schemas.
+            test_endpoint=None,
         ),
         BearerTokenAuthSchema(
             display_name="Access Token",
@@ -376,7 +383,7 @@ manifest = IntegrationManifest(
                 ),
             ],
             test_endpoint=_test_endpoint(
-                "token",
+                "bearer_token",
                 "Validates access token by retrieving a single user record",
             ),
         ),

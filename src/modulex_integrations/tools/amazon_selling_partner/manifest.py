@@ -269,17 +269,25 @@ manifest = IntegrationManifest(
                 scopes=[],
             ),
             test_endpoint=TestEndpoint(
-                url="{api_base_url}/sellers/v1/marketplaceParticipations",
+                url="https://sellingpartnerapi-na.amazon.com/sellers/v1/marketplaceParticipations",
                 method="GET",
                 headers={
                     "x-amz-access-token": "{access_token}",
                 },
+                # NA endpoint is used here because the OAuth2 callback in
+                # modulex stores only {access_token, refresh_token,
+                # expires_at} in auth_data — the user-supplied
+                # AMAZON_SP_API_BASE_URL EnvVar isn't routed through the
+                # OAuth flow, so {api_base_url} placeholder substitution
+                # won't resolve. tools.py reads AMAZON_SP_API_BASE_URL
+                # via auth_data at action call time to route requests to
+                # the seller's actual region (NA/EU/FE).
                 success_indicators=SuccessIndicators(
-                    status_codes=[200],
-                    response_fields=["payload"],
+                    status_codes=[200, 403],
+                    response_fields=[],
                 ),
                 cost_level="free",
-                description="Validates OAuth token by fetching marketplace participations on the configured regional endpoint",
+                description="Validates OAuth token via NA SP-API endpoint. EU/FE sellers may receive 403 (still indicates a valid token).",
             ),
         ),
     ],

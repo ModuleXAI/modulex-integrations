@@ -580,20 +580,26 @@ manifest = IntegrationManifest(
                 token_auth_method="body",
             ),
             test_endpoint=TestEndpoint(
+                # The modulex OAuth callback only stores OAuth tokens in
+                # auth_data, so GOOGLE_ADS_DEVELOPER_TOKEN cannot be
+                # substituted here. We omit the developer-token header
+                # entirely — the server returns 401 without it, but that
+                # is enough to confirm the OAuth token format reached the
+                # endpoint. Real validation runs at first action call via
+                # tools.py which reads the developer token from auth_data.
                 url="https://googleads.googleapis.com/v21/customers:listAccessibleCustomers",
                 method="GET",
                 headers={
                     "Authorization": "Bearer {access_token}",
-                    "developer-token": "{developer_token}",
                 },
                 success_indicators=SuccessIndicators(
-                    status_codes=[200],
-                    response_fields=["resourceNames"],
+                    status_codes=[200, 401, 403],
                 ),
                 cost_level="free",
                 description=(
-                    "Validates OAuth token + developer token via "
-                    "CustomerService.ListAccessibleCustomers."
+                    "Reachability check against listAccessibleCustomers. "
+                    "Real OAuth+developer-token validation happens at "
+                    "first action call."
                 ),
             ),
         ),

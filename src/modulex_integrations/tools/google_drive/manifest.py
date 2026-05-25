@@ -458,7 +458,7 @@ manifest = IntegrationManifest(
                     sensitive=True,
                 ),
             ],
-            test_endpoint=_test_endpoint("token"),
+            test_endpoint=_test_endpoint("bearer_token"),
         ),
     ],
 )

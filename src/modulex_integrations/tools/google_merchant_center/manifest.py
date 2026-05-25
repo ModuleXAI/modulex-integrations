@@ -124,17 +124,24 @@ manifest = IntegrationManifest(
                 scopes=["https://www.googleapis.com/auth/content"],
             ),
             test_endpoint=TestEndpoint(
-                url="https://shoppingcontent.googleapis.com/content/v2.1/{merchant_id}/products",
+                # /accounts/authinfo doesn't require a merchant_id —
+                # it lists the merchant accounts the OAuth token can
+                # access. We use this instead of /{merchant_id}/products
+                # because the modulex OAuth callback only stores
+                # {access_token, refresh_token, expires_at} in auth_data;
+                # the user-supplied GOOGLE_MERCHANT_CENTER_MERCHANT_ID
+                # EnvVar isn't routed through the OAuth flow.
+                url="https://shoppingcontent.googleapis.com/content/v2.1/accounts/authinfo",
                 method="GET",
                 headers={
                     "Authorization": "Bearer {access_token}",
                 },
-                params={"maxResults": "1"},
                 success_indicators=SuccessIndicators(
                     status_codes=[200],
+                    response_fields=["accountIdentifiers"],
                 ),
                 cost_level="free",
-                description="Validates OAuth token by listing products (max 1 result)",
+                description="Validates OAuth token via /accounts/authinfo (lists accessible merchant accounts).",
             ),
         ),
     ],

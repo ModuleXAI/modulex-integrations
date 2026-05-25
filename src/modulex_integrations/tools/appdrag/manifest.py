@@ -150,7 +150,7 @@ manifest = IntegrationManifest(
                 headers={"Content-Type": "application/x-www-form-urlencoded"},
                 body={
                     "APIKey": "{api_key}",
-                    "appID": "{app_id}",
+                    "appID": "{APPDRAG_APP_ID}",
                     "command": "CloudDBGetDataset",
                     "query": "show tables",
                 },

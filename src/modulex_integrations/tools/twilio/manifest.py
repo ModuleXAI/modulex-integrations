@@ -331,10 +331,10 @@ manifest = IntegrationManifest(
                 ),
             ],
             test_endpoint=TestEndpoint(
-                url="https://api.twilio.com/2010-04-01/Accounts/{account_sid}.json",
+                url="https://api.twilio.com/2010-04-01/Accounts/{TWILIO_ACCOUNT_SID}.json",
                 method="GET",
-                # Twilio uses HTTP Basic Auth base64("{account_sid}:
-                # {auth_token}"). The credential tester substitutes
+                # Twilio uses HTTP Basic Auth base64("{TWILIO_ACCOUNT_SID}:
+                # {TWILIO_AUTH_TOKEN}"). The credential tester substitutes
                 # placeholders as raw strings, so the header arrives at
                 # Twilio as the literal `Basic <raw-token>` — 401 is
                 # expected. We accept 200 (real auth, unlikely) or 401
@@ -342,7 +342,7 @@ manifest = IntegrationManifest(
                 # the account SID URL resolves and Twilio responded.
                 # True credential validation runs at first-call time
                 # via tools.py.
-                headers={"Authorization": "Basic {auth_token}"},
+                headers={"Authorization": "Basic {TWILIO_AUTH_TOKEN}"},
                 success_indicators=SuccessIndicators(status_codes=[200, 401]),
                 cost_level="free",
                 description=(
