@@ -25,7 +25,7 @@ manifest = IntegrationManifest(
     ),
     version="1.0.0",
     author="ModuleX",
-    logo="modulex:google_ads-themed",
+    logo="logos:google-ads",
     app_url="https://ads.google.com",
     categories=["Marketing & Advertising", "Analytics", "Business Services"],
     actions=[

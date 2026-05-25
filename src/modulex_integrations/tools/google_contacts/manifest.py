@@ -24,7 +24,7 @@ manifest = IntegrationManifest(
     ),
     version="1.0.0",
     author="ModuleX",
-    logo="modulex:google_contacts-themed",
+    logo="modulex:google_contacts",
     app_url="https://contacts.google.com",
     categories=["Productivity & Collaboration", "CRM"],
     actions=[

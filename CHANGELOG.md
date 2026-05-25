@@ -20,10 +20,6 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
   contacts and contact folders via the Microsoft Graph API (create_contact,
   create_contact_folder, update_contact). Producer-staged by
   integration-drafts; consumer-side audit applied 2 patches before merge.
-- `metaphor` integration — 3 actions, auth: api_key. AI-powered web search,
-  similarity matching, and document content retrieval via the Metaphor API
-  (search, find_similar_links, get_documents_content). Producer-staged by
-  integration-drafts; consumer-side audit applied 1 patch before merge.
 - `microsoft_power_bi` integration — 10 actions, auth: oauth2. Business
   intelligence and analytics platform for interactive visualizations,
   reports, and dashboards via the Power BI REST API. Producer-staged by
@@ -139,11 +135,6 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
   get_document, get_tab_content, insert_page_break, insert_table, insert_text,
   replace_image, replace_text). Producer-staged by integration-drafts;
   consumer-side audit applied 3 patches before merge.
-- `google_directory` integration — 7 actions, auth: oauth2. Manage users,
-  groups, and group memberships in Google Workspace via the Admin SDK
-  Directory API (add_member_to_group, create_group, create_user, get_group,
-  get_user, list_groups, list_users). Producer-staged by integration-drafts;
-  consumer-side audit applied 1 patch before merge.
 - `crunchbase` integration — 2 actions, auth: api_key. Access Crunchbase
   company and organization data for business intelligence and research
   (get_organization, search_organizations) via the Crunchbase REST API v4.
