@@ -7,6 +7,8 @@ from modulex_integrations.schema import (
     EnvVar,
     IntegrationManifest,
     ParameterDef,
+    SuccessIndicators,
+    TestEndpoint,
 )
 
 __all__ = ["manifest"]
@@ -110,6 +112,26 @@ manifest = IntegrationManifest(
                     about_url="https://dashboard.mintlify.com",
                 ),
             ],
+            test_endpoint=TestEndpoint(
+                url="https://api-dsc.mintlify.com/v1/chat/{project_id}/topic",
+                method="POST",
+                headers={
+                    "Authorization": "Bearer {assistant_api_key}",
+                    "Content-Type": "application/json",
+                },
+                body={"messages": []},
+                # Auth-correct: 200 (topic returned) or 400 (empty messages
+                #   rejected — but auth was accepted).
+                # Auth-wrong: 401/403.
+                success_indicators=SuccessIndicators(status_codes=[200, 400]),
+                cost_level="minimal",
+                description=(
+                    "Validates the assistant API key + project ID by "
+                    "hitting the Chat Topic endpoint with an empty "
+                    "message list. Auth pass returns 200 or 400; auth "
+                    "fail returns 401/403."
+                ),
+            ),
         ),
     ],
 )

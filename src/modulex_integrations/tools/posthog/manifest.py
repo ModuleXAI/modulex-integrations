@@ -955,7 +955,7 @@ manifest = IntegrationManifest(
                 ),
             ],
             test_endpoint=TestEndpoint(
-                url="https://app.posthog.com/api/projects/",
+                url="{base_url}/api/projects/",
                 method="GET",
                 headers={
                     "Authorization": "Bearer {api_key}",
@@ -965,7 +965,11 @@ manifest = IntegrationManifest(
                     status_codes=[200], response_fields=["results"]
                 ),
                 cost_level="free",
-                description="Validates API key by listing projects",
+                description=(
+                    "Validates API key by listing projects on the user's "
+                    "PostHog instance ({base_url} resolves to "
+                    "POSTHOG_BASE_URL — supports US/EU cloud and self-hosted)"
+                ),
             ),
         ),
     ],

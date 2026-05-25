@@ -7,6 +7,8 @@ from modulex_integrations.schema import (
     EnvVar,
     IntegrationManifest,
     ParameterDef,
+    SuccessIndicators,
+    TestEndpoint,
 )
 
 __all__ = ["manifest"]
@@ -183,9 +185,20 @@ manifest = IntegrationManifest(
                     about_url="https://developer.okta.com/docs/guides/create-an-api-token/main/",
                 ),
             ],
-            # No test_endpoint: validation requires templating a per-tenant
-            # subdomain into the URL, which the modulex credential tester
-            # does not substitute for ``custom`` auth.
+            test_endpoint=TestEndpoint(
+                url="https://{subdomain}.okta.com/api/v1/users?limit=1",
+                method="GET",
+                headers={
+                    "Authorization": "SSWS {api_token}",
+                    "Accept": "application/json",
+                },
+                success_indicators=SuccessIndicators(status_codes=[200]),
+                cost_level="free",
+                description=(
+                    "Validates the SSWS token + subdomain by listing a single "
+                    "user on the configured Okta tenant"
+                ),
+            ),
         ),
     ],
 )

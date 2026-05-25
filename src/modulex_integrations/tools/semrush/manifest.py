@@ -275,9 +275,8 @@ manifest = IntegrationManifest(
                 ),
             ],
             test_endpoint=TestEndpoint(
-                url="https://api.semrush.com/",
+                url="https://api.semrush.com/?type=api_units&key={api_key}",
                 method="GET",
-                params={"type": "api_units", "key": "{api_key}"},
                 success_indicators=SuccessIndicators(status_codes=[200]),
                 cost_level="minimal",
                 description="Validates API key by checking API units balance (no cost)",

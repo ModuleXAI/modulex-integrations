@@ -162,17 +162,21 @@ manifest = IntegrationManifest(
                 token_auth_method="body",
             ),
             test_endpoint=TestEndpoint(
-                url="https://www.googleapis.com/oauth2/v3/userinfo",
+                url="https://www.googleapis.com/drive/v3/about?fields=user",
                 method="GET",
                 headers={
                     "Authorization": "Bearer {access_token}",
                 },
                 success_indicators=SuccessIndicators(
                     status_codes=[200],
-                    response_fields=["sub"],
+                    response_fields=["user"],
                 ),
                 cost_level="free",
-                description="Validates OAuth token by fetching the authenticated Google user info.",
+                description=(
+                    "Validates the OAuth token via the Drive about endpoint "
+                    "(Forms live inside Drive, so a valid Forms-scoped token "
+                    "can read this endpoint)."
+                ),
             ),
         ),
     ],

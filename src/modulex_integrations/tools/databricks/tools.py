@@ -183,7 +183,14 @@ class CreateVectorSearchIndexInput(BaseModel):
     source_table: str | None = Field(default=None, description="The Delta table backing the index.")
     columns_to_sync: str | None = Field(default=None, description="JSON array of column names to sync.")
     embedding_source_columns: str | None = Field(default=None, description="JSON array of embedding source configs.")
-    schema_json: str | None = Field(default=None, description="Schema in JSON format for DIRECT_ACCESS.")  # type: ignore[assignment]
+    # Renamed from ``schema_json`` to avoid shadowing
+    # ``BaseModel.schema_json()`` (the deprecated pydantic method). The
+    # wire-format field name stays ``schema_json`` — see the body
+    # construction in the action implementation below.
+    index_schema_json: str | None = Field(
+        default=None,
+        description="Schema in JSON format for DIRECT_ACCESS.",
+    )
     pipeline_type: str = Field(default="TRIGGERED", description="Pipeline type: TRIGGERED or CONTINUOUS.")
 
 
@@ -665,7 +672,7 @@ async def create_vector_search_index(
     source_table: str | None = None,
     columns_to_sync: str | None = None,
     embedding_source_columns: str | None = None,
-    schema_json: str | None = None,
+    index_schema_json: str | None = None,
     pipeline_type: str = "TRIGGERED",
 ) -> CreateVectorSearchIndexOutput:
     """Create a new vector search index in Databricks."""
@@ -691,8 +698,11 @@ async def create_vector_search_index(
             body["delta_sync_index_spec"] = delta_sync
         elif index_type == "DIRECT_ACCESS":
             direct: dict[str, Any] = {}
-            if schema_json:
-                direct["schema_json"] = schema_json
+            if index_schema_json:
+                # Databricks API expects the field literally named
+                # ``schema_json`` on the wire — the local variable name is
+                # decoupled to avoid pydantic shadowing on the input model.
+                direct["schema_json"] = index_schema_json
             if embedding_source_columns:
                 direct["embedding_source_columns"] = _parse_json(embedding_source_columns)
             body["direct_access_index_spec"] = direct

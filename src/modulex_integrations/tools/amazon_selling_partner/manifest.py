@@ -244,6 +244,24 @@ manifest = IntegrationManifest(
                     only_for_custom=True,
                     about_url="https://developer-docs.amazon.com/sp-api/docs/registering-your-application",
                 ),
+                EnvVar(
+                    name="AMAZON_SP_API_BASE_URL",
+                    display_name="SP-API Base URL",
+                    description=(
+                        "Selling Partner API regional endpoint. Use "
+                        "https://sellingpartnerapi-na.amazon.com for North "
+                        "America (default), "
+                        "https://sellingpartnerapi-eu.amazon.com for "
+                        "Europe, or "
+                        "https://sellingpartnerapi-fe.amazon.com for the "
+                        "Far East. Pick the endpoint that matches your "
+                        "seller account's region."
+                    ),
+                    required=True,
+                    sensitive=False,
+                    sample_format="https://sellingpartnerapi-na.amazon.com",
+                    about_url="https://developer-docs.amazon.com/sp-api/docs/sp-api-endpoints",
+                ),
             ],
             oauth_config=OAuthConfig(
                 auth_url="https://www.amazon.com/ap/oa",
@@ -251,7 +269,7 @@ manifest = IntegrationManifest(
                 scopes=[],
             ),
             test_endpoint=TestEndpoint(
-                url="https://sellingpartnerapi-na.amazon.com/sellers/v1/marketplaceParticipations",
+                url="{api_base_url}/sellers/v1/marketplaceParticipations",
                 method="GET",
                 headers={
                     "x-amz-access-token": "{access_token}",
@@ -261,7 +279,7 @@ manifest = IntegrationManifest(
                     response_fields=["payload"],
                 ),
                 cost_level="free",
-                description="Validates OAuth token by fetching marketplace participations",
+                description="Validates OAuth token by fetching marketplace participations on the configured regional endpoint",
             ),
         ),
     ],

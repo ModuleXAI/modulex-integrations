@@ -39,10 +39,14 @@ class TestManifest:
     def test_manifest_has_api_key_auth(self) -> None:
         assert [a.auth_type for a in manifest.auth_schemas] == ["api_key"]
 
-    def test_test_endpoint_uses_query_param_secret(self) -> None:
+    def test_test_endpoint_embeds_secret_in_url(self) -> None:
+        # ``params`` placeholders are NOT substituted by the modulex runtime
+        # — credentials must live in the URL/headers/body. We embed the
+        # ``{api_key}`` placeholder directly in the URL query string.
         auth = manifest.auth_schemas[0]
         assert auth.test_endpoint is not None
-        assert auth.test_endpoint.params == {"Secret": "{api_key}"}
+        assert auth.test_endpoint.params == {}
+        assert "Secret={api_key}" in auth.test_endpoint.url
 
 
 @pytest.mark.asyncio

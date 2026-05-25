@@ -7,6 +7,8 @@ from modulex_integrations.schema import (
     EnvVar,
     IntegrationManifest,
     ParameterDef,
+    SuccessIndicators,
+    TestEndpoint,
 )
 
 __all__ = ["manifest"]
@@ -122,6 +124,32 @@ manifest = IntegrationManifest(
                     about_url="https://support.google.com/appsheet/answer/10104797",
                 ),
             ],
+            test_endpoint=TestEndpoint(
+                url="https://api.appsheet.com/api/v2/apps/{app_id}/tables/__credtest__/Action",
+                method="POST",
+                headers={
+                    "ApplicationAccessKey": "{api_key}",
+                    "Content-Type": "application/json",
+                },
+                body={
+                    "Action": "Find",
+                    "Properties": {"Locale": "en-US"},
+                    "Rows": [],
+                },
+                # Auth-correct: 400 / 404 (table "__credtest__" missing —
+                #   but the app + key were accepted).
+                # Auth-wrong: 401 / 403.
+                # Auth-correct + table-exists (unlikely with sentinel name):
+                #   200.
+                success_indicators=SuccessIndicators(status_codes=[200, 400, 404]),
+                cost_level="minimal",
+                description=(
+                    "Validates the App ID + Application Access Key by "
+                    "POSTing a Find action against a sentinel table name. "
+                    "Auth pass returns 200/400/404; auth fail returns "
+                    "401/403."
+                ),
+            ),
         ),
     ],
 )

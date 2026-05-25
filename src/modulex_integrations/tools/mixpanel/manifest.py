@@ -7,6 +7,8 @@ from modulex_integrations.schema import (
     EnvVar,
     IntegrationManifest,
     ParameterDef,
+    SuccessIndicators,
+    TestEndpoint,
 )
 
 __all__ = ["manifest"]
@@ -64,7 +66,45 @@ manifest = IntegrationManifest(
                     sample_format="xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
                     about_url="https://developer.mixpanel.com/reference/project-token",
                 ),
+                EnvVar(
+                    name="MIXPANEL_BASE_URL",
+                    display_name="Ingestion Base URL",
+                    description=(
+                        "Mixpanel ingestion base URL. Use "
+                        "https://api.mixpanel.com for US (default) or "
+                        "https://api-eu.mixpanel.com for the EU data "
+                        "residency project."
+                    ),
+                    required=True,
+                    sensitive=False,
+                    sample_format="https://api.mixpanel.com",
+                    about_url="https://developer.mixpanel.com/reference/ingestion-api",
+                ),
             ],
+            test_endpoint=TestEndpoint(
+                url="{base_url}/engage",
+                method="POST",
+                headers={"Content-Type": "application/json"},
+                body={
+                    "$token": "{api_key}",
+                    "$distinct_id": "$credential_test",
+                    "$set": {"$credential_test": True},
+                },
+                # Mixpanel's /engage endpoint accepts JSON and returns 200
+                # for any well-formed event regardless of token validity
+                # (project tokens are not server-validated against an
+                # account). This is a reachability + payload-format check
+                # that confirms the configured base URL is reachable and
+                # the token placeholder is substituted correctly.
+                success_indicators=SuccessIndicators(status_codes=[200]),
+                cost_level="minimal",
+                description=(
+                    "Reachability + payload check against Mixpanel's "
+                    "/engage profile endpoint with a $credential_test "
+                    "sentinel event. Returns 200 when the configured "
+                    "base URL responds."
+                ),
+            ),
         ),
     ],
 )

@@ -7,6 +7,8 @@ from modulex_integrations.schema import (
     EnvVar,
     IntegrationManifest,
     ParameterDef,
+    SuccessIndicators,
+    TestEndpoint,
 )
 
 __all__ = ["manifest"]
@@ -200,9 +202,9 @@ manifest = IntegrationManifest(
                     type="string",
                     description="JSON array of embedding source column configs.",
                 ),
-                "schema_json": ParameterDef(
+                "index_schema_json": ParameterDef(
                     type="string",
-                    description="The schema of the index in JSON format (required for DIRECT_ACCESS).",
+                    description="The schema of the index in JSON format (required for DIRECT_ACCESS). Sent on the wire as `schema_json`.",
                 ),
                 "pipeline_type": ParameterDef(
                     type="string",
@@ -800,6 +802,23 @@ manifest = IntegrationManifest(
                     about_url="https://docs.databricks.com/en/dev-tools/auth/pat.html",
                 ),
             ],
+            test_endpoint=TestEndpoint(
+                url="https://{domain}.cloud.databricks.com/api/2.0/preview/scim/v2/Me",
+                method="GET",
+                headers={
+                    "Authorization": "Bearer {access_token}",
+                    "Accept": "application/json",
+                },
+                success_indicators=SuccessIndicators(
+                    status_codes=[200], response_fields=["id"]
+                ),
+                cost_level="free",
+                description=(
+                    "Validates the PAT and workspace domain by fetching the "
+                    "current user via SCIM on the configured Databricks "
+                    "workspace"
+                ),
+            ),
         ),
     ],
 )

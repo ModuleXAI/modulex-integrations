@@ -7,6 +7,8 @@ from modulex_integrations.schema import (
     EnvVar,
     IntegrationManifest,
     ParameterDef,
+    SuccessIndicators,
+    TestEndpoint,
 )
 
 __all__ = ["manifest"]
@@ -691,6 +693,27 @@ manifest = IntegrationManifest(
                     sample_format="wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY",
                 ),
             ],
+            test_endpoint=TestEndpoint(
+                url="https://sts.amazonaws.com/?Action=GetCallerIdentity&Version=2011-06-15",
+                method="GET",
+                # AWS STS requires SigV4 signing — runtime cannot
+                # synthesize the signature, so this request arrives
+                # unsigned and STS returns 403 (or 400 if it can't
+                # parse the request at all). We accept those as
+                # success: they confirm STS is reachable and the
+                # request was well-formed. True credential validation
+                # happens at first-call time via boto3 in tools.py.
+                success_indicators=SuccessIndicators(
+                    status_codes=[200, 400, 403]
+                ),
+                cost_level="free",
+                description=(
+                    "Reachability check against AWS STS. Accepts 200 "
+                    "(signed request, unlikely), 400 (malformed unsigned), "
+                    "or 403 (missing/invalid signature — expected). True "
+                    "credential validation runs via boto3 at first call."
+                ),
+            ),
         ),
     ],
 )

@@ -209,7 +209,11 @@ manifest = IntegrationManifest(
                 method="GET",
                 headers={
                     "Authorization": "Bearer {access_token}",
-                    "x-api-key": "{oauth_client_id}",
+                    # Etsy requires the OAuth Client ID (a.k.a. "keystring")
+                    # alongside the bearer token. The placeholder name must
+                    # match the EnvVar prefix-stripped + lowercased form of
+                    # ETSY_OAUTH2_CLIENT_ID → oauth2_client_id.
+                    "x-api-key": "{oauth2_client_id}",
                 },
                 success_indicators=SuccessIndicators(
                     status_codes=[200],

@@ -7,6 +7,8 @@ from modulex_integrations.schema import (
     EnvVar,
     IntegrationManifest,
     ParameterDef,
+    SuccessIndicators,
+    TestEndpoint,
 )
 
 __all__ = ["manifest"]
@@ -1100,6 +1102,22 @@ manifest = IntegrationManifest(
                     about_url="https://shopify.dev/docs/apps/build/authentication",
                 ),
             ],
+            test_endpoint=TestEndpoint(
+                url="https://{shop_id}.myshopify.com/admin/api/2024-01/shop.json",
+                method="GET",
+                headers={
+                    "X-Shopify-Access-Token": "{access_token}",
+                    "Accept": "application/json",
+                },
+                success_indicators=SuccessIndicators(
+                    status_codes=[200], response_fields=["shop"]
+                ),
+                cost_level="free",
+                description=(
+                    "Validates the access token and shop ID by fetching shop "
+                    "metadata via the Admin REST API"
+                ),
+            ),
         ),
     ],
 )

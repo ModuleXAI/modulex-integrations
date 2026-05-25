@@ -182,9 +182,8 @@ manifest = IntegrationManifest(
                 ),
             ],
             test_endpoint=TestEndpoint(
-                url="https://v2.convertapi.com/user",
+                url="https://v2.convertapi.com/user?Secret={api_key}",
                 method="GET",
-                params={"Secret": "{api_key}"},
                 success_indicators=SuccessIndicators(
                     status_codes=[200], response_fields=["SecondsLeft"]
                 ),

@@ -22,6 +22,8 @@ from modulex_integrations.schema import (
     EnvVar,
     IntegrationManifest,
     ParameterDef,
+    SuccessIndicators,
+    TestEndpoint,
 )
 
 __all__ = ["manifest"]
@@ -152,11 +154,44 @@ manifest = IntegrationManifest(
                         "https://customer.io/docs/api/#section/Overview/Authentication"
                     ),
                 ),
+                EnvVar(
+                    name="CUSTOMERIO_REGION",
+                    display_name="Region",
+                    description=(
+                        "Customer.io data region: 'US' (default, "
+                        "track.customer.io) or 'EU' (track-eu.customer.io). "
+                        "Must match the workspace's region."
+                    ),
+                    required=False,
+                    sensitive=False,
+                    sample_format="US",
+                    about_url=(
+                        "https://customer.io/docs/api/#section/Overview/Regions-and-Endpoints"
+                    ),
+                ),
             ],
-            # test_endpoint dropped — Customer.io uses HTTP Basic Auth on its test
-            # endpoint, which our TestEndpoint schema doesn't yet model. Schema
-            # enhancement needed before modulex can validate these credentials
-            # via the package manifest.
+            test_endpoint=TestEndpoint(
+                url="https://track.customer.io/api/v1/auth",
+                method="GET",
+                # Customer.io Tracking API uses HTTP Basic Auth
+                # base64("{site_id}:{api_key}"). The credential tester
+                # substitutes placeholders as raw strings, so the header
+                # arrives as the literal `Basic <raw-key>` — 401 is
+                # expected. We accept 200 (real auth) or 401 (literal
+                # placeholder) as success: both confirm endpoint
+                # reachability. Full credential validation happens at
+                # first action call via tools.py.
+                headers={"Authorization": "Basic {api_key}"},
+                success_indicators=SuccessIndicators(status_codes=[200, 401]),
+                cost_level="free",
+                description=(
+                    "Reachability + endpoint-existence check against the "
+                    "Customer.io Tracking API. Accepts 200 (real Base64 "
+                    "auth) or 401 (literal placeholder auth — expected). "
+                    "Full credential validation happens at first action "
+                    "call."
+                ),
+            ),
         ),
     ],
 )

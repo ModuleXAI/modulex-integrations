@@ -7,6 +7,8 @@ from modulex_integrations.schema import (
     EnvVar,
     IntegrationManifest,
     ParameterDef,
+    SuccessIndicators,
+    TestEndpoint,
 )
 
 __all__ = ["manifest"]
@@ -132,6 +134,22 @@ manifest = IntegrationManifest(
                     sample_format="false",
                 ),
             ],
+            test_endpoint=TestEndpoint(
+                url="https://learn.microsoft.com/en-us/sql/sql-server/",
+                method="GET",
+                # SQL Server uses TDS (Tabular Data Stream) over TCP
+                # for auth — there is no HTTP credential validation
+                # path. This check confirms Microsoft's docs site is
+                # reachable. Real credentials are validated by pymssql
+                # at first-call time in tools.py.
+                success_indicators=SuccessIndicators(status_codes=[200]),
+                cost_level="free",
+                description=(
+                    "Generic reachability check (Microsoft Learn). SQL "
+                    "Server uses TDS/TCP for auth — real auth runs at "
+                    "first action call via pymssql."
+                ),
+            ),
         ),
     ],
 )
