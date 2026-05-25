@@ -140,14 +140,19 @@ manifest = IntegrationManifest(
                 ),
             ],
             test_endpoint=TestEndpoint(
-                url="https://data.nasdaq.com/api/v3/datatables/NDAQ/RD.json?api_key={api_key}&qopts.per_page=1",
+                # The /datatables/NDAQ/RD endpoint requires a premium
+                # subscription and returns 403 on free-tier keys. We
+                # use /databases which is free for all valid API keys
+                # and only lists available databases — minimal data
+                # transfer, no premium scope needed.
+                url="https://data.nasdaq.com/api/v3/databases.json?api_key={api_key}&per_page=1",
                 method="GET",
                 headers={"Accept": "application/json"},
                 success_indicators=SuccessIndicators(
-                    status_codes=[200], response_fields=["datatable"]
+                    status_codes=[200], response_fields=["databases"]
                 ),
-                cost_level="minimal",
-                description="Validates API key with minimal reference data query",
+                cost_level="free",
+                description="Validates API key via the free /databases list endpoint",
             ),
         ),
     ],

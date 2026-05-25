@@ -135,7 +135,11 @@ manifest = IntegrationManifest(
                 ),
             ],
             test_endpoint=TestEndpoint(
-                url="https://registry.npmjs.org/-/v1/search",
+                # /-/v1/search requires the ``text`` query parameter —
+                # without it, the registry returns 400. We pass a
+                # trivial search ("express", size=1) to confirm
+                # reachability.
+                url="https://registry.npmjs.org/-/v1/search?text=express&size=1",
                 method="GET",
                 headers={"Accept": "application/json"},
                 success_indicators=SuccessIndicators(status_codes=[200]),

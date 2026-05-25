@@ -70,23 +70,29 @@ manifest = IntegrationManifest(
                     name="MIXPANEL_BASE_URL",
                     display_name="Ingestion Base URL",
                     description=(
-                        "Mixpanel ingestion base URL. Use "
-                        "https://api.mixpanel.com for US (default) or "
-                        "https://api-eu.mixpanel.com for the EU data "
-                        "residency project."
+                        "Mixpanel ingestion base URL (optional — leave "
+                        "empty for https://api.mixpanel.com US default). "
+                        "Set to https://api-eu.mixpanel.com for EU data "
+                        "residency projects."
                     ),
-                    required=True,
+                    required=False,
                     sensitive=False,
                     sample_format="https://api.mixpanel.com",
                     about_url="https://developer.mixpanel.com/reference/ingestion-api",
                 ),
             ],
             test_endpoint=TestEndpoint(
-                url="{MIXPANEL_BASE_URL}/engage",
+                # Hardcoded US endpoint here because MIXPANEL_BASE_URL is
+                # optional — when empty, ``{MIXPANEL_BASE_URL}`` would
+                # substitute to "" and break the URL. tools.py reads the
+                # user-supplied base URL at action call time and routes
+                # ingest to the right region; this test only validates
+                # the API token format.
+                url="https://api.mixpanel.com/engage",
                 method="POST",
                 headers={"Content-Type": "application/json"},
                 body={
-                    "$token": "{api_key}",
+                    "$token": "{MIXPANEL_API_KEY}",
                     "$distinct_id": "$credential_test",
                     "$set": {"$credential_test": True},
                 },

@@ -59,11 +59,13 @@ class TestManifest:
     def test_test_endpoint_embeds_api_key_in_url(self) -> None:
         # ``params`` placeholders are NOT substituted by the modulex runtime
         # — the credential must live in the URL query string directly.
+        # Endpoint is /databases (free for all keys), not the premium
+        # /datatables/NDAQ/RD which returned 403 on free tier.
         auth = manifest.auth_schemas[0]
         assert auth.test_endpoint is not None
         assert auth.test_endpoint.params == {}
         assert "api_key={api_key}" in auth.test_endpoint.url
-        assert "qopts.per_page=1" in auth.test_endpoint.url
+        assert "/databases" in auth.test_endpoint.url
 
 
 @pytest.mark.asyncio

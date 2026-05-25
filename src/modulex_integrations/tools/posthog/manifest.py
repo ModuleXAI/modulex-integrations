@@ -275,11 +275,21 @@ manifest = IntegrationManifest(
         ),
         ActionDefinition(
             name="get_feature_flag",
-            description="Get a flag definition (by id OR key)",
+            description=(
+                "Get a flag definition. EITHER flag_id OR flag_key must "
+                "be provided — pass only one. If both are given, flag_id "
+                "is used."
+            ),
             parameters={
                 "project_id": _project_id(),
-                "flag_id": _opt_int("Feature flag ID"),
-                "flag_key": _opt_str("Feature flag key"),
+                "flag_id": _opt_int(
+                    "Feature flag ID (integer). Mutually exclusive with "
+                    "flag_key — provide one or the other."
+                ),
+                "flag_key": _opt_str(
+                    "Feature flag key (string). Mutually exclusive with "
+                    "flag_id — provide one or the other."
+                ),
                 "base_url": _base_url(),
             },
         ),
@@ -946,12 +956,16 @@ manifest = IntegrationManifest(
                     name="POSTHOG_BASE_URL",
                     display_name="Instance URL",
                     description=(
-                        "PostHog instance URL (https://app.posthog.com for "
-                        "cloud, or your self-hosted URL)"
+                        "PostHog instance HOST ONLY — e.g. "
+                        "https://us.posthog.com (US cloud), "
+                        "https://eu.posthog.com (EU cloud), or your "
+                        "self-hosted URL. Do NOT append /api/projects "
+                        "or any other path; the path is added "
+                        "automatically."
                     ),
                     required=True,
                     sensitive=False,
-                    sample_format="https://app.posthog.com",
+                    sample_format="https://us.posthog.com",
                 ),
             ],
             test_endpoint=TestEndpoint(

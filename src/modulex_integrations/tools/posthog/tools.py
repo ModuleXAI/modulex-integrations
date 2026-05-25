@@ -124,7 +124,21 @@ _TIMEOUT = 60.0
 
 
 def _base(base_url: str | None) -> str:
-    return (base_url or _DEFAULT_BASE).rstrip("/")
+    """Normalize a user-supplied PostHog instance URL to a host root.
+
+    Accepts (and corrects) common mistakes:
+      * ``https://us.posthog.com``           → ``https://us.posthog.com``
+      * ``https://us.posthog.com/``          → ``https://us.posthog.com``
+      * ``https://us.posthog.com/api``       → ``https://us.posthog.com``
+      * ``https://us.posthog.com/api/``      → ``https://us.posthog.com``
+      * ``https://us.posthog.com/api/projects/`` → ``https://us.posthog.com``
+    """
+    url = (base_url or _DEFAULT_BASE).rstrip("/")
+    # Strip any trailing /api or /api/projects (with or without trailing slash)
+    for suffix in ("/api/projects", "/api"):
+        if url.lower().endswith(suffix):
+            url = url[: -len(suffix)]
+    return url.rstrip("/")
 
 
 def _ingest(ingest_url: str | None) -> str:

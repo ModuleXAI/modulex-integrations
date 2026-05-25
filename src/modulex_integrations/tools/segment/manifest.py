@@ -4,6 +4,7 @@ from __future__ import annotations
 from modulex_integrations.schema import (
     ActionDefinition,
     ApiKeyAuthSchema,
+    BasicAuthSpec,
     EnvVar,
     IntegrationManifest,
     ParameterDef,
@@ -244,17 +245,21 @@ manifest = IntegrationManifest(
             test_endpoint=TestEndpoint(
                 url="https://api.segment.io/v1/batch",
                 method="POST",
-                headers={
-                    "Content-Type": "application/json",
-                    "Authorization": "Basic {SEGMENT_WRITE_KEY}",
-                },
+                headers={"Content-Type": "application/json"},
                 body={"batch": [], "sentAt": "2024-01-01T00:00:00.000Z"},
+                # Segment Basic Auth: write_key as username, empty
+                # password. The modulex runtime synthesises the
+                # ``Authorization: Basic <base64(write_key:)>`` header.
+                auth=BasicAuthSpec(
+                    username_placeholder="SEGMENT_WRITE_KEY",
+                    password_placeholder="",
+                ),
                 success_indicators=SuccessIndicators(
                     status_codes=[200],
                     response_fields=["success"],
                 ),
                 cost_level="free",
-                description="Validates the write key by sending an empty batch",
+                description="Validates the write key via empty batch + Basic Auth.",
             ),
         ),
     ],

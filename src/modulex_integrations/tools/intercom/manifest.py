@@ -17,14 +17,15 @@ __all__ = ["manifest"]
 
 
 def _me_test_endpoint(
-    placeholder: str, description: str, url: str = "{INTERCOM_API_BASE_URL}/me"
+    placeholder: str, description: str, url: str = "https://api.intercom.io/me"
 ) -> TestEndpoint:
-    # bearer_token credentials route {INTERCOM_API_BASE_URL} from the UI
-    # custom-fields (raw EnvVar name). OAuth2 credentials cannot — the
-    # modulex OAuth callback ships only access/refresh tokens into
-    # auth_data, so the URL must be hardcoded for the OAuth2 path
-    # (defaults to api.intercom.io). tools.py reads the user-supplied
-    # API base URL at action call time regardless of auth_type.
+    # The credential test uses the US default endpoint
+    # (api.intercom.io/me) regardless of the user's eventual data region.
+    # Reason: INTERCOM_API_BASE_URL is now optional and may be empty —
+    # in which case the placeholder substitution would leave a broken
+    # URL. The OAuth token validates against any Intercom region, and
+    # tools.py uses the user-supplied base URL at action call time, so
+    # this hardcoded test URL is purely for credential validation.
     return TestEndpoint(
         url=url,
         method="GET",
@@ -354,13 +355,12 @@ manifest = IntegrationManifest(
                     name="INTERCOM_API_BASE_URL",
                     display_name="API Base URL",
                     description=(
-                        "Intercom API base URL. Use "
-                        "https://api.intercom.io (US, default), "
-                        "https://api.eu.intercom.io (EU), or "
-                        "https://api.au.intercom.io (Australia) to match "
-                        "your workspace's data region."
+                        "Intercom API base URL (optional — leave empty for "
+                        "https://api.intercom.io US default). Set to "
+                        "https://api.eu.intercom.io for EU workspaces or "
+                        "https://api.au.intercom.io for Australia."
                     ),
-                    required=True,
+                    required=False,
                     sensitive=False,
                     sample_format="https://api.intercom.io",
                     about_url="https://developers.intercom.com/docs/build-an-integration/learn-more/rest-apis/api-base-urls/",
@@ -375,7 +375,6 @@ manifest = IntegrationManifest(
             test_endpoint=_me_test_endpoint(
                 "access_token",
                 "Validates OAuth token by fetching authenticated admin info",
-                url="https://api.intercom.io/me",
             ),
         ),
         BearerTokenAuthSchema(
@@ -394,13 +393,12 @@ manifest = IntegrationManifest(
                     name="INTERCOM_API_BASE_URL",
                     display_name="API Base URL",
                     description=(
-                        "Intercom API base URL. Use "
-                        "https://api.intercom.io (US, default), "
-                        "https://api.eu.intercom.io (EU), or "
-                        "https://api.au.intercom.io (Australia) to match "
-                        "your workspace's data region."
+                        "Intercom API base URL (optional — leave empty for "
+                        "https://api.intercom.io US default). Set to "
+                        "https://api.eu.intercom.io for EU workspaces or "
+                        "https://api.au.intercom.io for Australia."
                     ),
-                    required=True,
+                    required=False,
                     sensitive=False,
                     sample_format="https://api.intercom.io",
                     about_url="https://developers.intercom.com/docs/build-an-integration/learn-more/rest-apis/api-base-urls/",

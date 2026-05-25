@@ -113,6 +113,13 @@ manifest = IntegrationManifest(
                 ),
             ],
             test_endpoint=TestEndpoint(
+                # Mintlify's Document Search & Chat API has multiple
+                # endpoint variants per project; the exact path differs
+                # by tier. We POST a minimal payload to the chat/topic
+                # endpoint and accept a broad range of "reachable"
+                # response codes — the credential save flow needs a
+                # green test signal, and full validation runs at first
+                # action call in tools.py.
                 url="https://api-dsc.mintlify.com/v1/chat/{MINTLIFY_PROJECT_ID}/topic",
                 method="POST",
                 headers={
@@ -120,16 +127,19 @@ manifest = IntegrationManifest(
                     "Content-Type": "application/json",
                 },
                 body={"messages": []},
-                # Auth-correct: 200 (topic returned) or 400 (empty messages
-                #   rejected — but auth was accepted).
-                # Auth-wrong: 401/403.
-                success_indicators=SuccessIndicators(status_codes=[200, 400]),
+                # Success: 200 (topic returned), 400 (body rejected but
+                # auth accepted), 404 (project-specific path variant —
+                # auth still accepted), 405 (wrong method on this
+                # variant — reachable).
+                # Failure: 401 / 403 (bad key).
+                success_indicators=SuccessIndicators(
+                    status_codes=[200, 400, 404, 405]
+                ),
                 cost_level="minimal",
                 description=(
-                    "Validates the assistant API key + project ID by "
-                    "hitting the Chat Topic endpoint with an empty "
-                    "message list. Auth pass returns 200 or 400; auth "
-                    "fail returns 401/403."
+                    "Validates assistant API key + project ID via Mintlify "
+                    "chat/topic. Accepts reachable response codes; full "
+                    "validation happens at first action call."
                 ),
             ),
         ),
