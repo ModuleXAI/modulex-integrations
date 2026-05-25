@@ -33,16 +33,18 @@ class TestManifest:
     def test_tools_match_actions(self) -> None:
         assert {a.name for a in manifest.actions} == {t.name for t in TOOLS}
 
-    def test_test_endpoint_is_reachability_check(self) -> None:
-        # Customer.io requires Base64 Basic Auth which the credential
-        # tester can't synthesize. The manifest ships a reachability
-        # endpoint with success_codes=[200, 401] so the credential
-        # save flow has something to test. Real auth runs at first
-        # call in tools.py.
+    def test_test_endpoint_uses_basic_auth_directive(self) -> None:
+        # Customer.io Tracking API uses HTTP Basic Auth. The manifest
+        # declares this via BasicAuthSpec so the modulex runtime can
+        # synthesise the correct ``Authorization: Basic <b64(...)>``
+        # header at credential test time.
         te = manifest.auth_schemas[0].test_endpoint
         assert te is not None
         assert "customer.io" in te.url
-        assert 401 in te.success_indicators.status_codes
+        assert te.auth is not None
+        assert te.auth.username_placeholder == "CUSTOMERIO_SITE_ID"
+        assert te.auth.password_placeholder == "CUSTOMERIO_API_KEY"
+        assert te.success_indicators.status_codes == [200]
 
 
 @pytest.mark.asyncio

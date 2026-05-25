@@ -19,6 +19,7 @@ from __future__ import annotations
 from modulex_integrations.schema import (
     ActionDefinition,
     ApiKeyAuthSchema,
+    BasicAuthSpec,
     EnvVar,
     IntegrationManifest,
     ParameterDef,
@@ -173,24 +174,16 @@ manifest = IntegrationManifest(
             test_endpoint=TestEndpoint(
                 url="https://track.customer.io/api/v1/auth",
                 method="GET",
-                # Customer.io Tracking API uses HTTP Basic Auth
-                # base64("{site_id}:{api_key}"). The credential tester
-                # substitutes placeholders as raw strings, so the header
-                # arrives as the literal `Basic <raw-key>` — 401 is
-                # expected. We accept 200 (real auth) or 401 (literal
-                # placeholder) as success: both confirm endpoint
-                # reachability. Full credential validation happens at
-                # first action call via tools.py.
-                headers={"Authorization": "Basic {api_key}"},
-                success_indicators=SuccessIndicators(status_codes=[200, 401]),
-                cost_level="free",
-                description=(
-                    "Reachability + endpoint-existence check against the "
-                    "Customer.io Tracking API. Accepts 200 (real Base64 "
-                    "auth) or 401 (literal placeholder auth — expected). "
-                    "Full credential validation happens at first action "
-                    "call."
+                # Customer.io Tracking API Basic Auth: site_id as
+                # username, API key as password. The modulex runtime
+                # synthesises ``Authorization: Basic <base64(site_id:key)>``.
+                auth=BasicAuthSpec(
+                    username_placeholder="CUSTOMERIO_SITE_ID",
+                    password_placeholder="CUSTOMERIO_API_KEY",
                 ),
+                success_indicators=SuccessIndicators(status_codes=[200]),
+                cost_level="free",
+                description="Validates Customer.io site_id + API key via Basic Auth.",
             ),
         ),
     ],

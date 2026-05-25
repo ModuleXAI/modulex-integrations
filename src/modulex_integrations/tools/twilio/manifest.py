@@ -3,6 +3,7 @@ from __future__ import annotations
 
 from modulex_integrations.schema import (
     ActionDefinition,
+    BasicAuthSpec,
     CustomAuthSchema,
     EnvVar,
     IntegrationManifest,
@@ -333,25 +334,18 @@ manifest = IntegrationManifest(
             test_endpoint=TestEndpoint(
                 url="https://api.twilio.com/2010-04-01/Accounts/{TWILIO_ACCOUNT_SID}.json",
                 method="GET",
-                # Twilio uses HTTP Basic Auth base64("{TWILIO_ACCOUNT_SID}:
-                # {TWILIO_AUTH_TOKEN}"). The credential tester substitutes
-                # placeholders as raw strings, so the header arrives at
-                # Twilio as the literal `Basic <raw-token>` — 401 is
-                # expected. We accept 200 (real auth, unlikely) or 401
-                # (literal placeholder auth) as success: both confirm
-                # the account SID URL resolves and Twilio responded.
-                # True credential validation runs at first-call time
-                # via tools.py.
-                headers={"Authorization": "Basic {TWILIO_AUTH_TOKEN}"},
-                success_indicators=SuccessIndicators(status_codes=[200, 401]),
-                cost_level="free",
-                description=(
-                    "Reachability + endpoint-existence check against the "
-                    "Twilio account JSON endpoint. Accepts 200 (real "
-                    "Base64 auth) or 401 (literal placeholder auth — "
-                    "expected). Full credential validation happens at "
-                    "first action call."
+                # Twilio Basic Auth: account_sid as username, auth_token
+                # as password. The modulex runtime synthesises the
+                # ``Authorization: Basic <base64(sid:token)>`` header.
+                auth=BasicAuthSpec(
+                    username_placeholder="TWILIO_ACCOUNT_SID",
+                    password_placeholder="TWILIO_AUTH_TOKEN",
                 ),
+                success_indicators=SuccessIndicators(
+                    status_codes=[200], response_fields=["sid"]
+                ),
+                cost_level="free",
+                description="Validates Twilio Account SID + Auth Token via Basic Auth.",
             ),
         ),
     ],

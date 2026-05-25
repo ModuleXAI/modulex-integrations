@@ -4,6 +4,7 @@ from __future__ import annotations
 from modulex_integrations.schema import (
     ActionDefinition,
     ApiKeyAuthSchema,
+    BasicAuthSpec,
     EnvVar,
     IntegrationManifest,
     OAuth2AuthSchema,
@@ -399,25 +400,18 @@ manifest = IntegrationManifest(
             test_endpoint=TestEndpoint(
                 url="https://{MAILCHIMP_DATACENTER}.api.mailchimp.com/3.0/ping",
                 method="GET",
-                # Mailchimp Marketing API uses HTTP Basic Auth
-                # base64("anystring:{api_key}"). The credential tester
-                # substitutes placeholders as raw strings — the header
-                # arrives as the literal `Basic <raw-key>` and
-                # Mailchimp returns 401. We accept 401 as success: it
-                # confirms the datacenter URL resolved and the API is
-                # reachable. Real credential validation happens at
-                # first-call time in tools.py (which builds the
-                # correct Base64 header). For full validation prefer
-                # the OAuth2 auth schema (no Base64 limitation).
-                headers={"Authorization": "Basic {api_key}"},
-                success_indicators=SuccessIndicators(status_codes=[200, 401]),
-                cost_level="free",
-                description=(
-                    "Reachability + datacenter check against Mailchimp "
-                    "/ping. Accepts 200 or 401 (literal placeholder auth — "
-                    "expected). Full credential validation happens at "
-                    "first action call; prefer OAuth2 for proper test."
+                # Mailchimp Basic Auth: literal "anystring" as username,
+                # API key as password. The modulex runtime synthesises
+                # ``Authorization: Basic <base64(anystring:KEY)>``.
+                auth=BasicAuthSpec(
+                    username_placeholder="anystring",
+                    password_placeholder="MAILCHIMP_API_KEY",
                 ),
+                success_indicators=SuccessIndicators(
+                    status_codes=[200], response_fields=["health_status"]
+                ),
+                cost_level="free",
+                description="Validates API key + datacenter via /ping (Basic Auth).",
             ),
         ),
     ],

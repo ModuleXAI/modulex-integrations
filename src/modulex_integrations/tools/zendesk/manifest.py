@@ -413,25 +413,21 @@ manifest = IntegrationManifest(
             test_endpoint=TestEndpoint(
                 url="https://{ZENDESK_SUBDOMAIN}.zendesk.com/api/v2/users/me.json",
                 method="GET",
-                # Zendesk API tokens use HTTP Basic Auth
-                # base64("{email}/token:{api_token}"). The credential
-                # tester substitutes placeholders as raw strings — the
-                # header arrives as the literal `Basic <raw-token>` and
-                # Zendesk returns 401. We accept 401 as success: it
-                # confirms the subdomain resolved and the API is
-                # reachable. Real credential validation happens at
-                # first-call time in tools.py (which builds the
-                # correct Base64 header). For full validation prefer
-                # the OAuth2 auth schema (no Base64 limitation).
-                headers={"Authorization": "Basic {api_key}"},
+                # Zendesk's Basic Auth username is a composite
+                # ``{email}/token`` (placeholder + literal suffix),
+                # which the modulex BasicAuthSpec directive doesn't
+                # express. We keep the reachability + 401-as-success
+                # workaround here; users wanting a proper credential
+                # test should use the OAuth2 auth schema above.
+                headers={"Authorization": "Basic {ZENDESK_API_KEY}"},
                 success_indicators=SuccessIndicators(status_codes=[200, 401]),
                 cost_level="free",
                 description=(
                     "Reachability + subdomain check against Zendesk "
                     "/users/me. Accepts 200 or 401 (literal placeholder "
-                    "auth — expected). Full credential validation "
-                    "happens at first action call; prefer OAuth2 for "
-                    "proper test."
+                    "auth — expected; composite Basic Auth username "
+                    "isn't expressible via BasicAuthSpec). Prefer the "
+                    "OAuth2 auth schema for proper credential validation."
                 ),
             ),
         ),
