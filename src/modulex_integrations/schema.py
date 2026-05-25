@@ -29,6 +29,7 @@ __all__ = [
     "ActionDefinition",
     "ApiKeyAuthSchema",
     "AuthSchema",
+    "BasicAuthSpec",
     "BearerTokenAuthSchema",
     "CustomAuthSchema",
     "EnvVar",
@@ -110,6 +111,33 @@ class SuccessIndicators(BaseModel):
     response_fields: list[str] | None = None
 
 
+class BasicAuthSpec(BaseModel):
+    """Declarative HTTP Basic Auth synthesis for ``TestEndpoint``.
+
+    Use this when the credential test endpoint requires
+    ``Authorization: Basic <base64(username:password)>`` and the
+    Base64 part can't be computed at manifest authoring time (because
+    one or both halves are user-supplied secrets).
+
+    The modulex runtime resolves each placeholder against ``auth_data``
+    and constructs the ``Authorization`` header at test time. If the
+    placeholder name is NOT a key in ``auth_data``, it is treated as
+    a literal string (Mailgun: ``username_placeholder="api"``).
+
+    Examples:
+      * Mailgun: ``BasicAuthSpec(username_placeholder="api",
+        password_placeholder="MAILGUN_API_KEY")``
+      * Twilio: ``BasicAuthSpec(username_placeholder="TWILIO_ACCOUNT_SID",
+        password_placeholder="TWILIO_AUTH_TOKEN")``
+    """
+
+    model_config = ConfigDict(extra="forbid")
+
+    type: Literal["basic"] = "basic"
+    username_placeholder: str
+    password_placeholder: str
+
+
 class TestEndpoint(BaseModel):
     """Endpoint hit to validate a configured credential.
 
@@ -122,6 +150,13 @@ class TestEndpoint(BaseModel):
     integrations that pass their credential as a query parameter
     (e.g. ConvertAPI's ``?Secret={api_key}``, Nasdaq's
     ``?api_key={api_key}``).
+
+    ``auth`` is an optional declarative directive for Basic Auth
+    synthesis — use it for endpoints that require
+    ``Authorization: Basic <base64(u:p)>`` (Mailgun, Twilio,
+    Customer.io tracking API, etc.). When set, the modulex runtime
+    builds the ``Authorization`` header itself and ignores any
+    pre-existing ``Authorization`` entry in ``headers``.
     """
 
     __test__ = False  # pydantic model, not a pytest test class
@@ -132,6 +167,7 @@ class TestEndpoint(BaseModel):
     headers: dict[str, str] = Field(default_factory=dict)
     params: dict[str, str] = Field(default_factory=dict)
     body: dict[str, Any] | None = None
+    auth: BasicAuthSpec | None = None
     success_indicators: SuccessIndicators
     cost_level: str = "free"
     description: str | None = None
