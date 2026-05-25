@@ -274,9 +274,8 @@ manifest = IntegrationManifest(
                 ),
             ],
             test_endpoint=TestEndpoint(
-                url="https://api.scrape.do/info",
+                url="https://api.scrape.do/info?token={api_key}",
                 method="GET",
-                params={"token": "{api_key}"},
                 success_indicators=SuccessIndicators(status_codes=[200]),
                 cost_level="free",
                 description="Validates API key by checking account info (no API cost)",

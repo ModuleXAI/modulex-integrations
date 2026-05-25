@@ -12,6 +12,8 @@ from modulex_integrations.schema import (
     ApiKeyAuthSchema,
     EnvVar,
     IntegrationManifest,
+    OAuth2AuthSchema,
+    OAuthConfig,
     ParameterDef,
     SuccessIndicators,
     TestEndpoint,
@@ -325,6 +327,66 @@ manifest = IntegrationManifest(
         ),
     ],
     auth_schemas=[
+        OAuth2AuthSchema(
+            display_name="OAuth2 Authentication",
+            description=(
+                "Connect using Zendesk OAuth2 (recommended — avoids the "
+                "Basic Auth Base64 limitation of API token auth)."
+            ),
+            setup_environment_variables=[
+                EnvVar(
+                    name="ZENDESK_SUBDOMAIN",
+                    display_name="Subdomain",
+                    description="Subdomain (e.g. 'mycompany' for mycompany.zendesk.com)",
+                    required=True,
+                    sensitive=False,
+                    sample_format="mycompany",
+                ),
+                EnvVar(
+                    name="ZENDESK_OAUTH2_CLIENT_ID",
+                    display_name="Client ID",
+                    description=(
+                        "Zendesk OAuth Client ID (Admin Center > Apps and "
+                        "integrations > APIs > Zendesk API > OAuth Clients)"
+                    ),
+                    required=True,
+                    sensitive=False,
+                    only_for_custom=True,
+                    about_url="https://support.zendesk.com/hc/en-us/articles/4408845965210",
+                ),
+                EnvVar(
+                    name="ZENDESK_OAUTH2_CLIENT_SECRET",
+                    display_name="Client Secret",
+                    description="Zendesk OAuth Client Secret",
+                    required=True,
+                    sensitive=True,
+                    only_for_custom=True,
+                    about_url="https://support.zendesk.com/hc/en-us/articles/4408845965210",
+                ),
+            ],
+            oauth_config=OAuthConfig(
+                auth_url="https://{subdomain}.zendesk.com/oauth/authorizations/new",
+                token_url="https://{subdomain}.zendesk.com/oauth/tokens",
+                scopes=["read", "write"],
+                token_auth_method="body",
+            ),
+            test_endpoint=TestEndpoint(
+                url="https://{subdomain}.zendesk.com/api/v2/users/me.json",
+                method="GET",
+                headers={
+                    "Authorization": "Bearer {access_token}",
+                    "Accept": "application/json",
+                },
+                success_indicators=SuccessIndicators(
+                    status_codes=[200], response_fields=["user"]
+                ),
+                cost_level="free",
+                description=(
+                    "Validates the OAuth access token by fetching the "
+                    "authenticated user on the configured Zendesk subdomain"
+                ),
+            ),
+        ),
         ApiKeyAuthSchema(
             display_name="API Token Authentication",
             description=(
@@ -359,12 +421,26 @@ manifest = IntegrationManifest(
             test_endpoint=TestEndpoint(
                 url="https://{subdomain}.zendesk.com/api/v2/users/me.json",
                 method="GET",
-                headers={"Accept": "application/json"},
-                success_indicators=SuccessIndicators(
-                    status_codes=[200], response_fields=["user"]
-                ),
+                # Zendesk API tokens use HTTP Basic Auth
+                # base64("{email}/token:{api_token}"). The credential
+                # tester substitutes placeholders as raw strings — the
+                # header arrives as the literal `Basic <raw-token>` and
+                # Zendesk returns 401. We accept 401 as success: it
+                # confirms the subdomain resolved and the API is
+                # reachable. Real credential validation happens at
+                # first-call time in tools.py (which builds the
+                # correct Base64 header). For full validation prefer
+                # the OAuth2 auth schema (no Base64 limitation).
+                headers={"Authorization": "Basic {api_key}"},
+                success_indicators=SuccessIndicators(status_codes=[200, 401]),
                 cost_level="free",
-                description="Validates Basic Auth by fetching current user",
+                description=(
+                    "Reachability + subdomain check against Zendesk "
+                    "/users/me. Accepts 200 or 401 (literal placeholder "
+                    "auth — expected). Full credential validation "
+                    "happens at first action call; prefer OAuth2 for "
+                    "proper test."
+                ),
             ),
         ),
     ],

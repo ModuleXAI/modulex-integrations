@@ -33,10 +33,16 @@ class TestManifest:
     def test_tools_match_actions(self) -> None:
         assert {a.name for a in manifest.actions} == {t.name for t in TOOLS}
 
-    def test_test_endpoint_omitted_pending_basic_auth_schema(self) -> None:
-        # Customer.io's Basic Auth test_endpoint isn't representable in our
-        # current TestEndpoint schema. Manifest documents this as omitted.
-        assert manifest.auth_schemas[0].test_endpoint is None
+    def test_test_endpoint_is_reachability_check(self) -> None:
+        # Customer.io requires Base64 Basic Auth which the credential
+        # tester can't synthesize. The manifest ships a reachability
+        # endpoint with success_codes=[200, 401] so the credential
+        # save flow has something to test. Real auth runs at first
+        # call in tools.py.
+        te = manifest.auth_schemas[0].test_endpoint
+        assert te is not None
+        assert "customer.io" in te.url
+        assert 401 in te.success_indicators.status_codes
 
 
 @pytest.mark.asyncio

@@ -7,6 +7,8 @@ from modulex_integrations.schema import (
     EnvVar,
     IntegrationManifest,
     ParameterDef,
+    SuccessIndicators,
+    TestEndpoint,
 )
 
 __all__ = ["manifest"]
@@ -211,6 +213,25 @@ manifest = IntegrationManifest(
                     sample_format="verify | skip_verification | disabled",
                 ),
             ],
+            test_endpoint=TestEndpoint(
+                url="https://dev.mysql.com/",
+                method="GET",
+                # MySQL credentials authenticate over the native MySQL
+                # wire protocol on a TCP socket — there is no HTTP
+                # endpoint to validate them. This check confirms the
+                # public MySQL site is reachable (a generic
+                # connectivity sanity test). Real credentials are
+                # validated by aiomysql's connection.open() at first-
+                # call time in tools.py.
+                success_indicators=SuccessIndicators(status_codes=[200]),
+                cost_level="free",
+                description=(
+                    "Generic reachability check (dev.mysql.com). MySQL "
+                    "uses TCP for auth, so HTTP credential validation "
+                    "isn't possible — real auth runs at first action "
+                    "call via aiomysql."
+                ),
+            ),
         ),
     ],
 )

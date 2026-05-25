@@ -62,8 +62,14 @@ class TestManifest:
     def test_manifest_has_custom_auth(self) -> None:
         assert [a.auth_type for a in manifest.auth_schemas] == ["custom"]
 
-    def test_no_test_endpoint(self) -> None:
-        assert all(a.test_endpoint is None for a in manifest.auth_schemas)
+    def test_reachability_test_endpoint(self) -> None:
+        # JWT signing for real CDP auth runs in tools.py at first call.
+        # The manifest ships a reachability check against the public
+        # /v2/time endpoint so the credential-save flow has something
+        # to test.
+        for a in manifest.auth_schemas:
+            assert a.test_endpoint is not None
+            assert "api.coinbase.com" in a.test_endpoint.url
 
 
 def test_generate_jwt_ed25519_roundtrip() -> None:

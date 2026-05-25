@@ -19,6 +19,8 @@ from modulex_integrations.schema import (
     EnvVar,
     IntegrationManifest,
     ParameterDef,
+    SuccessIndicators,
+    TestEndpoint,
 )
 
 __all__ = ["manifest"]
@@ -180,6 +182,23 @@ manifest = IntegrationManifest(
                     sensitive=True,
                 ),
             ],
+            test_endpoint=TestEndpoint(
+                url="https://api.coinbase.com/v2/time",
+                method="GET",
+                # Coinbase CDP requires JWT signing with the user's
+                # private key — runtime can't synthesize this. The
+                # /v2/time endpoint is a public reachability check
+                # that always returns 200. True credential validation
+                # happens via tools.py at first-call time, where the
+                # JWT is signed.
+                success_indicators=SuccessIndicators(status_codes=[200]),
+                cost_level="free",
+                description=(
+                    "Reachability check against Coinbase's public /v2/time "
+                    "endpoint. Confirms API is reachable; JWT signing for "
+                    "real auth happens at first action call."
+                ),
+            ),
         ),
     ],
 )

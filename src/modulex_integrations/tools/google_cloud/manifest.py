@@ -7,6 +7,8 @@ from modulex_integrations.schema import (
     EnvVar,
     IntegrationManifest,
     ParameterDef,
+    SuccessIndicators,
+    TestEndpoint,
 )
 
 __all__ = ["manifest"]
@@ -256,6 +258,27 @@ manifest = IntegrationManifest(
                     about_url="https://cloud.google.com/iam/docs/keys-create-delete",
                 ),
             ],
+            test_endpoint=TestEndpoint(
+                url="https://www.googleapis.com/discovery/v1/apis",
+                method="GET",
+                # GCP service account auth requires exchanging the
+                # JSON key for an access token via the OAuth2 token
+                # endpoint — runtime can't do this step (it needs to
+                # sign a JWT assertion with the SA private key). The
+                # /discovery/v1/apis endpoint is public; this is a
+                # reachability check. True credential validation runs
+                # via google-auth in tools.py at first-call time.
+                success_indicators=SuccessIndicators(
+                    status_codes=[200], response_fields=["items"]
+                ),
+                cost_level="free",
+                description=(
+                    "Reachability check against Google's public API "
+                    "discovery endpoint. Confirms Google APIs are "
+                    "reachable; service-account auth happens at first "
+                    "action call."
+                ),
+            ),
         ),
     ],
 )

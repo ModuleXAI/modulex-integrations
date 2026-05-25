@@ -74,8 +74,11 @@ class TestManifest:
     def test_manifest_actions_match_tools_tuple(self) -> None:
         assert {a.name for a in manifest.actions} == {t.name for t in TOOLS}
 
-    def test_manifest_has_api_key_auth(self) -> None:
-        assert [a.auth_type for a in manifest.auth_schemas] == ["api_key"]
+    def test_manifest_has_oauth2_and_api_key_auth(self) -> None:
+        assert [a.auth_type for a in manifest.auth_schemas] == [
+            "oauth2",
+            "api_key",
+        ]
 
 
 def test_datacenter_extraction() -> None:

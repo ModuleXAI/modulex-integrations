@@ -7,6 +7,8 @@ from modulex_integrations.schema import (
     EnvVar,
     IntegrationManifest,
     ParameterDef,
+    SuccessIndicators,
+    TestEndpoint,
 )
 
 __all__ = ["manifest"]
@@ -168,11 +170,25 @@ manifest = IntegrationManifest(
                         "GoDaddy API base URL. Use https://api.godaddy.com for production "
                         "or https://api.ote-godaddy.com for the test environment"
                     ),
-                    required=False,
+                    required=True,
                     sensitive=False,
                     sample_format="https://api.godaddy.com",
                 ),
             ],
+            test_endpoint=TestEndpoint(
+                url="{api_url}/v1/domains?limit=1",
+                method="GET",
+                headers={
+                    "Authorization": "sso-key {api_key}:{api_secret}",
+                    "Accept": "application/json",
+                },
+                success_indicators=SuccessIndicators(status_codes=[200]),
+                cost_level="free",
+                description=(
+                    "Validates the API key + secret pair by listing a single "
+                    "domain on the configured GoDaddy environment"
+                ),
+            ),
         ),
     ],
 )

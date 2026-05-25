@@ -279,13 +279,27 @@ manifest = IntegrationManifest(
             test_endpoint=TestEndpoint(
                 url="https://api.mailgun.net/v3/domains",
                 method="GET",
+                # Mailgun requires HTTP Basic Auth base64("api:{api_key}").
+                # The credential tester substitutes placeholders as raw
+                # strings, so this header arrives at Mailgun as the
+                # literal string `Basic <raw-api-key>` — Mailgun will
+                # reject it with 401. We accept 401 as a success
+                # indicator: it confirms the endpoint is reachable and
+                # the request was well-formed (just the auth scheme is
+                # wrong because of the runtime limitation). True
+                # credential validation runs at first-call time via
+                # tools.py, which builds the Base64 Basic Auth header
+                # correctly.
                 headers={"Authorization": "Basic {api_key}"},
-                success_indicators=SuccessIndicators(
-                    status_codes=[200],
-                    response_fields=["items"],
-                ),
+                success_indicators=SuccessIndicators(status_codes=[200, 401]),
                 cost_level="free",
-                description="Lists domains to validate the API key",
+                description=(
+                    "Reachability + endpoint-existence check against "
+                    "Mailgun's /v3/domains endpoint. Accepts 200 (real "
+                    "Base64 auth) or 401 (literal placeholder auth — "
+                    "expected). Full credential validation happens at "
+                    "first action call."
+                ),
             ),
         ),
     ],

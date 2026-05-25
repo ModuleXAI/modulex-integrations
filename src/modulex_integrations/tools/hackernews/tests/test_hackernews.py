@@ -61,10 +61,13 @@ class TestManifest:
     def test_manifest_actions_match_tools_tuple(self) -> None:
         assert {a.name for a in manifest.actions} == {t.name for t in TOOLS}
 
-    def test_manifest_has_modulex_key_auth_without_test_endpoint(self) -> None:
+    def test_manifest_has_modulex_key_auth_with_reachability_test(self) -> None:
         auth = manifest.auth_schemas[0]
         assert auth.auth_type == "modulex_key"
-        assert auth.test_endpoint is None
+        # Public API — reachability check against the public Firebase
+        # endpoint so the credential-save flow has something to test.
+        assert auth.test_endpoint is not None
+        assert "hacker-news.firebaseio.com" in auth.test_endpoint.url
 
 
 @pytest.mark.asyncio

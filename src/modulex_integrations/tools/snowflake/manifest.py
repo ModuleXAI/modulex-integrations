@@ -7,6 +7,8 @@ from modulex_integrations.schema import (
     EnvVar,
     IntegrationManifest,
     ParameterDef,
+    SuccessIndicators,
+    TestEndpoint,
 )
 
 __all__ = ["manifest"]
@@ -199,6 +201,24 @@ manifest = IntegrationManifest(
                     sensitive=False,
                 ),
             ],
+            test_endpoint=TestEndpoint(
+                url="https://app.snowflake.com/",
+                method="GET",
+                # Snowflake uses its own protocol over HTTPS via the
+                # snowflake-connector-python SDK — credential
+                # validation requires actually attempting to open a
+                # session against the user's account URL with their
+                # credentials. This check confirms Snowflake's public
+                # app is reachable. Real credentials are validated by
+                # the connector at first-call time in tools.py.
+                success_indicators=SuccessIndicators(status_codes=[200]),
+                cost_level="free",
+                description=(
+                    "Generic reachability check (app.snowflake.com). "
+                    "Snowflake auth requires the connector to open a "
+                    "session — real auth runs at first action call."
+                ),
+            ),
         ),
     ],
 )

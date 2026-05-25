@@ -6,6 +6,8 @@ from modulex_integrations.schema import (
     IntegrationManifest,
     ModulexKeyAuthSchema,
     ParameterDef,
+    SuccessIndicators,
+    TestEndpoint,
 )
 
 __all__ = ["manifest"]
@@ -158,7 +160,17 @@ manifest = IntegrationManifest(
                 "Use ModuleX's managed access (Hacker News API is public, "
                 "no authentication required)"
             ),
-            # test_endpoint omitted — no credential to validate (public API).
+            test_endpoint=TestEndpoint(
+                url="https://hacker-news.firebaseio.com/v0/maxitem.json",
+                method="GET",
+                success_indicators=SuccessIndicators(status_codes=[200]),
+                cost_level="free",
+                description=(
+                    "Reachability check against the public Hacker News "
+                    "Firebase endpoint. No credential to validate; this "
+                    "only confirms the API is reachable."
+                ),
+            ),
         ),
     ],
 )

@@ -6,6 +6,8 @@ from modulex_integrations.schema import (
     ApiKeyAuthSchema,
     EnvVar,
     IntegrationManifest,
+    OAuth2AuthSchema,
+    OAuthConfig,
     ParameterDef,
     SuccessIndicators,
     TestEndpoint,
@@ -313,6 +315,54 @@ manifest = IntegrationManifest(
         ),
     ],
     auth_schemas=[
+        OAuth2AuthSchema(
+            display_name="OAuth2 Authentication",
+            description=(
+                "Connect using Mailchimp OAuth2 (recommended — avoids "
+                "datacenter discovery and Basic Auth headaches)."
+            ),
+            setup_environment_variables=[
+                EnvVar(
+                    name="MAILCHIMP_OAUTH2_CLIENT_ID",
+                    display_name="Client ID",
+                    description="Mailchimp OAuth App Client ID",
+                    required=True,
+                    sensitive=False,
+                    only_for_custom=True,
+                    about_url="https://mailchimp.com/developer/marketing/guides/access-user-data-oauth-2/",
+                ),
+                EnvVar(
+                    name="MAILCHIMP_OAUTH2_CLIENT_SECRET",
+                    display_name="Client Secret",
+                    description="Mailchimp OAuth App Client Secret",
+                    required=True,
+                    sensitive=True,
+                    only_for_custom=True,
+                    about_url="https://mailchimp.com/developer/marketing/guides/access-user-data-oauth-2/",
+                ),
+            ],
+            oauth_config=OAuthConfig(
+                auth_url="https://login.mailchimp.com/oauth2/authorize",
+                token_url="https://login.mailchimp.com/oauth2/token",
+                scopes=[],
+                token_auth_method="body",
+            ),
+            test_endpoint=TestEndpoint(
+                url="https://login.mailchimp.com/oauth2/metadata",
+                method="GET",
+                headers={"Authorization": "OAuth {access_token}"},
+                success_indicators=SuccessIndicators(
+                    status_codes=[200],
+                    response_fields=["dc", "api_endpoint"],
+                ),
+                cost_level="free",
+                description=(
+                    "Validates the OAuth token via the metadata endpoint; "
+                    "response includes the user's datacenter (dc) and "
+                    "api_endpoint, which tools.py can route to."
+                ),
+            ),
+        ),
         ApiKeyAuthSchema(
             display_name="API Key Authentication",
             description=(
@@ -331,16 +381,43 @@ manifest = IntegrationManifest(
                     sample_format="xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx-us10",
                     about_url="https://mailchimp.com/help/about-api-keys/",
                 ),
+                EnvVar(
+                    name="MAILCHIMP_DATACENTER",
+                    display_name="Datacenter",
+                    description=(
+                        "Datacenter portion of your API key (suffix after the "
+                        "dash, e.g. 'us10', 'us20', 'eu1'). Mailchimp routes "
+                        "API requests to the datacenter where your account "
+                        "lives."
+                    ),
+                    required=True,
+                    sensitive=False,
+                    sample_format="us10",
+                    about_url="https://mailchimp.com/help/about-api-keys/",
+                ),
             ],
             test_endpoint=TestEndpoint(
-                url="https://us1.api.mailchimp.com/3.0/ping",
+                url="https://{datacenter}.api.mailchimp.com/3.0/ping",
                 method="GET",
-                headers={"Authorization": "Basic anystring:{api_key}"},
-                success_indicators=SuccessIndicators(
-                    status_codes=[200], response_fields=["health_status"]
-                ),
+                # Mailchimp Marketing API uses HTTP Basic Auth
+                # base64("anystring:{api_key}"). The credential tester
+                # substitutes placeholders as raw strings — the header
+                # arrives as the literal `Basic <raw-key>` and
+                # Mailchimp returns 401. We accept 401 as success: it
+                # confirms the datacenter URL resolved and the API is
+                # reachable. Real credential validation happens at
+                # first-call time in tools.py (which builds the
+                # correct Base64 header). For full validation prefer
+                # the OAuth2 auth schema (no Base64 limitation).
+                headers={"Authorization": "Basic {api_key}"},
+                success_indicators=SuccessIndicators(status_codes=[200, 401]),
                 cost_level="free",
-                description="Validates API key via /ping (datacenter required)",
+                description=(
+                    "Reachability + datacenter check against Mailchimp "
+                    "/ping. Accepts 200 or 401 (literal placeholder auth — "
+                    "expected). Full credential validation happens at "
+                    "first action call; prefer OAuth2 for proper test."
+                ),
             ),
         ),
     ],

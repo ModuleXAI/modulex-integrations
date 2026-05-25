@@ -202,7 +202,7 @@ async def test_create_vector_search_index(httpx_mock):  # type: ignore[no-untype
             endpoint_name="ep-1",
             index_type="DIRECT_ACCESS",
             primary_key="id",
-            schema_json='{"id": "int", "text": "string"}',
+            index_schema_json='{"id": "int", "text": "string"}',
         )
     )
     assert isinstance(result_dict, dict)

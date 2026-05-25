@@ -153,16 +153,33 @@ manifest = IntegrationManifest(
                     sample_format="sntrys_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
                     about_url="https://docs.sentry.io/api/guides/create-auth-token/",
                 ),
+                EnvVar(
+                    name="SENTRY_BASE_URL",
+                    display_name="Sentry Base URL",
+                    description=(
+                        "Sentry API base URL. Use https://sentry.io for "
+                        "US SaaS (default), https://de.sentry.io for "
+                        "Germany SaaS, or your self-hosted Sentry URL."
+                    ),
+                    required=True,
+                    sensitive=False,
+                    sample_format="https://sentry.io",
+                    about_url="https://docs.sentry.io/product/accounts/saas-data-routing/",
+                ),
             ],
             test_endpoint=TestEndpoint(
-                url="https://sentry.io/api/0/",
+                url="{base_url}/api/0/",
                 method="GET",
                 headers={"Authorization": "Bearer {token}"},
                 success_indicators=SuccessIndicators(
                     status_codes=[200],
                 ),
                 cost_level="free",
-                description="Validates the token by hitting the Sentry API root",
+                description=(
+                    "Validates the token by hitting the Sentry API root on "
+                    "the configured base URL (supports US/DE SaaS and "
+                    "self-hosted instances)"
+                ),
             ),
         ),
     ],

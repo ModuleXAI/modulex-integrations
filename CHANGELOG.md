@@ -8,6 +8,122 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ### Added
 
+- `amazon_selling_partner` integration — 8 actions, auth: oauth2. Amazon
+  Selling Partner API for managing orders, inventory, pricing, and reports
+  on Amazon marketplaces (check_fba_inventory_levels,
+  fetch_orders_by_date_range, generate_sales_inventory_reports,
+  get_order_details, list_inbound_shipments, list_marketplace_id_options,
+  optimize_product_pricing, retrieve_sales_performance_reports).
+  Producer-staged by integration-drafts; consumer-side audit applied
+  4 patches before merge.
+- `microsoft_365_people` integration — 3 actions, auth: oauth2. Manage
+  contacts and contact folders via the Microsoft Graph API (create_contact,
+  create_contact_folder, update_contact). Producer-staged by
+  integration-drafts; consumer-side audit applied 2 patches before merge.
+- `microsoft_power_bi` integration — 10 actions, auth: oauth2. Business
+  intelligence and analytics platform for interactive visualizations,
+  reports, and dashboards via the Power BI REST API. Producer-staged by
+  integration-drafts; consumer-side audit applied 3 patches before merge.
+- `microsoft_dynamics_365_sales` integration — 11 actions, auth: oauth2.
+  CRM platform for managing accounts, contacts, appointments, and custom
+  entities via the Dynamics 365 Web API. Producer-staged by
+  integration-drafts; consumer-side audit applied 5 patches before merge.
+- `microsoft_sql_server` integration — 4 actions, auth: custom. Execute
+  queries and manage data in Microsoft SQL Server databases via pymssql
+  (execute_raw_query, execute_query, insert_row, list_table_options).
+  Producer-staged by integration-drafts; consumer-side audit applied
+  3 patches before merge.
+- `amazon_alexa` integration — 2 actions, auth: oauth2. Simulate and test
+  Alexa skills via the Alexa Skills Management API (simulate_skill,
+  get_simulation_results). Producer-staged by integration-drafts;
+  consumer-side audit applied 4 patches before merge.
+- `fal_ai` integration — 4 actions, auth: api_key. Queue-based AI model
+  inference via the fal.ai platform (add_request_to_queue, cancel_request,
+  get_request_response, get_request_status). Producer-staged by
+  integration-drafts; consumer-side audit applied 1 patch before merge.
+- `heroku` integration — 1 action, auth: oauth2. Cloud platform management
+  via the Heroku Platform API (list_apps). Producer-staged by
+  integration-drafts; consumer-side audit applied 1 patch before merge.
+- `cal_com` integration — 6 actions, auth: api_key. Scheduling and booking
+  management via the Cal.com v2 API (create_booking, delete_booking,
+  get_all_bookings, get_bookable_slots, get_booking,
+  list_event_type_id_options). Producer-staged by integration-drafts;
+  consumer-side audit applied 2 patches before merge.
+- `dropbox` integration — 12 actions, auth: oauth2. Cloud file storage,
+  sharing, and collaboration platform: create/delete/move/rename folders and
+  files, search, list contents, create text files, manage shared links, and
+  list file revisions via the Dropbox HTTP API. Producer-staged by
+  integration-drafts; consumer-side audit applied 3 patches before merge.
+
+- `etsy` integration — 6 actions, auth: oauth2. Etsy marketplace listing
+  management via the Open API v3 (create_draft_listing_product,
+  delete_listing, get_listing, get_listing_inventory,
+  update_listing_inventory, update_listing_property). Producer-staged
+  by integration-drafts; consumer-side audit applied 1 patch before merge.
+- `segment` integration — 6 actions, auth: api_key. Customer data
+  platform for collecting and routing user analytics via the Segment
+  Tracking API (alias, group, identify, page, screen, track).
+  Producer-staged by integration-drafts; consumer-side audit applied
+  1 patch before merge.
+- `mintlify` integration — 3 actions, auth: custom. Documentation platform
+  with AI-powered assistant, semantic search, and project update triggers
+  (chat_with_assistant, search_documentation, trigger_update). Producer-staged
+  by integration-drafts; consumer-side audit applied 2 patches before merge.
+- `google_tasks` integration — 8 actions, auth: oauth2. Manage tasks and
+  task lists using the Google Tasks API (create_task, create_task_list,
+  delete_task, delete_task_list, list_tasks, list_task_lists, update_task,
+  update_task_list). Producer-staged by integration-drafts; consumer-side
+  audit applied 2 patches before merge.
+- `ahrefs` integration — 3 actions, auth: oauth2. SEO backlink analysis
+  and referring domain data via the Ahrefs REST API v3 (get_backlinks,
+  get_backlinks_one_per_domain, get_referring_domains). Producer-staged
+  by integration-drafts; consumer-side audit applied 5 patches before merge.
+- `algolia` integration — 4 actions, auth: api_key. Search and indexing
+  platform (browse_records, delete_records, list_index_name_options,
+  save_records) via the Algolia REST API. Producer-staged by
+  integration-drafts; consumer-side audit applied 1 patch before merge.
+- `pipedrive` integration — 26 actions, auth: oauth2. Sales CRM and
+  pipeline management: deals, contacts, leads, activities, notes,
+  organizations, labels, and search. Producer-staged by
+  integration-drafts; consumer-side audit applied 6 patches before merge.
+- `google_ads` integration — 10 actions, auth: oauth2. Google Ads API
+  integration: GAQL reports across Campaigns, Ad Groups, Ads, and
+  Customers; Customer Match list management; offline conversion uploads;
+  keyword idea generation. Producer-staged by integration-drafts;
+  consumer-side audit applied 2 patches before merge.
+- `mixpanel` integration — 1 action, auth: api_key. Product analytics
+  platform for tracking user events via the Mixpanel /track API
+  (emit_event_to). Producer-staged by integration-drafts; consumer-side
+  audit applied 1 patch before merge.
+- `google_contacts` integration — 6 actions, auth: oauth2. Manage Google
+  People (Contacts) via the People API v1 (create_contact, delete_contact,
+  get_contact, list_contacts, list_directory_contacts, update_contact).
+  Producer-staged by integration-drafts; consumer-side audit applied
+  2 patches before merge.
+- `google_search_console` integration — 2 actions, auth: oauth2. Access
+  Google Search Console search analytics and submit URLs for indexing via
+  the Search Console and Indexing APIs (retrieve_site_performance_data,
+  submit_url_for_indexing). Producer-staged by integration-drafts;
+  consumer-side audit applied 4 patches before merge.
+- `google_forms` integration — 6 actions, auth: oauth2. Create, update,
+  and read Google Forms and their responses via the Google Forms API
+  (create_form, create_text_question, get_form, get_form_response,
+  list_form_responses, update_form_title). Producer-staged by
+  integration-drafts; consumer-side audit applied 2 patches before merge.
+- `google_my_business` integration — 6 actions, auth: oauth2. Manage
+  Google Business Profile posts, reviews, and replies via the Google My
+  Business API (create_post, create_update_reply_to_review,
+  get_reviews_multiple_locations, get_specific_review, list_all_reviews,
+  list_posts). Producer-staged by integration-drafts; consumer-side audit
+  applied 3 patches before merge.
+- `google_merchant_center` integration — 2 actions, auth: oauth2. Manage
+  product listings in Google Merchant Center via the Shopping Content API
+  (create_product, update_product). Producer-staged by integration-drafts;
+  consumer-side audit applied 5 patches before merge.
+- `google_maps_platform` integration — 2 actions, auth: api_key. Search for
+  places and retrieve place details using the Google Places API (New)
+  (search_places, get_place_details). Producer-staged by integration-drafts;
+  consumer-side audit applied 1 patch before merge.
 - `google_ad_manager` integration — 2 actions, auth: oauth2. Programmatic
   advertising platform for managing ad inventory and reporting via the
   Google Ad Manager API (create_report, list_network_options).
@@ -19,11 +135,6 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
   get_document, get_tab_content, insert_page_break, insert_table, insert_text,
   replace_image, replace_text). Producer-staged by integration-drafts;
   consumer-side audit applied 3 patches before merge.
-- `google_directory` integration — 7 actions, auth: oauth2. Manage users,
-  groups, and group memberships in Google Workspace via the Admin SDK
-  Directory API (add_member_to_group, create_group, create_user, get_group,
-  get_user, list_groups, list_users). Producer-staged by integration-drafts;
-  consumer-side audit applied 1 patch before merge.
 - `crunchbase` integration — 2 actions, auth: api_key. Access Crunchbase
   company and organization data for business intelligence and research
   (get_organization, search_organizations) via the Crunchbase REST API v4.

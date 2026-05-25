@@ -17,8 +17,12 @@ __all__ = ["manifest"]
 
 
 def _me_test_endpoint(placeholder: str, description: str) -> TestEndpoint:
+    # {api_base_url} resolves to INTERCOM_API_BASE_URL. Intercom hosts data
+    # in three regions: api.intercom.io (US, default), api.eu.intercom.io
+    # (EU), api.au.intercom.io (Australia). The user picks the right host
+    # at credential time.
     return TestEndpoint(
-        url="https://api.intercom.io/me",
+        url="{api_base_url}/me",
         method="GET",
         headers={
             "Authorization": f"Bearer {{{placeholder}}}",
@@ -342,6 +346,21 @@ manifest = IntegrationManifest(
                     sensitive=True,
                     only_for_custom=True,
                 ),
+                EnvVar(
+                    name="INTERCOM_API_BASE_URL",
+                    display_name="API Base URL",
+                    description=(
+                        "Intercom API base URL. Use "
+                        "https://api.intercom.io (US, default), "
+                        "https://api.eu.intercom.io (EU), or "
+                        "https://api.au.intercom.io (Australia) to match "
+                        "your workspace's data region."
+                    ),
+                    required=True,
+                    sensitive=False,
+                    sample_format="https://api.intercom.io",
+                    about_url="https://developers.intercom.com/docs/build-an-integration/learn-more/rest-apis/api-base-urls/",
+                ),
             ],
             oauth_config=OAuthConfig(
                 auth_url="https://app.intercom.com/oauth",
@@ -365,6 +384,21 @@ manifest = IntegrationManifest(
                     required=True,
                     sensitive=True,
                     sample_format="dG9rOjxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+                ),
+                EnvVar(
+                    name="INTERCOM_API_BASE_URL",
+                    display_name="API Base URL",
+                    description=(
+                        "Intercom API base URL. Use "
+                        "https://api.intercom.io (US, default), "
+                        "https://api.eu.intercom.io (EU), or "
+                        "https://api.au.intercom.io (Australia) to match "
+                        "your workspace's data region."
+                    ),
+                    required=True,
+                    sensitive=False,
+                    sample_format="https://api.intercom.io",
+                    about_url="https://developers.intercom.com/docs/build-an-integration/learn-more/rest-apis/api-base-urls/",
                 ),
             ],
             test_endpoint=_me_test_endpoint(

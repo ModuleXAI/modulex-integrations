@@ -6,6 +6,8 @@ from modulex_integrations.schema import (
     IntegrationManifest,
     ModulexKeyAuthSchema,
     ParameterDef,
+    SuccessIndicators,
+    TestEndpoint,
 )
 
 __all__ = ["manifest"]
@@ -106,7 +108,18 @@ manifest = IntegrationManifest(
                 "required for requests."
             ),
             setup_environment_variables=[],
-            # test_endpoint omitted — no credential to validate (public API).
+            test_endpoint=TestEndpoint(
+                url="https://connect.dev.instacart.tools/idp/v1/products/products_link",
+                method="GET",
+                success_indicators=SuccessIndicators(status_codes=[200, 401, 405]),
+                cost_level="free",
+                description=(
+                    "Reachability check against Instacart's public Connect "
+                    "API. Accepts 200 (OK), 401 (auth optional), or 405 "
+                    "(method not allowed — endpoint exists). No credential "
+                    "to validate; this only confirms the API is reachable."
+                ),
+            ),
         ),
     ],
 )

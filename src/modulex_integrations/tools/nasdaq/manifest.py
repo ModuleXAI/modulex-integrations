@@ -140,10 +140,9 @@ manifest = IntegrationManifest(
                 ),
             ],
             test_endpoint=TestEndpoint(
-                url="https://data.nasdaq.com/api/v3/datatables/NDAQ/RD.json",
+                url="https://data.nasdaq.com/api/v3/datatables/NDAQ/RD.json?api_key={api_key}&qopts.per_page=1",
                 method="GET",
                 headers={"Accept": "application/json"},
-                params={"api_key": "{api_key}", "qopts.per_page": "1"},
                 success_indicators=SuccessIndicators(
                     status_codes=[200], response_fields=["datatable"]
                 ),

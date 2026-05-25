@@ -16,6 +16,8 @@ from modulex_integrations.schema import (
     EnvVar,
     IntegrationManifest,
     ParameterDef,
+    SuccessIndicators,
+    TestEndpoint,
 )
 
 __all__ = ["manifest"]
@@ -245,6 +247,25 @@ manifest = IntegrationManifest(
                     sample_format="verify | skip_verification | disabled",
                 ),
             ],
+            test_endpoint=TestEndpoint(
+                url="https://www.postgresql.org/",
+                method="GET",
+                # PostgreSQL credentials authenticate over the native
+                # libpq wire protocol on a TCP socket — there is no
+                # HTTP endpoint to validate them. This check confirms
+                # the public PostgreSQL site is reachable (a generic
+                # connectivity sanity test). Real credentials are
+                # validated by asyncpg's connection at first-call
+                # time in tools.py.
+                success_indicators=SuccessIndicators(status_codes=[200]),
+                cost_level="free",
+                description=(
+                    "Generic reachability check (postgresql.org). "
+                    "PostgreSQL uses TCP for auth, so HTTP credential "
+                    "validation isn't possible — real auth runs at "
+                    "first action call via asyncpg."
+                ),
+            ),
         ),
     ],
 )

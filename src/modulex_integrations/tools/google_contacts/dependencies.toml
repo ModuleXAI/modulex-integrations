@@ -1,0 +1,4 @@
+# Runtime dependencies for the google_contacts integration.
+# CI assembles this into the root pyproject's [project.optional-dependencies].
+# Pure-httpx integration — no extras needed beyond the core package.
+dependencies = []

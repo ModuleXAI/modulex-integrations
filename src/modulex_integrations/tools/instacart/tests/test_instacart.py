@@ -28,12 +28,15 @@ class TestManifest:
     def test_tools_match_actions(self) -> None:
         assert {a.name for a in manifest.actions} == {t.name for t in TOOLS}
 
-    def test_auth_is_modulex_key_only_with_no_test_endpoint(self) -> None:
+    def test_auth_is_modulex_key_with_reachability_test(self) -> None:
         assert len(manifest.auth_schemas) == 1
         auth = manifest.auth_schemas[0]
         assert auth.auth_type == "modulex_key"
-        # Public API: legacy declared no test_endpoint.
-        assert auth.test_endpoint is None
+        # Public API — no credential to validate, but we ship a
+        # reachability test so the modulex credential-save flow
+        # doesn't reject the configuration.
+        assert auth.test_endpoint is not None
+        assert "instacart" in auth.test_endpoint.url
 
 
 @pytest.mark.asyncio
