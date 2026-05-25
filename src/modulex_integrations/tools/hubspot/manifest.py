@@ -442,7 +442,7 @@ manifest = IntegrationManifest(
                     ),
                 ),
             ],
-            test_endpoint=_profile_test_endpoint("token"),
+            test_endpoint=_profile_test_endpoint("bearer_token"),
         ),
     ],
 )

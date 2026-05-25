@@ -413,7 +413,7 @@ manifest = IntegrationManifest(
                 url="https://api.github.com/user",
                 method="GET",
                 headers={
-                    "Authorization": "Bearer {token}",
+                    "Authorization": "Bearer {bearer_token}",
                     "Accept": "application/vnd.github+json",
                     "X-GitHub-Api-Version": "2022-11-28",
                 },

@@ -368,7 +368,7 @@ manifest = IntegrationManifest(
                     about_url="https://www.notion.so/my-integrations",
                 ),
             ],
-            test_endpoint=_test_endpoint("token"),
+            test_endpoint=_test_endpoint("bearer_token"),
         ),
     ],
 )

@@ -246,7 +246,7 @@ manifest = IntegrationManifest(
                 method="POST",
                 headers={
                     "Content-Type": "application/json",
-                    "Authorization": "Basic {write_key}",
+                    "Authorization": "Basic {SEGMENT_WRITE_KEY}",
                 },
                 body={"batch": [], "sentAt": "2024-01-01T00:00:00.000Z"},
                 success_indicators=SuccessIndicators(

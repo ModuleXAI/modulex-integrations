@@ -228,11 +228,11 @@ manifest = IntegrationManifest(
                 ),
             ],
             test_endpoint=TestEndpoint(
-                url="https://{subdomain}.supabase.co/rest/v1/",
+                url="https://{SUPABASE_SUBDOMAIN}.supabase.co/rest/v1/",
                 method="GET",
                 headers={
-                    "apikey": "{service_key}",
-                    "Authorization": "Bearer {service_key}",
+                    "apikey": "{SUPABASE_SERVICE_KEY}",
+                    "Authorization": "Bearer {SUPABASE_SERVICE_KEY}",
                 },
                 success_indicators=SuccessIndicators(
                     status_codes=[200],

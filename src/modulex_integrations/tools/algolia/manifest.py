@@ -106,11 +106,11 @@ manifest = IntegrationManifest(
                 ),
             ],
             test_endpoint=TestEndpoint(
-                url="https://{application_id}-dsn.algolia.net/1/indexes",
+                url="https://{ALGOLIA_APPLICATION_ID}-dsn.algolia.net/1/indexes",
                 method="GET",
                 headers={
                     "X-Algolia-API-Key": "{api_key}",
-                    "X-Algolia-Application-Id": "{application_id}",
+                    "X-Algolia-Application-Id": "{ALGOLIA_APPLICATION_ID}",
                 },
                 success_indicators=SuccessIndicators(
                     status_codes=[200],

@@ -291,7 +291,7 @@ manifest = IntegrationManifest(
                     sensitive=True,
                 ),
             ],
-            test_endpoint=_users_me_test_endpoint("token"),
+            test_endpoint=_users_me_test_endpoint("bearer_token"),
         ),
     ],
 )

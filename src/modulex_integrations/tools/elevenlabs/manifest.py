@@ -328,6 +328,9 @@ manifest = IntegrationManifest(
                 "your weekly credit limit"
             ),
             setup_environment_variables=[],
+            # The modulex runtime resolves the real API key from the
+            # modulex_key_pool when this schema is used; {api_key} is
+            # substituted server-side by the credential resolver.
             test_endpoint=_test_endpoint("api_key"),
         ),
     ],

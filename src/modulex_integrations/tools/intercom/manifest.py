@@ -16,13 +16,17 @@ from modulex_integrations.schema import (
 __all__ = ["manifest"]
 
 
-def _me_test_endpoint(placeholder: str, description: str) -> TestEndpoint:
-    # {api_base_url} resolves to INTERCOM_API_BASE_URL. Intercom hosts data
-    # in three regions: api.intercom.io (US, default), api.eu.intercom.io
-    # (EU), api.au.intercom.io (Australia). The user picks the right host
-    # at credential time.
+def _me_test_endpoint(
+    placeholder: str, description: str, url: str = "{INTERCOM_API_BASE_URL}/me"
+) -> TestEndpoint:
+    # bearer_token credentials route {INTERCOM_API_BASE_URL} from the UI
+    # custom-fields (raw EnvVar name). OAuth2 credentials cannot — the
+    # modulex OAuth callback ships only access/refresh tokens into
+    # auth_data, so the URL must be hardcoded for the OAuth2 path
+    # (defaults to api.intercom.io). tools.py reads the user-supplied
+    # API base URL at action call time regardless of auth_type.
     return TestEndpoint(
-        url="{api_base_url}/me",
+        url=url,
         method="GET",
         headers={
             "Authorization": f"Bearer {{{placeholder}}}",
@@ -371,6 +375,7 @@ manifest = IntegrationManifest(
             test_endpoint=_me_test_endpoint(
                 "access_token",
                 "Validates OAuth token by fetching authenticated admin info",
+                url="https://api.intercom.io/me",
             ),
         ),
         BearerTokenAuthSchema(
@@ -402,7 +407,7 @@ manifest = IntegrationManifest(
                 ),
             ],
             test_endpoint=_me_test_endpoint(
-                "token",
+                "bearer_token",
                 "Validates Access Token by fetching authenticated admin info",
             ),
         ),

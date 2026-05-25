@@ -276,7 +276,7 @@ manifest = IntegrationManifest(
                 url="https://slack.com/api/auth.test",
                 method="POST",
                 headers={
-                    "Authorization": "Bearer {token}",
+                    "Authorization": "Bearer {bearer_token}",
                     "Content-Type": "application/json",
                 },
                 success_indicators=SuccessIndicators(

@@ -176,10 +176,10 @@ manifest = IntegrationManifest(
                 ),
             ],
             test_endpoint=TestEndpoint(
-                url="{api_url}/v1/domains?limit=1",
+                url="{GODADDY_API_URL}/v1/domains?limit=1",
                 method="GET",
                 headers={
-                    "Authorization": "sso-key {api_key}:{api_secret}",
+                    "Authorization": "sso-key {GODADDY_API_KEY}:{GODADDY_API_SECRET}",
                     "Accept": "application/json",
                 },
                 success_indicators=SuccessIndicators(status_codes=[200]),

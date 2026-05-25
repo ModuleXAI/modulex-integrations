@@ -803,10 +803,10 @@ manifest = IntegrationManifest(
                 ),
             ],
             test_endpoint=TestEndpoint(
-                url="https://{domain}.cloud.databricks.com/api/2.0/preview/scim/v2/Me",
+                url="https://{DATABRICKS_DOMAIN}.cloud.databricks.com/api/2.0/preview/scim/v2/Me",
                 method="GET",
                 headers={
-                    "Authorization": "Bearer {access_token}",
+                    "Authorization": "Bearer {DATABRICKS_ACCESS_TOKEN}",
                     "Accept": "application/json",
                 },
                 success_indicators=SuccessIndicators(

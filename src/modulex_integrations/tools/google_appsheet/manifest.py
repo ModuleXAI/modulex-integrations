@@ -125,7 +125,7 @@ manifest = IntegrationManifest(
                 ),
             ],
             test_endpoint=TestEndpoint(
-                url="https://api.appsheet.com/api/v2/apps/{app_id}/tables/__credtest__/Action",
+                url="https://api.appsheet.com/api/v2/apps/{GOOGLE_APPSHEET_APP_ID}/tables/__credtest__/Action",
                 method="POST",
                 headers={
                     "ApplicationAccessKey": "{api_key}",

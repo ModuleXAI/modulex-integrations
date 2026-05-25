@@ -397,7 +397,7 @@ manifest = IntegrationManifest(
                 ),
             ],
             test_endpoint=TestEndpoint(
-                url="https://{datacenter}.api.mailchimp.com/3.0/ping",
+                url="https://{MAILCHIMP_DATACENTER}.api.mailchimp.com/3.0/ping",
                 method="GET",
                 # Mailchimp Marketing API uses HTTP Basic Auth
                 # base64("anystring:{api_key}"). The credential tester
