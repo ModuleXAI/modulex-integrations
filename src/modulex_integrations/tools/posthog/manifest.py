@@ -956,20 +956,37 @@ manifest = IntegrationManifest(
                     name="POSTHOG_BASE_URL",
                     display_name="Instance URL",
                     description=(
-                        "PostHog instance HOST ONLY — e.g. "
-                        "https://us.posthog.com (US cloud), "
-                        "https://eu.posthog.com (EU cloud), or your "
-                        "self-hosted URL. Do NOT append /api/projects "
-                        "or any other path; the path is added "
-                        "automatically."
+                        "PostHog instance URL — optional, leave empty for "
+                        "https://us.posthog.com (US cloud default). Set "
+                        "to https://eu.posthog.com for EU cloud or your "
+                        "self-hosted URL. Any common shape works: "
+                        "host only (https://us.posthog.com), with "
+                        "trailing slash, or with /api/projects path — "
+                        "tools.py normalizes them at action call time."
                     ),
-                    required=True,
+                    required=False,
                     sensitive=False,
                     sample_format="https://us.posthog.com",
                 ),
             ],
             test_endpoint=TestEndpoint(
-                url="{POSTHOG_BASE_URL}/api/projects/",
+                # Hardcoded US endpoint for the test only. Reasons:
+                # 1. POSTHOG_BASE_URL is now optional — if empty, the
+                #    placeholder substitution would break.
+                # 2. modulex's substitution is string-replace (no URL
+                #    normalization), so a user typing "us.posthog.com"
+                #    or "https://us.posthog.com/api/projects/" would
+                #    produce a broken URL. Skipping the placeholder
+                #    sidesteps all four mistake shapes.
+                # 3. tools.py reads POSTHOG_BASE_URL via auth_data at
+                #    action call time and normalizes it via _base(),
+                #    so EU/self-hosted workflows still route correctly.
+                # EU users testing credentials see a US-endpoint test;
+                # if the personal API key is registered against EU
+                # instance, this will 401 — acceptable trade-off until
+                # modulex adds URL-normalization on the substitution
+                # path (tracked in brief #019).
+                url="https://us.posthog.com/api/projects/",
                 method="GET",
                 headers={
                     "Authorization": "Bearer {POSTHOG_API_KEY}",
@@ -980,8 +997,11 @@ manifest = IntegrationManifest(
                 ),
                 cost_level="free",
                 description=(
-                    "Validates API key by listing projects on the user's "
-                    "PostHog instance. Placeholders use the raw EnvVar "
+                    "Validates API key by listing projects on the US "
+                    "PostHog cloud. EU/self-hosted users: tools.py "
+                    "reads your POSTHOG_BASE_URL at action call time "
+                    "and normalizes it; this test only checks the API "
+                    "key format. Note: placeholders use raw EnvVar "
                     "names because the modulex credential UI ships "
                     "custom-auth field values keyed by EnvVar.name "
                     "(e.g. POSTHOG_BASE_URL, not base_url)."
