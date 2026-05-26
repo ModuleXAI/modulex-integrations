@@ -956,37 +956,33 @@ manifest = IntegrationManifest(
                     name="POSTHOG_BASE_URL",
                     display_name="Instance URL",
                     description=(
-                        "PostHog instance URL — optional, leave empty for "
-                        "https://us.posthog.com (US cloud default). Set "
-                        "to https://eu.posthog.com for EU cloud or your "
-                        "self-hosted URL. Any common shape works: "
-                        "host only (https://us.posthog.com), with "
-                        "trailing slash, or with /api/projects path — "
-                        "tools.py normalizes them at action call time."
+                        "Your PostHog instance URL — required. MUST be "
+                        "ONLY the host with scheme, no trailing slash, "
+                        "no path. Pick the line that matches your "
+                        "workspace:\n"
+                        "  • US cloud:    https://us.posthog.com\n"
+                        "  • EU cloud:    https://eu.posthog.com\n"
+                        "  • Self-hosted: https://posthog.your-company.com\n"
+                        "DO NOT append /api, /api/projects, or any other "
+                        "path — the rest of the URL is added "
+                        "automatically. Trailing slash also not allowed."
                     ),
-                    required=False,
+                    required=True,
                     sensitive=False,
                     sample_format="https://us.posthog.com",
                 ),
             ],
             test_endpoint=TestEndpoint(
-                # Hardcoded US endpoint for the test only. Reasons:
-                # 1. POSTHOG_BASE_URL is now optional — if empty, the
-                #    placeholder substitution would break.
-                # 2. modulex's substitution is string-replace (no URL
-                #    normalization), so a user typing "us.posthog.com"
-                #    or "https://us.posthog.com/api/projects/" would
-                #    produce a broken URL. Skipping the placeholder
-                #    sidesteps all four mistake shapes.
-                # 3. tools.py reads POSTHOG_BASE_URL via auth_data at
-                #    action call time and normalizes it via _base(),
-                #    so EU/self-hosted workflows still route correctly.
-                # EU users testing credentials see a US-endpoint test;
-                # if the personal API key is registered against EU
-                # instance, this will 401 — acceptable trade-off until
-                # modulex adds URL-normalization on the substitution
-                # path (tracked in brief #019).
-                url="https://us.posthog.com/api/projects/",
+                # Substitution is a literal str.replace() in modulex's
+                # credential service — no URL normalization. We rely on
+                # the user typing the URL exactly as the description
+                # asks (host + scheme, nothing else). EU users get a
+                # real test against their EU instance this way; US
+                # users likewise. If the user types a malformed URL,
+                # the test fails — surfacing the format issue before
+                # the credential is saved. Proper fix tracked in
+                # brief #019 (modulex-side URL normalization).
+                url="{POSTHOG_BASE_URL}/api/projects/",
                 method="GET",
                 headers={
                     "Authorization": "Bearer {POSTHOG_API_KEY}",
@@ -997,14 +993,11 @@ manifest = IntegrationManifest(
                 ),
                 cost_level="free",
                 description=(
-                    "Validates API key by listing projects on the US "
-                    "PostHog cloud. EU/self-hosted users: tools.py "
-                    "reads your POSTHOG_BASE_URL at action call time "
-                    "and normalizes it; this test only checks the API "
-                    "key format. Note: placeholders use raw EnvVar "
-                    "names because the modulex credential UI ships "
-                    "custom-auth field values keyed by EnvVar.name "
-                    "(e.g. POSTHOG_BASE_URL, not base_url)."
+                    "Validates API key + project access by listing "
+                    "projects on the user's PostHog instance. The URL "
+                    "is built from POSTHOG_BASE_URL — must be host+"
+                    "scheme only (e.g. https://us.posthog.com, NOT "
+                    "https://us.posthog.com/api/projects/)."
                 ),
             ),
         ),
