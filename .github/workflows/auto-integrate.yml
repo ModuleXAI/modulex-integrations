@@ -88,6 +88,46 @@ jobs:
           .venv/bin/pip install --upgrade pip
           .venv/bin/pip install -e ".[dev]"
 
+      - name: Diagnose producer access (TEMPORARY - remove after debug)
+        env:
+          GH_TOKEN: ${{ secrets.DRAFTS_REPO_TOKEN }}
+          DRAFTS_REPO: ${{ vars.DRAFTS_REPO }}
+        run: |
+          set +e
+          echo "::group::1. Token + user identity (gh auth status + gh api user)"
+          gh auth status 2>&1
+          echo "---"
+          gh api user --jq '{login,type}' 2>&1
+          USER_EXIT=$?
+          echo "gh api user exit: ${USER_EXIT}"
+          echo "::endgroup::"
+
+          echo "::group::2. Repo accessibility via REST API"
+          gh api "repos/${DRAFTS_REPO}" 2>&1 | head -30
+          API_EXIT=${PIPESTATUS[0]}
+          echo "gh api repos exit: ${API_EXIT}"
+          echo "::endgroup::"
+
+          echo "::group::3. Raw git clone (bypassing gh, verbose)"
+          GIT_TRACE=1 GIT_CURL_VERBOSE=1 git clone \
+            --depth=1 \
+            "https://x-access-token:${GH_TOKEN}@github.com/${DRAFTS_REPO}.git" \
+            /tmp/raw-clone-test 2>&1 | tail -60
+          GIT_EXIT=${PIPESTATUS[0]}
+          echo "git clone exit: ${GIT_EXIT}"
+          rm -rf /tmp/raw-clone-test
+          echo "::endgroup::"
+
+          echo "::group::4. gh repo clone (the actual failing command)"
+          GH_DEBUG=api gh repo clone "${DRAFTS_REPO}" /tmp/gh-clone-test -- --depth=1 2>&1 | tail -40
+          GH_CLONE_EXIT=${PIPESTATUS[0]}
+          echo "gh repo clone exit: ${GH_CLONE_EXIT}"
+          rm -rf /tmp/gh-clone-test
+          echo "::endgroup::"
+
+          set -e
+          echo "Diagnostic complete. Continuing to actual clone step (which will likely fail too)."
+
       - name: Clone producer repo
         env:
           GH_TOKEN: ${{ secrets.DRAFTS_REPO_TOKEN }}
