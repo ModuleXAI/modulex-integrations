@@ -4,7 +4,7 @@ PostHog auth in legacy is `custom` with three credential fields
 (``api_key`` personal token, ``project_id``, ``base_url``). We model
 that here as ``CustomAuthSchema`` with three ``EnvVar`` entries — the
 modulex runtime injects all three into each tool function as
-positional args (same pattern as the zendesk triple-credential setup).
+positional args.
 """
 from __future__ import annotations
 
