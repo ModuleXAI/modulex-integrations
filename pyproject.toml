@@ -156,6 +156,7 @@ medium = "modulex_integrations.tools.medium"
 microsoft_365_people = "modulex_integrations.tools.microsoft_365_people"
 microsoft_bookings = "modulex_integrations.tools.microsoft_bookings"
 microsoft_dynamics_365_sales = "modulex_integrations.tools.microsoft_dynamics_365_sales"
+microsoft_entra_id = "modulex_integrations.tools.microsoft_entra_id"
 microsoft_excel = "modulex_integrations.tools.microsoft_excel"
 microsoft_onedrive = "modulex_integrations.tools.microsoft_onedrive"
 microsoft_outlook = "modulex_integrations.tools.microsoft_outlook"
@@ -517,6 +518,12 @@ select = ["E", "F", "I", "N", "W", "B", "C4", "UP", "RUF"]
 "src/modulex_integrations/tools/datadog/manifest.py" = ["E501"]
 "src/modulex_integrations/tools/datadog/tools.py" = ["E501"]
 "src/modulex_integrations/tools/datadog/tests/test_datadog.py" = ["E501"]
+# microsoft_entra_id manifest, tools, and tests have long description string
+# literals in ParameterDef / Field kwargs and credential guard lines
+# that cannot be wrapped.
+"src/modulex_integrations/tools/microsoft_entra_id/manifest.py" = ["E501"]
+"src/modulex_integrations/tools/microsoft_entra_id/tools.py" = ["E501"]
+"src/modulex_integrations/tools/microsoft_entra_id/tests/test_microsoft_entra_id.py" = ["E501"]
 
 [tool.mypy]
 python_version = "3.12"

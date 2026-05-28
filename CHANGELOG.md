@@ -8,6 +8,10 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ### Added
 
+- `microsoft_entra_id` integration — 12 actions, auth: oauth2. Identity
+  and access management via Microsoft Graph API for users, groups, and
+  directory objects. Producer-staged by integration-drafts; consumer-side
+  audit applied 4 patches before merge.
 - `datadog` integration — 11 actions, auth: api_key. Infrastructure
   monitoring, log management, and application performance platform via
   the Datadog REST API. Producer-staged by integration-drafts;
