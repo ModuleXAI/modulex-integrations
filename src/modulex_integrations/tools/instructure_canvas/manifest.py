@@ -1,4 +1,4 @@
-"""Canvas LMS integration manifest."""
+"""Instructure Canvas LMS integration manifest."""
 from __future__ import annotations
 
 from modulex_integrations.schema import (
@@ -13,12 +13,12 @@ __all__ = ["manifest"]
 
 
 manifest = IntegrationManifest(
-    name="canvas",
-    display_name="Canvas LMS",
+    name="instructure_canvas",
+    display_name="Instructure Canvas LMS",
     description="Learning management system for course, assignment, and user management via the Canvas REST API.",
     version="1.0.0",
     author="ModuleX",
-    logo="modulex:canvas-themed",
+    logo="modulex:instructure_canvas",
     app_url="https://www.instructure.com/canvas",
     categories=["Education", "Learning Management"],
     actions=[
