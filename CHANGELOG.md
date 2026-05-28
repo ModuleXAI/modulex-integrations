@@ -8,6 +8,11 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ### Added
 
+- `pagerduty` integration — 4 actions, auth: oauth2. Incident management
+  and on-call scheduling platform via the PagerDuty REST API
+  (trigger_incident, acknowledge_incident, resolve_incident,
+  find_oncall_user). Producer-staged by integration-drafts; consumer-side
+  audit applied 5 patches before merge.
 - `netlify` integration — 4 actions, auth: oauth2. Web hosting and
   automation platform for modern web projects via the Netlify REST API
   (get_site, list_files, list_site_deploys, rollback_deploy).
