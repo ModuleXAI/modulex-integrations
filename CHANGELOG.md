@@ -8,6 +8,11 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ### Added
 
+- `freshdesk` integration — 45 actions, auth: api_key. Customer support
+  helpdesk platform for managing tickets, contacts, agents, and knowledge
+  base articles via the Freshdesk REST API. Producer-staged by
+  integration-drafts; consumer-side audit applied 1 patch before merge.
+
 - `amazon_selling_partner` integration — 8 actions, auth: oauth2. Amazon
   Selling Partner API for managing orders, inventory, pricing, and reports
   on Amazon marketplaces (check_fba_inventory_levels,

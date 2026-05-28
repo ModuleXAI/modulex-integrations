@@ -90,6 +90,7 @@ lemon_squeezy = "modulex_integrations.tools.lemon_squeezy"
 short_io = "modulex_integrations.tools.short_io"
 nasdaq = "modulex_integrations.tools.nasdaq"
 firecrawl = "modulex_integrations.tools.firecrawl"
+freshdesk = "modulex_integrations.tools.freshdesk"
 jina_ai = "modulex_integrations.tools.jina_ai"
 jira = "modulex_integrations.tools.jira"
 cal_com = "modulex_integrations.tools.cal_com"
@@ -499,6 +500,11 @@ select = ["E", "F", "I", "N", "W", "B", "C4", "UP", "RUF"]
 # string literals in ParameterDef / Field kwargs that cannot be wrapped.
 "src/modulex_integrations/tools/amazon_selling_partner/manifest.py" = ["E501"]
 "src/modulex_integrations/tools/amazon_selling_partner/tools.py" = ["E501"]
+# freshdesk manifest, tools, and tests have long description string
+# literals in ParameterDef / Field kwargs that cannot be wrapped.
+"src/modulex_integrations/tools/freshdesk/manifest.py" = ["E501"]
+"src/modulex_integrations/tools/freshdesk/tools.py" = ["E501"]
+"src/modulex_integrations/tools/freshdesk/tests/test_freshdesk.py" = ["E501"]
 
 [tool.mypy]
 python_version = "3.12"
