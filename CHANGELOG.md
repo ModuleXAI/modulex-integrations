@@ -8,6 +8,10 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ### Added
 
+- `insightly` integration — 2 actions, auth: api_key. CRM and project
+  management platform for managing contacts and tasks via the Insightly
+  REST API (create_contact, create_task). Producer-staged by
+  integration-drafts; consumer-side audit applied 1 patch before merge.
 - `reflect` integration — 5 actions, auth: oauth2. Note-taking and
   knowledge management via the Reflect API (append_daily_note, create_link,
   get_user, list_graph_id_options, list_links). Producer-staged by
