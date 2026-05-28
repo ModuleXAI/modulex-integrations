@@ -1,6 +1,6 @@
-# Canvas LMS
+# Instructure Canvas LMS
 
-Learning management system integration for course, assignment, and user management via the Canvas REST API (`https://{your-domain}/api/v1`).
+Learning management system integration for [Instructure Canvas](https://www.instructure.com/canvas) — course, assignment, and user management via the Canvas REST API (`https://{your-domain}/api/v1`).
 
 ## Authentication
 

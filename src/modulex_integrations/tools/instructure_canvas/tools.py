@@ -1,4 +1,4 @@
-"""Canvas LMS LangChain @tool functions."""
+"""Instructure Canvas LMS LangChain @tool functions."""
 from __future__ import annotations
 
 from typing import Any
@@ -8,7 +8,7 @@ from langchain_core.tools import tool
 from pydantic import BaseModel, Field
 
 from modulex_integrations import serialize_pydantic_return
-from modulex_integrations.tools.canvas.outputs import (
+from modulex_integrations.tools.instructure_canvas.outputs import (
     AccountOption,
     AssignmentSummary,
     CourseSummary,

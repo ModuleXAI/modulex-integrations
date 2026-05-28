@@ -1,11 +1,11 @@
-"""Happy-path tests for every canvas @tool, plus a manifest sanity check."""
+"""Happy-path tests for every instructure_canvas @tool, plus a manifest sanity check."""
 from __future__ import annotations
 
 from typing import Any
 
 import pytest
 
-from modulex_integrations.tools.canvas import (
+from modulex_integrations.tools.instructure_canvas import (
     TOOLS,
     list_accounts,
     list_assignments,
@@ -14,7 +14,7 @@ from modulex_integrations.tools.canvas import (
     search_course_content,
     update_assignment,
 )
-from modulex_integrations.tools.canvas.outputs import (
+from modulex_integrations.tools.instructure_canvas.outputs import (
     ListAccountsOutput,
     ListAssignmentsOutput,
     ListCoursesOutput,

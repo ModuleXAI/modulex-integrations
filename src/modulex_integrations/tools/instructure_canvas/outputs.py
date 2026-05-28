@@ -1,4 +1,4 @@
-"""Pydantic response models for the canvas integration's @tool functions."""
+"""Pydantic response models for the instructure_canvas integration's @tool functions."""
 from __future__ import annotations
 
 from pydantic import BaseModel, ConfigDict, Field
