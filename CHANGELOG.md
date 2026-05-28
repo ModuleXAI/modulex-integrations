@@ -8,6 +8,11 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ### Added
 
+- `azure_storage` integration — 4 actions, auth: oauth2. Manage blobs and
+  containers in Microsoft Azure Blob Storage via the Azure Blob Storage
+  REST API (create_container, delete_blob, list_containers, upload_blob).
+  Producer-staged by integration-drafts; consumer-side audit applied
+  1 patch before merge.
 - `insightly` integration — 2 actions, auth: api_key. CRM and project
   management platform for managing contacts and tasks via the Insightly
   REST API (create_contact, create_task). Producer-staged by
