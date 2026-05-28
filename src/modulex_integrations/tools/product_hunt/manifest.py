@@ -23,7 +23,7 @@ manifest = IntegrationManifest(
     ),
     version="1.0.0",
     author="ModuleX",
-    logo="modulex:product_hunt-themed",
+    logo="logos:producthunt",
     app_url="https://www.producthunt.com",
     categories=["Productivity & Collaboration", "Marketing"],
     actions=[

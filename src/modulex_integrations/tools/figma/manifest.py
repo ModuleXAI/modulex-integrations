@@ -24,7 +24,7 @@ manifest = IntegrationManifest(
     ),
     version="1.0.0",
     author="ModuleX",
-    logo="modulex:figma-themed",
+    logo="logos:figma",
     app_url="https://www.figma.com",
     categories=["Design", "Productivity & Collaboration"],
     actions=[
