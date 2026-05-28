@@ -8,6 +8,9 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ### Added
 
+- `browser_use` integration — 25 actions, auth: api_key. AI-powered cloud
+  browser automation via the Browser Use API. Producer-staged by
+  integration-drafts; consumer-side audit applied 1 patch before merge.
 - `freshdesk` integration — 45 actions, auth: api_key. Customer support
   helpdesk platform for managing tickets, contacts, agents, and knowledge
   base articles via the Freshdesk REST API. Producer-staged by

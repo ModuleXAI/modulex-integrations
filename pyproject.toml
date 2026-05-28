@@ -64,6 +64,7 @@ Issues = "https://github.com/ModuleXAI/modulex-integrations/issues"
 [project.entry-points."modulex.tools"]
 aws = "modulex_integrations.tools.aws"
 bloomerang = "modulex_integrations.tools.bloomerang"
+browser_use = "modulex_integrations.tools.browser_use"
 github = "modulex_integrations.tools.github"
 gitlab = "modulex_integrations.tools.gitlab"
 slack = "modulex_integrations.tools.slack"
@@ -505,6 +506,11 @@ select = ["E", "F", "I", "N", "W", "B", "C4", "UP", "RUF"]
 "src/modulex_integrations/tools/freshdesk/manifest.py" = ["E501"]
 "src/modulex_integrations/tools/freshdesk/tools.py" = ["E501"]
 "src/modulex_integrations/tools/freshdesk/tests/test_freshdesk.py" = ["E501"]
+# browser_use manifest, tools, and tests have long description string
+# literals in ParameterDef / Field kwargs that cannot be wrapped.
+"src/modulex_integrations/tools/browser_use/manifest.py" = ["E501"]
+"src/modulex_integrations/tools/browser_use/tools.py" = ["E501"]
+"src/modulex_integrations/tools/browser_use/tests/test_browser_use.py" = ["E501"]
 
 [tool.mypy]
 python_version = "3.12"
