@@ -8,6 +8,10 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ### Added
 
+- `typeform` integration — 12 actions, auth: oauth2. Online form builder
+  for surveys, quizzes, and interactive forms via the Typeform REST API.
+  Producer-staged by integration-drafts; consumer-side audit applied
+  3 patches before merge.
 - `microsoft_entra_id` integration — 12 actions, auth: oauth2. Identity
   and access management via Microsoft Graph API for users, groups, and
   directory objects. Producer-staged by integration-drafts; consumer-side
