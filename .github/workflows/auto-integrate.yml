@@ -142,7 +142,16 @@ jobs:
             echo "::error::DRAFTS_REPO variable not set (Settings -> Secrets and variables -> Actions -> Variables)."
             exit 1
           fi
-          gh repo clone "${DRAFTS_REPO}" /tmp/drafts-clone -- --depth=1
+          # Use raw `git clone` with token-in-URL auth instead of
+          # `gh repo clone`. The gh wrapper exhibited non-deterministic
+          # exit 1 behavior on consecutive calls (see diagnostic step
+          # above — gh clone in group 4 succeeds, same command here
+          # fails with no stderr surfacing). Raw git is the layer
+          # `gh repo clone` calls into anyway; doing it directly is
+          # both simpler and avoids the gh-side regression.
+          git clone --depth=1 \
+            "https://x-access-token:${GH_TOKEN}@github.com/${DRAFTS_REPO}.git" \
+            /tmp/drafts-clone
           # Auto-detect the staging directory inside the clone. We look for
           # the deepest folder that contains <tool>/manifest.py files. This
           # avoids hardcoding the producer's internal subfolder name in
