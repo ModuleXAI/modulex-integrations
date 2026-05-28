@@ -175,6 +175,7 @@ microsoft_teams = "modulex_integrations.tools.microsoft_teams"
 mintlify = "modulex_integrations.tools.mintlify"
 mixpanel = "modulex_integrations.tools.mixpanel"
 monday = "modulex_integrations.tools.monday"
+postgrid = "modulex_integrations.tools.postgrid"
 posthog = "modulex_integrations.tools.posthog"
 postman = "modulex_integrations.tools.postman"
 product_hunt = "modulex_integrations.tools.product_hunt"
@@ -576,6 +577,10 @@ select = ["E", "F", "I", "N", "W", "B", "C4", "UP", "RUF"]
 # ParameterDef / Field kwargs that cannot be wrapped.
 "src/modulex_integrations/tools/canvas/manifest.py" = ["E501"]
 "src/modulex_integrations/tools/canvas/tools.py" = ["E501"]
+# postgrid manifest and tools have long description string literals in
+# ParameterDef / Field kwargs that cannot be wrapped.
+"src/modulex_integrations/tools/postgrid/manifest.py" = ["E501"]
+"src/modulex_integrations/tools/postgrid/tools.py" = ["E501"]
 
 [tool.mypy]
 python_version = "3.12"

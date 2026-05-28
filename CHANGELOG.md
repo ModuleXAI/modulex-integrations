@@ -8,6 +8,10 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ### Added
 
+- `postgrid` integration — 3 actions, auth: api_key. Programmatic direct
+  mail delivery via the PostGrid Print & Mail API (create_contact,
+  create_letter, create_postcard). Producer-staged by integration-drafts;
+  consumer-side audit applied 1 patch before merge.
 - `canvas` integration — 5 actions, auth: custom. Learning management
   system for course, assignment, and user management via the Canvas REST
   API (list_accounts, list_assignments, list_courses,
