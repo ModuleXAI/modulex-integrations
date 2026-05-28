@@ -8,6 +8,10 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ### Added
 
+- `product_hunt` integration — 1 action, auth: oauth2. Discover and explore
+  tech products and topics via the Product Hunt GraphQL API
+  (list_topic_options). Producer-staged by integration-drafts; consumer-side
+  audit applied 1 patch before merge.
 - `shopify_partner` integration — 1 action, auth: api_key. Shopify Partner
   webhook verification via local HMAC-SHA256 signature validation
   (verify_webhook). Producer-staged by integration-drafts; consumer-side
