@@ -8,6 +8,10 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ### Added
 
+- `shopify_partner` integration — 1 action, auth: api_key. Shopify Partner
+  webhook verification via local HMAC-SHA256 signature validation
+  (verify_webhook). Producer-staged by integration-drafts; consumer-side
+  audit applied 1 patch before merge.
 - `browserbase` integration — 3 actions, auth: api_key. Cloud browser
   infrastructure for running and managing headless browser sessions via
   the Browserbase REST API (create_context, create_session, list_projects).
