@@ -65,6 +65,7 @@ Issues = "https://github.com/ModuleXAI/modulex-integrations/issues"
 aws = "modulex_integrations.tools.aws"
 azure_storage = "modulex_integrations.tools.azure_storage"
 bloomerang = "modulex_integrations.tools.bloomerang"
+browserbase = "modulex_integrations.tools.browserbase"
 browser_use = "modulex_integrations.tools.browser_use"
 github = "modulex_integrations.tools.github"
 gitlab = "modulex_integrations.tools.gitlab"
@@ -560,6 +561,10 @@ select = ["E", "F", "I", "N", "W", "B", "C4", "UP", "RUF"]
 # ParameterDef / Field kwargs that cannot be wrapped.
 "src/modulex_integrations/tools/pagerduty/manifest.py" = ["E501"]
 "src/modulex_integrations/tools/pagerduty/tools.py" = ["E501"]
+# browserbase manifest and tools have long description string literals in
+# ParameterDef / Field kwargs that cannot be wrapped.
+"src/modulex_integrations/tools/browserbase/manifest.py" = ["E501"]
+"src/modulex_integrations/tools/browserbase/tools.py" = ["E501"]
 
 [tool.mypy]
 python_version = "3.12"

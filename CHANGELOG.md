@@ -8,6 +8,11 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ### Added
 
+- `browserbase` integration — 3 actions, auth: api_key. Cloud browser
+  infrastructure for running and managing headless browser sessions via
+  the Browserbase REST API (create_context, create_session, list_projects).
+  Producer-staged by integration-drafts; consumer-side audit applied
+  1 patch before merge.
 - `pagerduty` integration — 4 actions, auth: oauth2. Incident management
   and on-call scheduling platform via the PagerDuty REST API
   (trigger_incident, acknowledge_incident, resolve_incident,
