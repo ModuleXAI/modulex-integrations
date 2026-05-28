@@ -27,7 +27,13 @@ name: auto-integrate
 
 on:
   schedule:
-    - cron: '0 * * * *'
+    # 5-minute cadence (GitHub Actions minimum). `concurrency` block
+    # below ensures only one run executes at a time; overlapping
+    # cron triggers queue rather than parallelize. Combined with
+    # the self-dispatch step at the end of the workflow, this gives
+    # near-continuous processing when the producer queue has work,
+    # and 5-minute polling when it doesn't.
+    - cron: '*/5 * * * *'
   workflow_dispatch:
     inputs:
       provider:
@@ -46,7 +52,7 @@ on:
 
 permissions:
   contents: write
-  actions: read
+  actions: write  # `write` (not `read`) so the workflow can self-dispatch on success
   id-token: write
 
 concurrency:
@@ -88,46 +94,6 @@ jobs:
           .venv/bin/pip install --upgrade pip
           .venv/bin/pip install -e ".[dev]"
 
-      - name: Diagnose producer access (TEMPORARY - remove after debug)
-        env:
-          GH_TOKEN: ${{ secrets.DRAFTS_REPO_TOKEN }}
-          DRAFTS_REPO: ${{ vars.DRAFTS_REPO }}
-        run: |
-          set +e
-          echo "::group::1. Token + user identity (gh auth status + gh api user)"
-          gh auth status 2>&1
-          echo "---"
-          gh api user --jq '{login,type}' 2>&1
-          USER_EXIT=$?
-          echo "gh api user exit: ${USER_EXIT}"
-          echo "::endgroup::"
-
-          echo "::group::2. Repo accessibility via REST API"
-          gh api "repos/${DRAFTS_REPO}" 2>&1 | head -30
-          API_EXIT=${PIPESTATUS[0]}
-          echo "gh api repos exit: ${API_EXIT}"
-          echo "::endgroup::"
-
-          echo "::group::3. Raw git clone (bypassing gh, verbose)"
-          GIT_TRACE=1 GIT_CURL_VERBOSE=1 git clone \
-            --depth=1 \
-            "https://x-access-token:${GH_TOKEN}@github.com/${DRAFTS_REPO}.git" \
-            /tmp/raw-clone-test 2>&1 | tail -60
-          GIT_EXIT=${PIPESTATUS[0]}
-          echo "git clone exit: ${GIT_EXIT}"
-          rm -rf /tmp/raw-clone-test
-          echo "::endgroup::"
-
-          echo "::group::4. gh repo clone (the actual failing command)"
-          GH_DEBUG=api gh repo clone "${DRAFTS_REPO}" /tmp/gh-clone-test -- --depth=1 2>&1 | tail -40
-          GH_CLONE_EXIT=${PIPESTATUS[0]}
-          echo "gh repo clone exit: ${GH_CLONE_EXIT}"
-          rm -rf /tmp/gh-clone-test
-          echo "::endgroup::"
-
-          set -e
-          echo "Diagnostic complete. Continuing to actual clone step (which will likely fail too)."
-
       - name: Clone producer repo
         env:
           GH_TOKEN: ${{ secrets.DRAFTS_REPO_TOKEN }}
@@ -142,24 +108,13 @@ jobs:
             echo "::error::DRAFTS_REPO variable not set (Settings -> Secrets and variables -> Actions -> Variables)."
             exit 1
           fi
-          # Defensive clone: wrap with `set +e` so the script does
-          # not die silently if pipefail downstream (find | head)
-          # masks the real exit code. Explicitly print clone exit
-          # and directory contents for forensic visibility.
-          set +e
+          # Raw `git clone` with token-in-URL auth. We tried
+          # `gh repo clone` but it exhibited non-deterministic exit 1
+          # behavior under bash -e with no stderr surfacing. Going
+          # direct to git is the layer gh wraps anyway.
           git clone --depth=1 \
             "https://x-access-token:${GH_TOKEN}@github.com/${DRAFTS_REPO}.git" \
             /tmp/drafts-clone
-          CLONE_EXIT=$?
-          echo "===GIT CLONE EXIT: ${CLONE_EXIT}==="
-          if [ "${CLONE_EXIT}" -ne 0 ]; then
-            echo "::error::git clone failed with exit ${CLONE_EXIT}"
-            ls -la /tmp/ | head -10
-            exit "${CLONE_EXIT}"
-          fi
-          echo "Clone tree top-level:"
-          ls -la /tmp/drafts-clone/ | head -10
-          set -e
           # Auto-detect the staging directory inside the clone. We look for
           # the deepest folder that contains <tool>/manifest.py files. This
           # avoids hardcoding the producer's internal subfolder name in
@@ -432,3 +387,20 @@ jobs:
               echo "**Outcome:** Unknown - pipeline did not emit a tool name."
             fi
           } >> "${GITHUB_STEP_SUMMARY}"
+
+      # ---- Self-dispatch chain ---------------------------------------------
+      # If this run integrated a tool, immediately trigger the next run to
+      # drain the producer queue as fast as possible. If the producer queue
+      # is empty (skipped) or this run failed, the chain breaks and we fall
+      # back to the 5-minute cron failsafe.
+      #
+      # Concurrency group (`auto-integrate`) ensures self-dispatched runs
+      # never overlap with cron-triggered runs — they queue serially.
+      - name: Self-dispatch next run (chain on success)
+        if: steps.run.outputs.skipped != 'true' && steps.run.outputs.failed != 'true' && steps.run.outputs.tool_name != '' && github.event.inputs.dry_run != 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TOOL_NAME: ${{ steps.run.outputs.tool_name }}
+        run: |
+          echo "Integrated ${TOOL_NAME}. Chaining next run to drain queue."
+          gh workflow run auto-integrate.yml --ref staging
