@@ -8,6 +8,10 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ### Added
 
+- `help_scout` integration — 8 actions, auth: oauth2. Customer support
+  helpdesk platform with shared inboxes, knowledge base, and live chat
+  via the Help Scout REST API. Producer-staged by integration-drafts;
+  consumer-side audit applied 3 patches before merge.
 - `luma` integration — 8 actions, auth: api_key. Event management platform
   for creating, managing, and tracking events and guests via the Luma
   public API. Producer-staged by integration-drafts; consumer-side audit
