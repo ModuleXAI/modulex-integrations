@@ -8,6 +8,10 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ### Added
 
+- `reflect` integration — 5 actions, auth: oauth2. Note-taking and
+  knowledge management via the Reflect API (append_daily_note, create_link,
+  get_user, list_graph_id_options, list_links). Producer-staged by
+  integration-drafts; consumer-side audit applied 7 patches before merge.
 - `help_scout` integration — 8 actions, auth: oauth2. Customer support
   helpdesk platform with shared inboxes, knowledge base, and live chat
   via the Help Scout REST API. Producer-staged by integration-drafts;
