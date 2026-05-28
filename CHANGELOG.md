@@ -8,6 +8,11 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ### Added
 
+- `netlify` integration — 4 actions, auth: oauth2. Web hosting and
+  automation platform for modern web projects via the Netlify REST API
+  (get_site, list_files, list_site_deploys, rollback_deploy).
+  Producer-staged by integration-drafts; consumer-side audit applied
+  4 patches before merge.
 - `azure_storage` integration — 4 actions, auth: oauth2. Manage blobs and
   containers in Microsoft Azure Blob Storage via the Azure Blob Storage
   REST API (create_container, delete_blob, list_containers, upload_blob).
