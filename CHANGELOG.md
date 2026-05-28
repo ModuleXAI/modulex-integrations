@@ -8,6 +8,11 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ### Added
 
+- `canvas` integration — 5 actions, auth: custom. Learning management
+  system for course, assignment, and user management via the Canvas REST
+  API (list_accounts, list_assignments, list_courses,
+  search_course_content, update_assignment). Producer-staged by
+  integration-drafts; consumer-side audit applied 2 patches before merge.
 - `product_hunt` integration — 1 action, auth: oauth2. Discover and explore
   tech products and topics via the Product Hunt GraphQL API
   (list_topic_options). Producer-staged by integration-drafts; consumer-side
