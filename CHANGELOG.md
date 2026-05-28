@@ -8,6 +8,10 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ### Added
 
+- `luma` integration — 8 actions, auth: api_key. Event management platform
+  for creating, managing, and tracking events and guests via the Luma
+  public API. Producer-staged by integration-drafts; consumer-side audit
+  applied 2 patches before merge.
 - `typeform` integration — 12 actions, auth: oauth2. Online form builder
   for surveys, quizzes, and interactive forms via the Typeform REST API.
   Producer-staged by integration-drafts; consumer-side audit applied
