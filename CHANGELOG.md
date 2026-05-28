@@ -8,6 +8,11 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ### Added
 
+- `figma` integration — 3 actions, auth: oauth2. Design collaboration
+  platform for creating, sharing, and commenting on design files via the
+  Figma REST API (list_comments, delete_comment, post_a_comment).
+  Producer-staged by integration-drafts; consumer-side audit applied
+  5 patches before merge.
 - `postgrid` integration — 3 actions, auth: api_key. Programmatic direct
   mail delivery via the PostGrid Print & Mail API (create_contact,
   create_letter, create_postcard). Producer-staged by integration-drafts;
