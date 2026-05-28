@@ -128,6 +128,7 @@ sendgrid = "modulex_integrations.tools.sendgrid"
 sentry = "modulex_integrations.tools.sentry"
 coinbase = "modulex_integrations.tools.coinbase"
 databricks = "modulex_integrations.tools.databricks"
+datadog = "modulex_integrations.tools.datadog"
 postgresql = "modulex_integrations.tools.postgresql"
 mysql = "modulex_integrations.tools.mysql"
 snowflake = "modulex_integrations.tools.snowflake"
@@ -511,6 +512,11 @@ select = ["E", "F", "I", "N", "W", "B", "C4", "UP", "RUF"]
 "src/modulex_integrations/tools/browser_use/manifest.py" = ["E501"]
 "src/modulex_integrations/tools/browser_use/tools.py" = ["E501"]
 "src/modulex_integrations/tools/browser_use/tests/test_browser_use.py" = ["E501"]
+# datadog manifest, tools, and tests have long description string
+# literals in ParameterDef / Field kwargs that cannot be wrapped.
+"src/modulex_integrations/tools/datadog/manifest.py" = ["E501"]
+"src/modulex_integrations/tools/datadog/tools.py" = ["E501"]
+"src/modulex_integrations/tools/datadog/tests/test_datadog.py" = ["E501"]
 
 [tool.mypy]
 python_version = "3.12"

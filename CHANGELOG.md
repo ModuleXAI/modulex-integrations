@@ -8,6 +8,10 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ### Added
 
+- `datadog` integration — 11 actions, auth: api_key. Infrastructure
+  monitoring, log management, and application performance platform via
+  the Datadog REST API. Producer-staged by integration-drafts;
+  consumer-side audit applied 2 patches before merge.
 - `browser_use` integration — 25 actions, auth: api_key. AI-powered cloud
   browser automation via the Browser Use API. Producer-staged by
   integration-drafts; consumer-side audit applied 1 patch before merge.
