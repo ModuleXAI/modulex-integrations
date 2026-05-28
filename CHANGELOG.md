@@ -8,6 +8,13 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ### Added
 
+- `gong` integration — 5 actions, auth: oauth2. Revenue intelligence
+  platform for recording, transcribing, and analyzing sales conversations
+  via the Gong REST API (add_new_call, get_extensive_data, list_calls,
+  list_workspace_id_options, retrieve_transcripts_of_calls).
+  Producer-staged by integration-drafts; consumer-side audit applied
+  3 patches before merge.
+
 - `figma` integration — 3 actions, auth: oauth2. Design collaboration
   platform for creating, sharing, and commenting on design files via the
   Figma REST API (list_comments, delete_comment, post_a_comment).

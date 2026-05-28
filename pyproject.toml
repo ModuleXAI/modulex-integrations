@@ -124,6 +124,7 @@ cloudflare = "modulex_integrations.tools.cloudflare"
 segment = "modulex_integrations.tools.segment"
 semrush = "modulex_integrations.tools.semrush"
 gmail = "modulex_integrations.tools.gmail"
+gong = "modulex_integrations.tools.gong"
 godaddy = "modulex_integrations.tools.godaddy"
 google_cloud = "modulex_integrations.tools.google_cloud"
 google_contacts = "modulex_integrations.tools.google_contacts"
@@ -578,6 +579,10 @@ select = ["E", "F", "I", "N", "W", "B", "C4", "UP", "RUF"]
 # ParameterDef / Field kwargs that cannot be wrapped.
 "src/modulex_integrations/tools/instructure_canvas/manifest.py" = ["E501"]
 "src/modulex_integrations/tools/instructure_canvas/tools.py" = ["E501"]
+# gong manifest and tools have long description string literals in
+# ParameterDef / Field kwargs and credential guard lines that cannot be wrapped.
+"src/modulex_integrations/tools/gong/manifest.py" = ["E501"]
+"src/modulex_integrations/tools/gong/tools.py" = ["E501"]
 # postgrid manifest and tools have long description string literals in
 # ParameterDef / Field kwargs that cannot be wrapped.
 "src/modulex_integrations/tools/postgrid/manifest.py" = ["E501"]
