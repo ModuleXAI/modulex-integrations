@@ -8,6 +8,12 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ### Added
 
+- `square` integration — 6 actions, auth: oauth2. Payment processing,
+  commerce, and business management platform via the Square Connect v2 API
+  (create_customer, create_invoice, create_order, list_event_types_options,
+  list_location_options, send_invoice). Producer-staged by
+  integration-drafts; consumer-side audit applied 4 patches before merge.
+
 - `hunter` integration — 13 actions, auth: api_key. Professional email
   finding and verification via the Hunter.io API (account_information,
   combined_enrichment, create_lead, delete_lead, domain_search,
