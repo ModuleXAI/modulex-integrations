@@ -164,9 +164,13 @@ jobs:
           # the deepest folder that contains <tool>/manifest.py files. This
           # avoids hardcoding the producer's internal subfolder name in
           # this committed YAML file.
-          FIRST_MANIFEST=$(find /tmp/drafts-clone -mindepth 3 -maxdepth 3 -name 'manifest.py' -type f 2>/dev/null | head -1)
+          # `|| true` neutralizes SIGPIPE-induced exit 141 from
+          # `find` when `head -1` closes the pipe early. Without
+          # this, `set -eo pipefail` kills the script with no
+          # visible error, masking a successful clone as a failure.
+          FIRST_MANIFEST=$(find /tmp/drafts-clone -mindepth 3 -maxdepth 3 -name 'manifest.py' -type f 2>/dev/null | head -1 || true)
           if [ -z "${FIRST_MANIFEST}" ]; then
-            FIRST_MANIFEST=$(find /tmp/drafts-clone -mindepth 2 -maxdepth 2 -name 'manifest.py' -type f 2>/dev/null | head -1)
+            FIRST_MANIFEST=$(find /tmp/drafts-clone -mindepth 2 -maxdepth 2 -name 'manifest.py' -type f 2>/dev/null | head -1 || true)
           fi
           if [ -z "${FIRST_MANIFEST}" ]; then
             echo "::error::Cloned drafts repo has no <tool>/manifest.py files at depth 2 or 3. Repo layout unrecognized."
