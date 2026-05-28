@@ -8,6 +8,13 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ### Added
 
+- `hunter` integration — 13 actions, auth: api_key. Professional email
+  finding and verification via the Hunter.io API (account_information,
+  combined_enrichment, create_lead, delete_lead, domain_search,
+  email_count, email_finder, email_verifier, get_lead, get_leads_list,
+  list_leads, list_leads_lists, update_lead). Producer-staged by
+  integration-drafts; consumer-side audit applied 1 patch before merge.
+
 - `gong` integration — 5 actions, auth: oauth2. Revenue intelligence
   platform for recording, transcribing, and analyzing sales conversations
   via the Gong REST API (add_new_call, get_extensive_data, list_calls,
