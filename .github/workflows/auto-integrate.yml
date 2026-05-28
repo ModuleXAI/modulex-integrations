@@ -168,6 +168,14 @@ jobs:
         with:
           use_bedrock: 'true'
           github_token: ${{ secrets.GITHUB_TOKEN }}
+          # Allow github-actions bot as trigger actor. Default
+          # behavior rejects bot-initiated runs as prompt-injection
+          # protection. Our self-dispatch chain (last step) uses
+          # GITHUB_TOKEN and surfaces as "github-actions" actor,
+          # which would otherwise fail with "non-human actor"
+          # error. Safe here because the only bot that can trigger
+          # this workflow is our own self-dispatch.
+          allowed_bots: 'github-actions'
           claude_args: --dangerously-skip-permissions
           show_full_output: 'true'
           prompt: |
@@ -205,6 +213,7 @@ jobs:
         with:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
           github_token: ${{ secrets.GITHUB_TOKEN }}
+          allowed_bots: 'github-actions'  # see primary step for rationale
           claude_args: --dangerously-skip-permissions
           show_full_output: 'true'
           prompt: |
