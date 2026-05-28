@@ -63,7 +63,10 @@ Issues = "https://github.com/ModuleXAI/modulex-integrations/issues"
 # Entry points — each migrated tool gets one line here.
 [project.entry-points."modulex.tools"]
 aws = "modulex_integrations.tools.aws"
+azure_storage = "modulex_integrations.tools.azure_storage"
 bloomerang = "modulex_integrations.tools.bloomerang"
+browserbase = "modulex_integrations.tools.browserbase"
+browser_use = "modulex_integrations.tools.browser_use"
 github = "modulex_integrations.tools.github"
 gitlab = "modulex_integrations.tools.gitlab"
 slack = "modulex_integrations.tools.slack"
@@ -71,6 +74,7 @@ etsy = "modulex_integrations.tools.etsy"
 exa = "modulex_integrations.tools.exa"
 fal_ai = "modulex_integrations.tools.fal_ai"
 tavily = "modulex_integrations.tools.tavily"
+insightly = "modulex_integrations.tools.insightly"
 instacart = "modulex_integrations.tools.instacart"
 tinyurl = "modulex_integrations.tools.tinyurl"
 customerio = "modulex_integrations.tools.customerio"
@@ -84,19 +88,24 @@ crunchbase = "modulex_integrations.tools.crunchbase"
 dropbox = "modulex_integrations.tools.dropbox"
 docusign = "modulex_integrations.tools.docusign"
 hackernews = "modulex_integrations.tools.hackernews"
+help_scout = "modulex_integrations.tools.help_scout"
 heroku = "modulex_integrations.tools.heroku"
 hootsuite = "modulex_integrations.tools.hootsuite"
 lemon_squeezy = "modulex_integrations.tools.lemon_squeezy"
 short_io = "modulex_integrations.tools.short_io"
 nasdaq = "modulex_integrations.tools.nasdaq"
+netlify = "modulex_integrations.tools.netlify"
 firecrawl = "modulex_integrations.tools.firecrawl"
+freshdesk = "modulex_integrations.tools.freshdesk"
 jina_ai = "modulex_integrations.tools.jina_ai"
 jira = "modulex_integrations.tools.jira"
 cal_com = "modulex_integrations.tools.cal_com"
 calendly = "modulex_integrations.tools.calendly"
 canva = "modulex_integrations.tools.canva"
+canvas = "modulex_integrations.tools.canvas"
 linear = "modulex_integrations.tools.linear"
 linkedin = "modulex_integrations.tools.linkedin"
+luma = "modulex_integrations.tools.luma"
 ahrefs = "modulex_integrations.tools.ahrefs"
 airtable = "modulex_integrations.tools.airtable"
 algolia = "modulex_integrations.tools.algolia"
@@ -105,6 +114,7 @@ amazon_selling_partner = "modulex_integrations.tools.amazon_selling_partner"
 apify = "modulex_integrations.tools.apify"
 telegram = "modulex_integrations.tools.telegram"
 twilio = "modulex_integrations.tools.twilio"
+typeform = "modulex_integrations.tools.typeform"
 servicenow = "modulex_integrations.tools.servicenow"
 intercom = "modulex_integrations.tools.intercom"
 scrape_do = "modulex_integrations.tools.scrape_do"
@@ -126,6 +136,7 @@ sendgrid = "modulex_integrations.tools.sendgrid"
 sentry = "modulex_integrations.tools.sentry"
 coinbase = "modulex_integrations.tools.coinbase"
 databricks = "modulex_integrations.tools.databricks"
+datadog = "modulex_integrations.tools.datadog"
 postgresql = "modulex_integrations.tools.postgresql"
 mysql = "modulex_integrations.tools.mysql"
 snowflake = "modulex_integrations.tools.snowflake"
@@ -133,6 +144,7 @@ supabase = "modulex_integrations.tools.supabase"
 hubspot = "modulex_integrations.tools.hubspot"
 notion = "modulex_integrations.tools.notion"
 elevenlabs = "modulex_integrations.tools.elevenlabs"
+reflect = "modulex_integrations.tools.reflect"
 salesforce = "modulex_integrations.tools.salesforce"
 clickup = "modulex_integrations.tools.clickup"
 google_drive = "modulex_integrations.tools.google_drive"
@@ -153,6 +165,7 @@ medium = "modulex_integrations.tools.medium"
 microsoft_365_people = "modulex_integrations.tools.microsoft_365_people"
 microsoft_bookings = "modulex_integrations.tools.microsoft_bookings"
 microsoft_dynamics_365_sales = "modulex_integrations.tools.microsoft_dynamics_365_sales"
+microsoft_entra_id = "modulex_integrations.tools.microsoft_entra_id"
 microsoft_excel = "modulex_integrations.tools.microsoft_excel"
 microsoft_onedrive = "modulex_integrations.tools.microsoft_onedrive"
 microsoft_outlook = "modulex_integrations.tools.microsoft_outlook"
@@ -164,8 +177,11 @@ mixpanel = "modulex_integrations.tools.mixpanel"
 monday = "modulex_integrations.tools.monday"
 posthog = "modulex_integrations.tools.posthog"
 postman = "modulex_integrations.tools.postman"
+product_hunt = "modulex_integrations.tools.product_hunt"
 okta = "modulex_integrations.tools.okta"
+pagerduty = "modulex_integrations.tools.pagerduty"
 shopify = "modulex_integrations.tools.shopify"
+shopify_partner = "modulex_integrations.tools.shopify_partner"
 zoom = "modulex_integrations.tools.zoom"
 
 [tool.hatch.version]
@@ -499,6 +515,67 @@ select = ["E", "F", "I", "N", "W", "B", "C4", "UP", "RUF"]
 # string literals in ParameterDef / Field kwargs that cannot be wrapped.
 "src/modulex_integrations/tools/amazon_selling_partner/manifest.py" = ["E501"]
 "src/modulex_integrations/tools/amazon_selling_partner/tools.py" = ["E501"]
+# freshdesk manifest, tools, and tests have long description string
+# literals in ParameterDef / Field kwargs that cannot be wrapped.
+"src/modulex_integrations/tools/freshdesk/manifest.py" = ["E501"]
+"src/modulex_integrations/tools/freshdesk/tools.py" = ["E501"]
+"src/modulex_integrations/tools/freshdesk/tests/test_freshdesk.py" = ["E501"]
+# browser_use manifest, tools, and tests have long description string
+# literals in ParameterDef / Field kwargs that cannot be wrapped.
+"src/modulex_integrations/tools/browser_use/manifest.py" = ["E501"]
+"src/modulex_integrations/tools/browser_use/tools.py" = ["E501"]
+"src/modulex_integrations/tools/browser_use/tests/test_browser_use.py" = ["E501"]
+# datadog manifest, tools, and tests have long description string
+# literals in ParameterDef / Field kwargs that cannot be wrapped.
+"src/modulex_integrations/tools/datadog/manifest.py" = ["E501"]
+"src/modulex_integrations/tools/datadog/tools.py" = ["E501"]
+"src/modulex_integrations/tools/datadog/tests/test_datadog.py" = ["E501"]
+# typeform manifest, tools, and tests have long description string literals in
+# ParameterDef / Field kwargs and mock JSON that cannot be wrapped.
+"src/modulex_integrations/tools/typeform/manifest.py" = ["E501"]
+"src/modulex_integrations/tools/typeform/tools.py" = ["E501"]
+"src/modulex_integrations/tools/typeform/tests/test_typeform.py" = ["E501"]
+# microsoft_entra_id manifest, tools, and tests have long description string
+# literals in ParameterDef / Field kwargs and credential guard lines
+# that cannot be wrapped.
+"src/modulex_integrations/tools/microsoft_entra_id/manifest.py" = ["E501"]
+"src/modulex_integrations/tools/microsoft_entra_id/tools.py" = ["E501"]
+"src/modulex_integrations/tools/microsoft_entra_id/tests/test_microsoft_entra_id.py" = ["E501"]
+# luma manifest, tools, and tests have long description string literals in
+# ParameterDef / Field kwargs and credential guard lines that cannot be wrapped.
+"src/modulex_integrations/tools/luma/manifest.py" = ["E501"]
+"src/modulex_integrations/tools/luma/tools.py" = ["E501"]
+"src/modulex_integrations/tools/luma/tests/test_luma.py" = ["E501"]
+# help_scout manifest and tools have long description string literals in
+# ParameterDef / Field kwargs and credential guard lines that cannot be wrapped.
+"src/modulex_integrations/tools/help_scout/manifest.py" = ["E501"]
+"src/modulex_integrations/tools/help_scout/tools.py" = ["E501"]
+# azure_storage manifest, tools, and tests have long description string
+# literals in ParameterDef / Field kwargs that cannot be wrapped.
+"src/modulex_integrations/tools/azure_storage/manifest.py" = ["E501"]
+"src/modulex_integrations/tools/azure_storage/tools.py" = ["E501"]
+"src/modulex_integrations/tools/azure_storage/tests/test_azure_storage.py" = ["E501"]
+# insightly manifest, tools, and tests have long description string literals in
+# ParameterDef / Field kwargs that cannot be wrapped.
+"src/modulex_integrations/tools/insightly/manifest.py" = ["E501"]
+"src/modulex_integrations/tools/insightly/tools.py" = ["E501"]
+"src/modulex_integrations/tools/insightly/tests/test_insightly.py" = ["E501"]
+# pagerduty manifest and tools have long description string literals in
+# ParameterDef / Field kwargs that cannot be wrapped.
+"src/modulex_integrations/tools/pagerduty/manifest.py" = ["E501"]
+"src/modulex_integrations/tools/pagerduty/tools.py" = ["E501"]
+# browserbase manifest and tools have long description string literals in
+# ParameterDef / Field kwargs that cannot be wrapped.
+"src/modulex_integrations/tools/browserbase/manifest.py" = ["E501"]
+"src/modulex_integrations/tools/browserbase/tools.py" = ["E501"]
+# shopify_partner manifest and tools have long description string literals in
+# ParameterDef / Field kwargs that cannot be wrapped.
+"src/modulex_integrations/tools/shopify_partner/manifest.py" = ["E501"]
+"src/modulex_integrations/tools/shopify_partner/tools.py" = ["E501"]
+# canvas manifest and tools have long description string literals in
+# ParameterDef / Field kwargs that cannot be wrapped.
+"src/modulex_integrations/tools/canvas/manifest.py" = ["E501"]
+"src/modulex_integrations/tools/canvas/tools.py" = ["E501"]
 
 [tool.mypy]
 python_version = "3.12"

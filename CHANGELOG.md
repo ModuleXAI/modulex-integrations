@@ -8,6 +8,75 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ### Added
 
+- `canvas` integration — 5 actions, auth: custom. Learning management
+  system for course, assignment, and user management via the Canvas REST
+  API (list_accounts, list_assignments, list_courses,
+  search_course_content, update_assignment). Producer-staged by
+  integration-drafts; consumer-side audit applied 2 patches before merge.
+- `product_hunt` integration — 1 action, auth: oauth2. Discover and explore
+  tech products and topics via the Product Hunt GraphQL API
+  (list_topic_options). Producer-staged by integration-drafts; consumer-side
+  audit applied 1 patch before merge.
+- `shopify_partner` integration — 1 action, auth: api_key. Shopify Partner
+  webhook verification via local HMAC-SHA256 signature validation
+  (verify_webhook). Producer-staged by integration-drafts; consumer-side
+  audit applied 1 patch before merge.
+- `browserbase` integration — 3 actions, auth: api_key. Cloud browser
+  infrastructure for running and managing headless browser sessions via
+  the Browserbase REST API (create_context, create_session, list_projects).
+  Producer-staged by integration-drafts; consumer-side audit applied
+  1 patch before merge.
+- `pagerduty` integration — 4 actions, auth: oauth2. Incident management
+  and on-call scheduling platform via the PagerDuty REST API
+  (trigger_incident, acknowledge_incident, resolve_incident,
+  find_oncall_user). Producer-staged by integration-drafts; consumer-side
+  audit applied 5 patches before merge.
+- `netlify` integration — 4 actions, auth: oauth2. Web hosting and
+  automation platform for modern web projects via the Netlify REST API
+  (get_site, list_files, list_site_deploys, rollback_deploy).
+  Producer-staged by integration-drafts; consumer-side audit applied
+  4 patches before merge.
+- `azure_storage` integration — 4 actions, auth: oauth2. Manage blobs and
+  containers in Microsoft Azure Blob Storage via the Azure Blob Storage
+  REST API (create_container, delete_blob, list_containers, upload_blob).
+  Producer-staged by integration-drafts; consumer-side audit applied
+  1 patch before merge.
+- `insightly` integration — 2 actions, auth: api_key. CRM and project
+  management platform for managing contacts and tasks via the Insightly
+  REST API (create_contact, create_task). Producer-staged by
+  integration-drafts; consumer-side audit applied 1 patch before merge.
+- `reflect` integration — 5 actions, auth: oauth2. Note-taking and
+  knowledge management via the Reflect API (append_daily_note, create_link,
+  get_user, list_graph_id_options, list_links). Producer-staged by
+  integration-drafts; consumer-side audit applied 7 patches before merge.
+- `help_scout` integration — 8 actions, auth: oauth2. Customer support
+  helpdesk platform with shared inboxes, knowledge base, and live chat
+  via the Help Scout REST API. Producer-staged by integration-drafts;
+  consumer-side audit applied 3 patches before merge.
+- `luma` integration — 8 actions, auth: api_key. Event management platform
+  for creating, managing, and tracking events and guests via the Luma
+  public API. Producer-staged by integration-drafts; consumer-side audit
+  applied 2 patches before merge.
+- `typeform` integration — 12 actions, auth: oauth2. Online form builder
+  for surveys, quizzes, and interactive forms via the Typeform REST API.
+  Producer-staged by integration-drafts; consumer-side audit applied
+  3 patches before merge.
+- `microsoft_entra_id` integration — 12 actions, auth: oauth2. Identity
+  and access management via Microsoft Graph API for users, groups, and
+  directory objects. Producer-staged by integration-drafts; consumer-side
+  audit applied 4 patches before merge.
+- `datadog` integration — 11 actions, auth: api_key. Infrastructure
+  monitoring, log management, and application performance platform via
+  the Datadog REST API. Producer-staged by integration-drafts;
+  consumer-side audit applied 2 patches before merge.
+- `browser_use` integration — 25 actions, auth: api_key. AI-powered cloud
+  browser automation via the Browser Use API. Producer-staged by
+  integration-drafts; consumer-side audit applied 1 patch before merge.
+- `freshdesk` integration — 45 actions, auth: api_key. Customer support
+  helpdesk platform for managing tickets, contacts, agents, and knowledge
+  base articles via the Freshdesk REST API. Producer-staged by
+  integration-drafts; consumer-side audit applied 1 patch before merge.
+
 - `amazon_selling_partner` integration — 8 actions, auth: oauth2. Amazon
   Selling Partner API for managing orders, inventory, pricing, and reports
   on Amazon marketplaces (check_fba_inventory_levels,
