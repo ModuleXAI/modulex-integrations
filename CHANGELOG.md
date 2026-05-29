@@ -8,6 +8,12 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ### Added
 
+- `motion` integration — 6 actions, auth: api_key. AI-powered task and
+  project management platform for automatic scheduling via the Motion API
+  (create_task, delete_task, get_schedules, get_task, move_workspace,
+  update_task). Producer-staged by integration-drafts; consumer-side audit
+  applied 1 patch before merge.
+
 - `livestorm` integration — 7 actions, auth: oauth2. Video engagement
   platform for webinars and virtual events via the Livestorm REST API
   (create_event, get_event, list_attendees_from_event, list_events,
