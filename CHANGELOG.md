@@ -8,6 +8,12 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ### Added
 
+- `yelp` integration — 4 actions, auth: api_key. Search businesses, read
+  reviews, and get business details via the Yelp Fusion API
+  (search_businesses, get_business_details, list_business_reviews,
+  search_businesses_by_phone_number). Producer-staged by
+  integration-drafts; consumer-side audit applied 1 patch before merge.
+
 - `square` integration — 6 actions, auth: oauth2. Payment processing,
   commerce, and business management platform via the Square Connect v2 API
   (create_customer, create_invoice, create_order, list_event_types_options,
