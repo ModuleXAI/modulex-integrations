@@ -89,6 +89,7 @@ crunchbase = "modulex_integrations.tools.crunchbase"
 dropbox = "modulex_integrations.tools.dropbox"
 docusign = "modulex_integrations.tools.docusign"
 hackernews = "modulex_integrations.tools.hackernews"
+heygen = "modulex_integrations.tools.heygen"
 help_scout = "modulex_integrations.tools.help_scout"
 heroku = "modulex_integrations.tools.heroku"
 hootsuite = "modulex_integrations.tools.hootsuite"
@@ -600,6 +601,10 @@ select = ["E", "F", "I", "N", "W", "B", "C4", "UP", "RUF"]
 "src/modulex_integrations/tools/square/manifest.py" = ["E501"]
 "src/modulex_integrations/tools/square/tools.py" = ["E501"]
 "src/modulex_integrations/tools/square/tests/test_square.py" = ["E501"]
+# heygen manifest and tools have long description string literals in
+# ParameterDef / Field kwargs that cannot be wrapped.
+"src/modulex_integrations/tools/heygen/manifest.py" = ["E501"]
+"src/modulex_integrations/tools/heygen/tools.py" = ["E501"]
 # yelp manifest and tools have long description string literals in
 # ParameterDef / Field kwargs that cannot be wrapped.
 "src/modulex_integrations/tools/yelp/manifest.py" = ["E501"]

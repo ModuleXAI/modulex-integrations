@@ -8,6 +8,13 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ### Added
 
+- `heygen` integration — 5 actions, auth: api_key. AI video generation
+  platform for creating talking avatar videos via the HeyGen API
+  (create_talking_photo, create_video_from_template,
+  list_custom_events_options, list_voice_id_options, retrieve_video_link).
+  Producer-staged by integration-drafts; consumer-side audit applied
+  1 patch before merge.
+
 - `yelp` integration — 4 actions, auth: api_key. Search businesses, read
   reviews, and get business details via the Yelp Fusion API
   (search_businesses, get_business_details, list_business_reviews,
