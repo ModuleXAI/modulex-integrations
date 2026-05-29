@@ -8,6 +8,13 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ### Added
 
+- `livestorm` integration — 7 actions, auth: oauth2. Video engagement
+  platform for webinars and virtual events via the Livestorm REST API
+  (create_event, get_event, list_attendees_from_event, list_events,
+  list_sessions, register_someone_for_session, update_event).
+  Producer-staged by integration-drafts; consumer-side audit applied
+  12 patches before merge.
+
 - `heygen` integration — 5 actions, auth: api_key. AI video generation
   platform for creating talking avatar videos via the HeyGen API
   (create_talking_photo, create_video_from_template,
