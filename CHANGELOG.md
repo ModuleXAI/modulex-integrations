@@ -8,6 +8,12 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ### Added
 
+- `cogmento` integration — 4 actions, auth: oauth2. CRM platform for
+  managing contacts, deals, and tasks via the Cogmento API
+  (create_contact, create_deal, create_task, list_user_ids_options).
+  Producer-staged by integration-drafts; consumer-side audit applied
+  3 patches before merge.
+
 - `fellow` integration — 3 actions, auth: api_key. Meeting productivity
   platform for notes, action items, and meeting management via the Fellow API
   (archive_action_item, complete_action_item, get_note_by_id). Producer-staged
