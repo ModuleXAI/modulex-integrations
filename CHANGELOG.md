@@ -8,6 +8,12 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ### Added
 
+- `coinmarketcap` integration — 4 actions, auth: api_key. Cryptocurrency
+  market data, quotes, and metadata from the CoinMarketCap API
+  (get_cryptocurrency_metadata, id_map, latest_listings, latest_quotes).
+  Producer-staged by integration-drafts; consumer-side audit applied
+  2 patches before merge.
+
 - `cogmento` integration — 4 actions, auth: oauth2. CRM platform for
   managing contacts, deals, and tasks via the Cogmento API
   (create_contact, create_deal, create_task, list_user_ids_options).
