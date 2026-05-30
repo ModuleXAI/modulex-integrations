@@ -8,6 +8,12 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ### Added
 
+- `canvas` integration — 5 actions, auth: custom. Canvas LMS integration
+  for course, assignment, and user management via the Canvas REST API
+  (list_accounts, list_courses, list_assignments, search_course_content,
+  update_assignment). Producer-staged by integration-drafts; consumer-side
+  audit applied 2 patches before merge.
+
 - `motion` integration — 6 actions, auth: api_key. AI-powered task and
   project management platform for automatic scheduling via the Motion API
   (create_task, delete_task, get_schedules, get_task, move_workspace,
