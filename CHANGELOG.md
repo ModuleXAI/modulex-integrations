@@ -8,6 +8,11 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ### Added
 
+- `fellow` integration — 3 actions, auth: api_key. Meeting productivity
+  platform for notes, action items, and meeting management via the Fellow API
+  (archive_action_item, complete_action_item, get_note_by_id). Producer-staged
+  by integration-drafts; consumer-side audit applied 1 patch before merge.
+
 - `canvas` integration — 5 actions, auth: custom. Canvas LMS integration
   for course, assignment, and user management via the Canvas REST API
   (list_accounts, list_courses, list_assignments, search_course_content,
