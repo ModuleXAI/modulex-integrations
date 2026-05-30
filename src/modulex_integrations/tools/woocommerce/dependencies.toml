@@ -1,0 +1,3 @@
+# Runtime dependencies for the woocommerce integration.
+# CI assembles this into the root pyproject's [project.optional-dependencies].
+dependencies = []

@@ -8,6 +8,15 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ### Added
 
+- `woocommerce` integration — 17 actions, auth: custom. WooCommerce REST API
+  integration for managing orders, products, customers, and refunds on
+  self-hosted WooCommerce stores (create_order, get_order, list_orders,
+  delete_order, update_order_status, create_product, update_product,
+  get_product, list_products, search_customers, get_customer,
+  create_customer, add_order_note, get_order_note, list_order_notes,
+  create_refund, list_payment_method_options). Producer-staged by
+  integration-drafts; consumer-side audit applied 2 patches before merge.
+
 - `coinmarketcap` integration — 4 actions, auth: api_key. Cryptocurrency
   market data, quotes, and metadata from the CoinMarketCap API
   (get_cryptocurrency_metadata, id_map, latest_listings, latest_quotes).
