@@ -8,6 +8,11 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ### Added
 
+- `revolt` integration — 3 actions, auth: bearer_token. Revolt open-source
+  chat platform — group management and friend requests (create_group,
+  add_group_member, send_friend_request). Producer-staged by
+  integration-drafts; consumer-side audit applied 5 patches before merge.
+
 - `woocommerce` integration — 17 actions, auth: custom. WooCommerce REST API
   integration for managing orders, products, customers, and refunds on
   self-hosted WooCommerce stores (create_order, get_order, list_orders,
