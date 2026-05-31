@@ -8,6 +8,89 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ### Added
 
+- `revolt` integration — 3 actions, auth: bearer_token. Revolt open-source
+  chat platform — group management and friend requests (create_group,
+  add_group_member, send_friend_request). Producer-staged by
+  integration-drafts; consumer-side audit applied 5 patches before merge.
+
+- `woocommerce` integration — 17 actions, auth: custom. WooCommerce REST API
+  integration for managing orders, products, customers, and refunds on
+  self-hosted WooCommerce stores (create_order, get_order, list_orders,
+  delete_order, update_order_status, create_product, update_product,
+  get_product, list_products, search_customers, get_customer,
+  create_customer, add_order_note, get_order_note, list_order_notes,
+  create_refund, list_payment_method_options). Producer-staged by
+  integration-drafts; consumer-side audit applied 2 patches before merge.
+
+- `coinmarketcap` integration — 4 actions, auth: api_key. Cryptocurrency
+  market data, quotes, and metadata from the CoinMarketCap API
+  (get_cryptocurrency_metadata, id_map, latest_listings, latest_quotes).
+  Producer-staged by integration-drafts; consumer-side audit applied
+  2 patches before merge.
+
+- `cogmento` integration — 4 actions, auth: oauth2. CRM platform for
+  managing contacts, deals, and tasks via the Cogmento API
+  (create_contact, create_deal, create_task, list_user_ids_options).
+  Producer-staged by integration-drafts; consumer-side audit applied
+  3 patches before merge.
+
+- `fellow` integration — 3 actions, auth: api_key. Meeting productivity
+  platform for notes, action items, and meeting management via the Fellow API
+  (archive_action_item, complete_action_item, get_note_by_id). Producer-staged
+  by integration-drafts; consumer-side audit applied 1 patch before merge.
+
+- `canvas` integration — 5 actions, auth: custom. Canvas LMS integration
+  for course, assignment, and user management via the Canvas REST API
+  (list_accounts, list_courses, list_assignments, search_course_content,
+  update_assignment). Producer-staged by integration-drafts; consumer-side
+  audit applied 2 patches before merge.
+
+- `motion` integration — 6 actions, auth: api_key. AI-powered task and
+  project management platform for automatic scheduling via the Motion API
+  (create_task, delete_task, get_schedules, get_task, move_workspace,
+  update_task). Producer-staged by integration-drafts; consumer-side audit
+  applied 1 patch before merge.
+
+- `livestorm` integration — 7 actions, auth: oauth2. Video engagement
+  platform for webinars and virtual events via the Livestorm REST API
+  (create_event, get_event, list_attendees_from_event, list_events,
+  list_sessions, register_someone_for_session, update_event).
+  Producer-staged by integration-drafts; consumer-side audit applied
+  12 patches before merge.
+
+- `heygen` integration — 5 actions, auth: api_key. AI video generation
+  platform for creating talking avatar videos via the HeyGen API
+  (create_talking_photo, create_video_from_template,
+  list_custom_events_options, list_voice_id_options, retrieve_video_link).
+  Producer-staged by integration-drafts; consumer-side audit applied
+  1 patch before merge.
+
+- `yelp` integration — 4 actions, auth: api_key. Search businesses, read
+  reviews, and get business details via the Yelp Fusion API
+  (search_businesses, get_business_details, list_business_reviews,
+  search_businesses_by_phone_number). Producer-staged by
+  integration-drafts; consumer-side audit applied 1 patch before merge.
+
+- `square` integration — 6 actions, auth: oauth2. Payment processing,
+  commerce, and business management platform via the Square Connect v2 API
+  (create_customer, create_invoice, create_order, list_event_types_options,
+  list_location_options, send_invoice). Producer-staged by
+  integration-drafts; consumer-side audit applied 4 patches before merge.
+
+- `hunter` integration — 13 actions, auth: api_key. Professional email
+  finding and verification via the Hunter.io API (account_information,
+  combined_enrichment, create_lead, delete_lead, domain_search,
+  email_count, email_finder, email_verifier, get_lead, get_leads_list,
+  list_leads, list_leads_lists, update_lead). Producer-staged by
+  integration-drafts; consumer-side audit applied 1 patch before merge.
+
+- `gong` integration — 5 actions, auth: oauth2. Revenue intelligence
+  platform for recording, transcribing, and analyzing sales conversations
+  via the Gong REST API (add_new_call, get_extensive_data, list_calls,
+  list_workspace_id_options, retrieve_transcripts_of_calls).
+  Producer-staged by integration-drafts; consumer-side audit applied
+  3 patches before merge.
+
 - `figma` integration — 3 actions, auth: oauth2. Design collaboration
   platform for creating, sharing, and commenting on design files via the
   Figma REST API (list_comments, delete_comment, post_a_comment).
