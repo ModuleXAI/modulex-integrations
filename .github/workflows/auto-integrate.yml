@@ -26,14 +26,23 @@ name: auto-integrate
 # GitHub Actions injection-safety guidelines.
 
 on:
-  schedule:
-    # 5-minute cadence (GitHub Actions minimum). `concurrency` block
-    # below ensures only one run executes at a time; overlapping
-    # cron triggers queue rather than parallelize. Combined with
-    # the self-dispatch step at the end of the workflow, this gives
-    # near-continuous processing when the producer queue has work,
-    # and 5-minute polling when it doesn't.
-    - cron: '*/5 * * * *'
+  # ─── DEACTIVATED 2026-05-30 ──────────────────────────────────────────────
+  # The auto-integrate cron is intentionally disabled. The workflow files are
+  # kept so the pipeline can be re-enabled later. To reactivate:
+  #   1. Uncomment the `schedule:` block below.
+  #   2. Restore the `if:` condition on the "Self-dispatch next run" step
+  #      (its original value is preserved in a comment there).
+  #   3. Re-enable on GitHub:  gh workflow enable auto-integrate.yml
+  # `workflow_dispatch` stays active so the pipeline can still be run manually
+  # on demand without restarting the automatic chain.
+  # schedule:
+  #   # 5-minute cadence (GitHub Actions minimum). `concurrency` block
+  #   # below ensures only one run executes at a time; overlapping
+  #   # cron triggers queue rather than parallelize. Combined with
+  #   # the self-dispatch step at the end of the workflow, this gives
+  #   # near-continuous processing when the producer queue has work,
+  #   # and 5-minute polling when it doesn't.
+  #   - cron: '*/5 * * * *'
   workflow_dispatch:
     inputs:
       provider:
@@ -406,7 +415,13 @@ jobs:
       # Concurrency group (`auto-integrate`) ensures self-dispatched runs
       # never overlap with cron-triggered runs — they queue serially.
       - name: Self-dispatch next run (chain on success)
-        if: steps.run.outputs.skipped != 'true' && steps.run.outputs.failed != 'true' && steps.run.outputs.tool_name != '' && github.event.inputs.dry_run != 'true'
+        # DEACTIVATED 2026-05-30: the self-dispatch chain is disabled alongside
+        # the cron (see the `on:` block at the top of this file). This prevents
+        # a manual `workflow_dispatch` run from restarting the automatic chain.
+        # To reactivate, restore the original condition preserved on the next
+        # line and uncomment the `schedule:` block above.
+        # Original: steps.run.outputs.skipped != 'true' && steps.run.outputs.failed != 'true' && steps.run.outputs.tool_name != '' && github.event.inputs.dry_run != 'true'
+        if: false
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           TOOL_NAME: ${{ steps.run.outputs.tool_name }}
