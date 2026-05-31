@@ -21,7 +21,7 @@ manifest = IntegrationManifest(
     version="1.0.0",
     author="ModuleX",
     logo="modulex:fellow-themed",
-    app_url="https://fellow.app",
+    app_url="https://fellow.ai",
     categories=["Productivity & Collaboration", "meetings"],
     actions=[
         ActionDefinition(
