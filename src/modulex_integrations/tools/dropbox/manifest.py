@@ -23,7 +23,12 @@ manifest = IntegrationManifest(
     author="ModuleX",
     logo="logos:dropbox",
     app_url="https://www.dropbox.com",
-    categories=["Productivity & Collaboration", "file-storage", "cloud-storage"],
+    categories=[
+        "Cloud Infrastructure",
+        "Productivity & Collaboration",
+        "file-storage",
+        "cloud-storage",
+    ],
     actions=[
         ActionDefinition(
             name="create_folder",

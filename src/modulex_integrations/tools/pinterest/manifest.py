@@ -41,6 +41,7 @@ manifest = IntegrationManifest(
     logo="logos:pinterest",
     app_url="https://www.pinterest.com",
     categories=[
+        "Social Media",
         "Marketing & Email",
         "social_media",
         "automation",

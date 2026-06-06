@@ -147,7 +147,7 @@ manifest = IntegrationManifest(
     author="ModuleX",
     logo="logos:posthog-icon",
     app_url="https://posthog.com",
-    categories=["Data & Analytics", "data", "development"],
+    categories=["Analytics & Data", "Data & Analytics", "data", "development"],
     actions=[
         # --- Dashboards ----------------------------------------------------
         _crud_get_all(

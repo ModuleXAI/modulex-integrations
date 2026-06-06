@@ -11,8 +11,6 @@ from modulex_integrations.tools.google_docs import (
     append_image,
     append_text,
     create_document,
-    create_document_from_template,
-    find_document,
     get_document,
     get_tab_content,
     insert_page_break,
@@ -25,9 +23,7 @@ from modulex_integrations.tools.google_docs import (
 from modulex_integrations.tools.google_docs.outputs import (
     AppendImageOutput,
     AppendTextOutput,
-    CreateDocumentFromTemplateOutput,
     CreateDocumentOutput,
-    FindDocumentOutput,
     GetDocumentOutput,
     GetTabContentOutput,
     InsertPageBreakOutput,
@@ -38,7 +34,6 @@ from modulex_integrations.tools.google_docs.outputs import (
 )
 
 DOCS_API = "https://docs.googleapis.com/v1"
-DRIVE_API = "https://www.googleapis.com/drive/v3"
 
 _AUTH: dict[str, Any] = {
     "auth_type": "oauth2",
@@ -55,8 +50,8 @@ def _args(**extra: Any) -> dict[str, Any]:
 
 
 class TestManifest:
-    def test_manifest_exposes_12_actions(self) -> None:
-        assert len(manifest.actions) == 12
+    def test_manifest_exposes_10_actions(self) -> None:
+        assert len(manifest.actions) == 10
 
     def test_manifest_actions_match_tools_tuple(self) -> None:
         assert {a.name for a in manifest.actions} == {t.name for t in TOOLS}
@@ -137,54 +132,6 @@ async def test_create_document(httpx_mock) -> None:  # type: ignore[no-untyped-d
     assert result.success is True
     assert result.document_id == "new_doc_id"
     assert result.title == "New Doc"
-
-
-@pytest.mark.asyncio
-async def test_create_document_from_template(httpx_mock) -> None:  # type: ignore[no-untyped-def]
-    httpx_mock.add_response(
-        method="POST",
-        url=f"{DRIVE_API}/files/tmpl123/copy",
-        json={"id": "copied_doc_id", "name": "My Doc"},
-    )
-    httpx_mock.add_response(
-        method="POST",
-        url=f"{DOCS_API}/documents/copied_doc_id:batchUpdate",
-        json={"replies": []},
-    )
-
-    result_dict = await create_document_from_template.ainvoke(
-        _args(
-            template_id="tmpl123",
-            name="My Doc",
-            replace_values={"greeting": "Hello"},
-        )
-    )
-
-    assert isinstance(result_dict, dict)
-    result = CreateDocumentFromTemplateOutput.model_validate(result_dict)
-    assert result.success is True
-    assert result.google_doc_id == "copied_doc_id"
-
-
-@pytest.mark.asyncio
-async def test_find_document(httpx_mock) -> None:  # type: ignore[no-untyped-def]
-    httpx_mock.add_response(
-        method="GET",
-        url=re.compile(rf"{re.escape(DRIVE_API)}/files\??.*"),
-        json={
-            "files": [
-                {"id": "doc1", "name": "My Doc", "mimeType": "application/vnd.google-apps.document"}
-            ]
-        },
-    )
-
-    result_dict = await find_document.ainvoke(_args(name_search_term="My Doc"))
-
-    assert isinstance(result_dict, dict)
-    result = FindDocumentOutput.model_validate(result_dict)
-    assert result.success is True
-    assert len(result.files) == 1
-    assert result.files[0].id == "doc1"
 
 
 @pytest.mark.asyncio

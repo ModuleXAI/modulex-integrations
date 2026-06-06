@@ -8,10 +8,7 @@ from pydantic import BaseModel, ConfigDict, Field
 __all__ = [
     "AppendImageOutput",
     "AppendTextOutput",
-    "CreateDocumentFromTemplateOutput",
     "CreateDocumentOutput",
-    "DocumentFile",
-    "FindDocumentOutput",
     "GetDocumentOutput",
     "GetTabContentOutput",
     "InsertPageBreakOutput",
@@ -27,14 +24,6 @@ class _Base(BaseModel):
     """Shared config for every output model in this integration."""
 
     model_config = ConfigDict(extra="forbid")
-
-
-class DocumentFile(_Base):
-    """A Google Drive file reference returned by find_document."""
-
-    id: str | None = None
-    name: str | None = None
-    mime_type: str | None = None
 
 
 class TabContent(_Base):
@@ -64,20 +53,6 @@ class CreateDocumentOutput(_Base):
     error: str | None = None
     document_id: str | None = None
     title: str | None = None
-
-
-class CreateDocumentFromTemplateOutput(_Base):
-    success: bool
-    error: str | None = None
-    google_doc_id: str | None = None
-    pdf_id: str | None = None
-    name: str | None = None
-
-
-class FindDocumentOutput(_Base):
-    success: bool
-    error: str | None = None
-    files: list[DocumentFile] = Field(default_factory=list)
 
 
 class GetDocumentOutput(_Base):

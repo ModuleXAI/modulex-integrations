@@ -22,7 +22,7 @@ manifest = IntegrationManifest(
     author="ModuleX",
     logo="modulex:yelp",
     app_url="https://www.yelp.com",
-    categories=["Local Services", "Reviews", "Business Data"],
+    categories=["Marketing & Advertising", "Local Services", "Reviews", "Business Data"],
     actions=[
         ActionDefinition(
             name="search_businesses",

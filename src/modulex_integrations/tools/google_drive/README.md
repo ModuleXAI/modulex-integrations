@@ -1,12 +1,15 @@
 # Google Drive (+ Docs / Sheets / Slides)
 
 Google Workspace integration via the v3 (Drive) / v1 (Docs, Slides) /
-v4 (Sheets) REST APIs. Pure HTTP, no SDK dep. 24 actions.
+v4 (Sheets) REST APIs. Pure HTTP, no SDK dep. 16 actions.
 
 ## Authentication
 
-- **Paired `oauth2 + bearer_token` schemas.** OAuth requests five
-  scopes covering Drive + Docs + Sheets + Slides.
+- **Paired `oauth2 + bearer_token` schemas.** OAuth requests four
+  scopes covering Drive (app-created files) + Docs + Sheets + Slides:
+  `drive.file`, `documents`, `spreadsheets`, `presentations`. The
+  broad `drive` scope was dropped — access is now limited to files
+  the app creates or that the user explicitly opens.
 - OAuth env vars: `GOOGLE_DRIVE_OAUTH2_CLIENT_ID`,
   `GOOGLE_DRIVE_OAUTH2_CLIENT_SECRET` (both `only_for_custom`).
 - Bearer env var: `GOOGLE_ACCESS_TOKEN`.
@@ -20,8 +23,8 @@ Token-based: every `@tool` accepts `(auth_type, auth_data, ...)`.
 
 | group | tools |
 | --- | --- |
-| Drive — files | `search_files`, `list_folder`, `read_file`, `create_text_file`, `update_text_file`, `copy_file`, `get_file_metadata` |
-| Drive — items | `create_folder`, `delete_item`, `rename_item`, `move_item` |
+| Drive — files | `create_text_file`, `update_text_file` |
+| Drive — items | `create_folder` |
 | Docs | `create_google_doc`, `read_google_doc`, `update_google_doc`, `append_to_google_doc` |
 | Sheets | `create_google_sheet`, `read_google_sheet`, `update_google_sheet`, `format_sheet_cells`, `format_sheet_text` |
 | Slides | `create_google_slides`, `read_google_slides`, `add_slide`, `update_slide_content` |
@@ -40,8 +43,6 @@ Token-based: every `@tool` accepts `(auth_type, auth_data, ...)`.
 - **`read_google_sheet` / `update_google_sheet`** — first GET the
   spreadsheet to resolve localized sheet names (e.g. `Sayfa1` in
   Turkish), then call the values endpoint.
-- **`move_item`** — GET parents first, then PATCH with
-  `addParents` / `removeParents` query params.
 - **`format_sheet_cells` / `format_sheet_text`** — convert A1
   notation to `GridRange` for the Sheets batchUpdate API.
 

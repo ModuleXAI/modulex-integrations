@@ -37,7 +37,7 @@ manifest = IntegrationManifest(
     author="ModuleX",
     logo="modulex:apolloio",
     app_url="https://www.apollo.io",
-    categories=["CRM & Customer", "sales", "customer_support"],
+    categories=["Sales", "CRM & Customer", "sales", "customer_support"],
     actions=[
         # --- Enrichment ---
         ActionDefinition(

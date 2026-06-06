@@ -25,7 +25,11 @@ manifest = IntegrationManifest(
     author="ModuleX",
     logo="modulex:okta-themed",
     app_url="https://www.okta.com",
-    categories=["Identity & Access Management", "Productivity & Collaboration"],
+    categories=[
+        "Developer Tools & Infrastructure",
+        "Identity & Access Management",
+        "Productivity & Collaboration",
+    ],
     actions=[
         ActionDefinition(
             name="create_user",

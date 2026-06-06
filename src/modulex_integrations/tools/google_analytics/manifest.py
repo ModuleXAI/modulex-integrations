@@ -28,6 +28,7 @@ manifest = IntegrationManifest(
     logo="logos:google-analytics",
     app_url="https://analytics.google.com",
     categories=[
+        "Analytics & Data",
         "Analytics & Reporting",
         "Marketing",
         "Productivity & Collaboration",

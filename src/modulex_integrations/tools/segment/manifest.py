@@ -23,7 +23,7 @@ manifest = IntegrationManifest(
     author="ModuleX",
     logo="logos:segment-icon",
     app_url="https://segment.com",
-    categories=["Analytics", "Customer Data Platform"],
+    categories=["Analytics & Data", "Analytics", "Customer Data Platform"],
     actions=[
         ActionDefinition(
             name="alias",

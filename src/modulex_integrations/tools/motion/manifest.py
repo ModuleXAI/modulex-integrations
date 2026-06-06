@@ -22,7 +22,7 @@ manifest = IntegrationManifest(
     author="ModuleX",
     logo="modulex:motion-themed",
     app_url="https://www.usemotion.com",
-    categories=["Productivity & Collaboration", "project-management"],
+    categories=["Project & Task Management", "Productivity & Collaboration", "project-management"],
     actions=[
         ActionDefinition(
             name="create_task",

@@ -22,7 +22,7 @@ manifest = IntegrationManifest(
     version="1.0.0",
     author="ModuleX",
     app_url="https://www.postgrid.com",
-    categories=["Marketing", "Business Services"],
+    categories=["Marketing & Advertising", "Marketing", "Business Services"],
     actions=[
         ActionDefinition(
             name="create_contact",

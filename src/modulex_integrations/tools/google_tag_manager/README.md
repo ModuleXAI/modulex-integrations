@@ -13,7 +13,6 @@ Tag Manager API v2 (`www.googleapis.com/tagmanager/v2`).
 - Scopes requested:
   - `https://www.googleapis.com/auth/tagmanager.edit.containers`
   - `https://www.googleapis.com/auth/tagmanager.readonly`
-  - `https://www.googleapis.com/auth/tagmanager.manage.accounts`
 - Required env vars (custom OAuth app only):
   - `GOOGLE_TAG_MANAGER_OAUTH2_CLIENT_ID`
   - `GOOGLE_TAG_MANAGER_OAUTH2_CLIENT_SECRET`

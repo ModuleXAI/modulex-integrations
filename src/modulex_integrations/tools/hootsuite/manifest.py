@@ -23,7 +23,7 @@ manifest = IntegrationManifest(
     author="ModuleX",
     logo="logos:hootsuite-icon",
     app_url="https://hootsuite.com",
-    categories=["Marketing", "Social Media"],
+    categories=["Social Media", "Marketing"],
     actions=[
         ActionDefinition(
             name="create_media_upload_job",

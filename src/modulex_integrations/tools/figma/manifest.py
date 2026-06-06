@@ -26,7 +26,7 @@ manifest = IntegrationManifest(
     author="ModuleX",
     logo="logos:figma",
     app_url="https://www.figma.com",
-    categories=["Design", "Productivity & Collaboration"],
+    categories=["Productivity & Collaboration", "Design"],
     actions=[
         ActionDefinition(
             name="list_comments",

@@ -22,7 +22,7 @@ manifest = IntegrationManifest(
     author="ModuleX",
     logo="modulex:mixpanel",
     app_url="https://mixpanel.com",
-    categories=["Analytics", "Product Analytics"],
+    categories=["Analytics & Data", "Analytics", "Product Analytics"],
     actions=[
         ActionDefinition(
             name="emit_event_to",

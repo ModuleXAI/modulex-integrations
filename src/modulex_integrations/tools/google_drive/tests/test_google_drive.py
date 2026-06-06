@@ -1,6 +1,6 @@
 """Tests for the Google Drive / Docs / Sheets / Slides integration.
 
-24 actions all share the same shape, so coverage is shape-
+16 actions all share the same shape, so coverage is shape-
 representative rather than exhaustive: one happy-path per API surface
 plus the manifest sanity trio, an auth-validation test, and a few
 multi-call workflow tests for the trickier shapes.
@@ -16,25 +16,17 @@ from modulex_integrations.tools.google_drive import (
     TOOLS,
     add_slide,
     append_to_google_doc,
-    copy_file,
     create_folder,
     create_google_doc,
     create_google_sheet,
     create_google_slides,
     create_text_file,
-    delete_item,
     format_sheet_cells,
     format_sheet_text,
-    get_file_metadata,
-    list_folder,
     manifest,
-    move_item,
-    read_file,
     read_google_doc,
     read_google_sheet,
     read_google_slides,
-    rename_item,
-    search_files,
     update_google_doc,
     update_google_sheet,
     update_slide_content,
@@ -43,24 +35,16 @@ from modulex_integrations.tools.google_drive import (
 from modulex_integrations.tools.google_drive.outputs import (
     AddSlideOutput,
     AppendToGoogleDocOutput,
-    CopyFileOutput,
     CreateFolderOutput,
     CreateGoogleDocOutput,
     CreateGoogleSheetOutput,
     CreateGoogleSlidesOutput,
     CreateTextFileOutput,
-    DeleteItemOutput,
     FormatSheetCellsOutput,
     FormatSheetTextOutput,
-    GetFileMetadataOutput,
-    ListFolderOutput,
-    MoveItemOutput,
-    ReadFileOutput,
     ReadGoogleDocOutput,
     ReadGoogleSheetOutput,
     ReadGoogleSlidesOutput,
-    RenameItemOutput,
-    SearchFilesOutput,
     UpdateGoogleDocOutput,
     UpdateGoogleSheetOutput,
     UpdateSlideContentOutput,
@@ -85,8 +69,8 @@ def _args(**extra: Any) -> dict[str, Any]:
 
 
 class TestManifest:
-    def test_manifest_exposes_24_actions(self) -> None:
-        assert len(manifest.actions) == 24
+    def test_manifest_exposes_16_actions(self) -> None:
+        assert len(manifest.actions) == 16
 
     def test_manifest_actions_match_tools_tuple(self) -> None:
         assert {a.name for a in manifest.actions} == {t.name for t in TOOLS}
@@ -114,108 +98,13 @@ def test_a1_to_grid() -> None:
 
 
 @pytest.mark.asyncio
-async def test_search_files_missing_token() -> None:
+async def test_create_folder_missing_token() -> None:
     bad = {"auth_type": "oauth2", "auth_data": {}}
-    result = SearchFilesOutput.model_validate(
-        await search_files.ainvoke(dict(bad, query="foo"))
+    result = CreateFolderOutput.model_validate(
+        await create_folder.ainvoke(dict(bad, name="X"))
     )
     assert result.success is False
     assert result.error is not None and "token" in result.error
-
-
-@pytest.mark.asyncio
-async def test_search_files(httpx_mock: Any) -> None:
-    httpx_mock.add_response(
-        method="GET",
-        url=re.compile(rf"{DRIVE}/files\?.*"),
-        json={"files": [{"id": "f1", "name": "doc.txt", "mimeType": "text/plain"}]},
-    )
-    result = SearchFilesOutput.model_validate(
-        await search_files.ainvoke(_args(query="doc"))
-    )
-    assert result.success is True
-    assert result.total == 1
-
-
-@pytest.mark.asyncio
-async def test_list_folder_splits_folders_and_files(httpx_mock: Any) -> None:
-    httpx_mock.add_response(
-        method="GET",
-        url=re.compile(rf"{DRIVE}/files\?.*"),
-        json={
-            "files": [
-                {"id": "F1", "mimeType": "application/vnd.google-apps.folder"},
-                {"id": "f1", "mimeType": "text/plain"},
-            ]
-        },
-    )
-    result = ListFolderOutput.model_validate(
-        await list_folder.ainvoke(_args())
-    )
-    assert result.success is True
-    assert len(result.folders) == 1
-    assert len(result.files) == 1
-
-
-@pytest.mark.asyncio
-async def test_read_file_text(httpx_mock: Any) -> None:
-    httpx_mock.add_response(
-        method="GET",
-        url=f"{DRIVE}/files/f1?fields=id%2Cname%2CmimeType%2Csize%2CwebViewLink",
-        json={"id": "f1", "name": "doc.txt", "mimeType": "text/plain"},
-    )
-    httpx_mock.add_response(
-        method="GET",
-        url=f"{DRIVE}/files/f1?alt=media",
-        text="hello world",
-    )
-    result = ReadFileOutput.model_validate(
-        await read_file.ainvoke(_args(file_id="f1"))
-    )
-    assert result.success is True
-    assert result.content == "hello world"
-
-
-@pytest.mark.asyncio
-async def test_read_file_google_doc_exports_text(httpx_mock: Any) -> None:
-    httpx_mock.add_response(
-        method="GET",
-        url=f"{DRIVE}/files/d1?fields=id%2Cname%2CmimeType%2Csize%2CwebViewLink",
-        json={
-            "id": "d1",
-            "name": "My Doc",
-            "mimeType": "application/vnd.google-apps.document",
-        },
-    )
-    httpx_mock.add_response(
-        method="GET",
-        url=f"{DRIVE}/files/d1/export?mimeType=text%2Fplain",
-        text="document body",
-    )
-    result = ReadFileOutput.model_validate(
-        await read_file.ainvoke(_args(file_id="d1"))
-    )
-    assert result.success is True
-    assert result.content == "document body"
-
-
-@pytest.mark.asyncio
-async def test_read_file_binary_returns_link(httpx_mock: Any) -> None:
-    httpx_mock.add_response(
-        method="GET",
-        url=f"{DRIVE}/files/b1?fields=id%2Cname%2CmimeType%2Csize%2CwebViewLink",
-        json={
-            "id": "b1",
-            "name": "image.png",
-            "mimeType": "image/png",
-            "webViewLink": "https://drive.google.com/file/d/b1/view",
-        },
-    )
-    result = ReadFileOutput.model_validate(
-        await read_file.ainvoke(_args(file_id="b1"))
-    )
-    assert result.success is True
-    assert result.message is not None and "web_view_link" in result.message
 
 
 @pytest.mark.asyncio
@@ -294,84 +183,6 @@ async def test_create_folder(httpx_mock: Any) -> None:
         await create_folder.ainvoke(_args(name="X"))
     )
     assert result.success is True
-
-
-@pytest.mark.asyncio
-async def test_delete_item(httpx_mock: Any) -> None:
-    httpx_mock.add_response(
-        method="DELETE",
-        url=re.compile(rf"{DRIVE}/files/F1\?.*"),
-        status_code=204,
-    )
-    result = DeleteItemOutput.model_validate(
-        await delete_item.ainvoke(_args(item_id="F1"))
-    )
-    assert result.success is True
-
-
-@pytest.mark.asyncio
-async def test_rename_item(httpx_mock: Any) -> None:
-    httpx_mock.add_response(
-        method="PATCH",
-        url=re.compile(rf"{DRIVE}/files/F1\?.*"),
-        json={"id": "F1", "name": "Renamed"},
-    )
-    result = RenameItemOutput.model_validate(
-        await rename_item.ainvoke(_args(item_id="F1", new_name="Renamed"))
-    )
-    assert result.success is True
-
-
-@pytest.mark.asyncio
-async def test_move_item_reads_parents_first(httpx_mock: Any) -> None:
-    httpx_mock.add_response(
-        method="GET",
-        url=f"{DRIVE}/files/F1?fields=parents",
-        json={"parents": ["P1", "P2"]},
-    )
-    httpx_mock.add_response(
-        method="PATCH",
-        url=re.compile(rf"{DRIVE}/files/F1\?.*"),
-        json={"id": "F1", "name": "X"},
-    )
-    result = MoveItemOutput.model_validate(
-        await move_item.ainvoke(_args(item_id="F1", destination_folder_id="Dest"))
-    )
-    assert result.success is True
-    assert result.new_parent == "Dest"
-
-
-@pytest.mark.asyncio
-async def test_copy_file(httpx_mock: Any) -> None:
-    httpx_mock.add_response(
-        method="POST",
-        url=re.compile(rf"{DRIVE}/files/F1/copy\?.*"),
-        status_code=201,
-        json={"id": "F_copy", "name": "Copy"},
-    )
-    result = CopyFileOutput.model_validate(
-        await copy_file.ainvoke(_args(file_id="F1", new_name="Copy"))
-    )
-    assert result.success is True
-
-
-@pytest.mark.asyncio
-async def test_get_file_metadata(httpx_mock: Any) -> None:
-    httpx_mock.add_response(
-        method="GET",
-        url=re.compile(rf"{DRIVE}/files/F1\?.*"),
-        json={
-            "id": "F1",
-            "name": "X",
-            "mimeType": "application/pdf",
-            "size": "1024",
-        },
-    )
-    result = GetFileMetadataOutput.model_validate(
-        await get_file_metadata.ainvoke(_args(file_id="F1"))
-    )
-    assert result.success is True
-    assert result.size == "1024"
 
 
 @pytest.mark.asyncio

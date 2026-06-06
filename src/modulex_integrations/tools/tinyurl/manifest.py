@@ -25,7 +25,7 @@ manifest = IntegrationManifest(
     author="ModuleX",
     logo="modulex:tinyurl-themed",
     app_url="https://tinyurl.com",
-    categories=["Utilities", "link", "miscellaneous"],
+    categories=["Marketing & Advertising", "Utilities", "link", "miscellaneous"],
     actions=[
         ActionDefinition(
             name="create_shortened_link",

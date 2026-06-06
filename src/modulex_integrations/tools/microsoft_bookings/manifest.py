@@ -26,7 +26,12 @@ manifest = IntegrationManifest(
     author="ModuleX",
     logo="modulex:microsoft_bookings",
     app_url="https://www.microsoft.com/en-us/microsoft-365/business/scheduling-and-booking-app",
-    categories=["Productivity & Collaboration", "Scheduling", "Business Services"],
+    categories=[
+        "Scheduling & Events",
+        "Productivity & Collaboration",
+        "Scheduling",
+        "Business Services",
+    ],
     actions=[
         ActionDefinition(
             name="cancel_appointment",

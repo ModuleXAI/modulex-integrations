@@ -53,6 +53,7 @@ manifest = IntegrationManifest(
     logo="logos:telegram",
     app_url="https://core.telegram.org/bots/api",
     categories=[
+        "Communication",
         "Communication & Collaboration",
         "automation",
         "development",

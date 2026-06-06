@@ -51,7 +51,12 @@ manifest = IntegrationManifest(
     author="ModuleX",
     logo="logos:notion-icon",
     app_url="https://www.notion.so",
-    categories=["Productivity", "Knowledge Management", "Documentation"],
+    categories=[
+        "Productivity & Collaboration",
+        "Productivity",
+        "Knowledge Management",
+        "Documentation",
+    ],
     actions=[
         ActionDefinition(
             name="search",

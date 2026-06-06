@@ -23,7 +23,12 @@ manifest = IntegrationManifest(
     author="ModuleX",
     logo="modulex:microsoft_entra_id",
     app_url="https://entra.microsoft.com",
-    categories=["Identity & Access Management", "Enterprise", "Security"],
+    categories=[
+        "Developer Tools & Infrastructure",
+        "Identity & Access Management",
+        "Enterprise",
+        "Security",
+    ],
     actions=[
         ActionDefinition(
             name="add_member_to_group",

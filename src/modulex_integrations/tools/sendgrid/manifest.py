@@ -76,7 +76,7 @@ manifest = IntegrationManifest(
     author="ModuleX",
     logo="logos:sendgrid-icon",
     app_url="https://sendgrid.com",
-    categories=["Marketing & Email", "email", "automation"],
+    categories=["Marketing & Advertising", "Marketing & Email", "email", "automation"],
     actions=[
         ActionDefinition(
             name="send_email",

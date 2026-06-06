@@ -23,7 +23,7 @@ manifest = IntegrationManifest(
     author="ModuleX",
     logo="modulex:google_ad_manager-themed",
     app_url="https://admanager.google.com",
-    categories=["Advertising", "Marketing"],
+    categories=["Marketing & Advertising", "Advertising", "Marketing"],
     actions=[
         ActionDefinition(
             name="create_report",

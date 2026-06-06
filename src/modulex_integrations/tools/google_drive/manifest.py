@@ -71,49 +71,9 @@ manifest = IntegrationManifest(
     author="ModuleX",
     logo="logos:google-drive",
     app_url="https://drive.google.com",
-    categories=["File Storage", "Document Management", "Productivity"],
+    categories=["Cloud Infrastructure", "File Storage", "Document Management", "Productivity"],
     actions=[
         # --- Drive ---------------------------------------------------------
-        ActionDefinition(
-            name="search_files",
-            description="Search files in Google Drive by name substring",
-            parameters={
-                "query": ParameterDef(
-                    type="string",
-                    description="Substring to match in file name",
-                    required=True,
-                ),
-                "page_size": ParameterDef(
-                    type="integer", description="Results (max 100)", default=10
-                ),
-                "page_token": ParameterDef(
-                    type="string", description="Pagination token"
-                ),
-            },
-        ),
-        ActionDefinition(
-            name="list_folder",
-            description="List files + subfolders in a folder (use 'root' for root)",
-            parameters={
-                "folder_id": ParameterDef(
-                    type="string", description="Folder ID", default="root"
-                ),
-                "page_size": ParameterDef(
-                    type="integer", description="Results (max 100)", default=20
-                ),
-                "page_token": ParameterDef(
-                    type="string", description="Pagination token"
-                ),
-            },
-        ),
-        ActionDefinition(
-            name="read_file",
-            description=(
-                "Read a file's content — exports Google Docs as plain text, "
-                "downloads text/* directly, otherwise returns the web link"
-            ),
-            parameters={"file_id": _file_id_param()},
-        ),
         ActionDefinition(
             name="create_text_file",
             description=(
@@ -157,60 +117,6 @@ manifest = IntegrationManifest(
                     type="string", description="Parent folder ID"
                 ),
             },
-        ),
-        ActionDefinition(
-            name="delete_item",
-            description="Permanently delete a file or folder",
-            parameters={
-                "item_id": ParameterDef(
-                    type="string", description="File / folder ID", required=True
-                ),
-            },
-        ),
-        ActionDefinition(
-            name="rename_item",
-            description="Rename a file or folder",
-            parameters={
-                "item_id": ParameterDef(
-                    type="string", description="File / folder ID", required=True
-                ),
-                "new_name": ParameterDef(
-                    type="string", description="New name", required=True
-                ),
-            },
-        ),
-        ActionDefinition(
-            name="move_item",
-            description=(
-                "Move a file/folder to a destination (N+1: read parents, "
-                "then PATCH with addParents/removeParents)"
-            ),
-            parameters={
-                "item_id": ParameterDef(
-                    type="string", description="File / folder ID", required=True
-                ),
-                "destination_folder_id": ParameterDef(
-                    type="string",
-                    description="Destination folder ID",
-                    default="root",
-                ),
-            },
-        ),
-        ActionDefinition(
-            name="copy_file",
-            description="Copy a file (optionally rename / change folder)",
-            parameters={
-                "file_id": _file_id_param(),
-                "new_name": ParameterDef(type="string", description="Copy name"),
-                "destination_folder_id": ParameterDef(
-                    type="string", description="Destination folder"
-                ),
-            },
-        ),
-        ActionDefinition(
-            name="get_file_metadata",
-            description="Get full metadata for a file/folder",
-            parameters={"file_id": _file_id_param()},
         ),
         # --- Docs ----------------------------------------------------------
         ActionDefinition(
@@ -433,7 +339,6 @@ manifest = IntegrationManifest(
                 auth_url="https://accounts.google.com/o/oauth2/v2/auth",
                 token_url="https://oauth2.googleapis.com/token",
                 scopes=[
-                    "https://www.googleapis.com/auth/drive",
                     "https://www.googleapis.com/auth/drive.file",
                     "https://www.googleapis.com/auth/documents",
                     "https://www.googleapis.com/auth/spreadsheets",

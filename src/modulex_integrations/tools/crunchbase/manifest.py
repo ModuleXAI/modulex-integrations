@@ -22,7 +22,7 @@ manifest = IntegrationManifest(
     author="ModuleX",
     logo="modulex:crunchbase",
     app_url="https://www.crunchbase.com",
-    categories=["Business Intelligence", "Data", "Research"],
+    categories=["Sales", "Business Intelligence", "Data", "Research"],
     actions=[
         ActionDefinition(
             name="get_organization",

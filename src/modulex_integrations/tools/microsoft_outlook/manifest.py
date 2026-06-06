@@ -23,7 +23,7 @@ manifest = IntegrationManifest(
     author="ModuleX",
     logo="modulex:microsoft_outlook",
     app_url="https://outlook.live.com",
-    categories=["email", "productivity", "communication", "microsoft"],
+    categories=["Communication", "email", "productivity", "communication", "microsoft"],
     actions=[
         ActionDefinition(
             name="add_label_to_email",

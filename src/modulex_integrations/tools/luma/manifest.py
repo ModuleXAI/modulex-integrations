@@ -22,7 +22,7 @@ manifest = IntegrationManifest(
     author="ModuleX",
     logo="modulex:luma-themed",
     app_url="https://luma.com",
-    categories=["Events", "Productivity & Collaboration", "Marketing"],
+    categories=["Scheduling & Events", "Events", "Productivity & Collaboration", "Marketing"],
     actions=[
         ActionDefinition(
             name="create_event",

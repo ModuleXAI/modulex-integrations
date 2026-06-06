@@ -26,7 +26,13 @@ manifest = IntegrationManifest(
     author="ModuleX",
     logo="modulex:klaviyo-themed",
     app_url="https://www.klaviyo.com",
-    categories=["Marketing & Email", "email", "automation", "development"],
+    categories=[
+        "Marketing & Advertising",
+        "Marketing & Email",
+        "email",
+        "automation",
+        "development",
+    ],
     actions=[
         ActionDefinition(
             name="get_lists",

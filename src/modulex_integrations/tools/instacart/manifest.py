@@ -24,7 +24,7 @@ manifest = IntegrationManifest(
     author="ModuleX",
     logo="modulex:instacart",
     app_url="https://www.instacart.com",
-    categories=["Business Services", "grocery", "retail", "shopping"],
+    categories=["E-Commerce", "Business Services", "grocery", "retail", "shopping"],
     actions=[
         ActionDefinition(
             name="create_recipe_page",

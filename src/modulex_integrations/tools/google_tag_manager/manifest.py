@@ -23,7 +23,7 @@ manifest = IntegrationManifest(
     author="ModuleX",
     logo="logos:google-tag-manager",
     app_url="https://tagmanager.google.com",
-    categories=["Analytics", "Marketing"],
+    categories=["Analytics & Data", "Analytics", "Marketing"],
     actions=[
         ActionDefinition(
             name="create_tag",
@@ -261,7 +261,6 @@ manifest = IntegrationManifest(
                 scopes=[
                     "https://www.googleapis.com/auth/tagmanager.edit.containers",
                     "https://www.googleapis.com/auth/tagmanager.readonly",
-                    "https://www.googleapis.com/auth/tagmanager.manage.accounts",
                 ],
             ),
             test_endpoint=TestEndpoint(

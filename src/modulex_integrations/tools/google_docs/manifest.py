@@ -80,49 +80,6 @@ manifest = IntegrationManifest(
                     type="string",
                     description="Text content to insert into the document",
                 ),
-                "folder_id": ParameterDef(
-                    type="string",
-                    description="ID of the Google Drive folder to place the document in",
-                ),
-            },
-        ),
-        ActionDefinition(
-            name="create_document_from_template",
-            description="Create a new Google Docs document from a template with placeholder replacement",
-            parameters={
-                "template_id": ParameterDef(
-                    type="string",
-                    description="The ID of the template document containing {{placeholder}} variables",
-                    required=True,
-                ),
-                "name": ParameterDef(
-                    type="string",
-                    description="Name for the new document",
-                    required=True,
-                ),
-                "replace_values": ParameterDef(
-                    type="object",
-                    description="Key-value pairs to replace placeholders in the template (keys without curly braces)",
-                    required=True,
-                ),
-                "folder_id": ParameterDef(
-                    type="string",
-                    description="ID of the Google Drive folder for the new document",
-                ),
-            },
-        ),
-        ActionDefinition(
-            name="find_document",
-            description="Search for Google Docs documents by name or query using Google Drive search",
-            parameters={
-                "name_search_term": ParameterDef(
-                    type="string",
-                    description="Search for a document by name (equivalent to 'name contains' query)",
-                ),
-                "search_query": ParameterDef(
-                    type="string",
-                    description="Custom Google Drive search query. If specified, name_search_term is ignored",
-                ),
             },
         ),
         ActionDefinition(
@@ -311,7 +268,6 @@ manifest = IntegrationManifest(
                 token_url="https://oauth2.googleapis.com/token",
                 scopes=[
                     "https://www.googleapis.com/auth/documents",
-                    "https://www.googleapis.com/auth/drive",
                 ],
             ),
             test_endpoint=TestEndpoint(

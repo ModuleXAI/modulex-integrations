@@ -22,7 +22,7 @@ manifest = IntegrationManifest(
     author="ModuleX",
     logo="modulex:godaddy-themed",
     app_url="https://www.godaddy.com",
-    categories=["domains", "infrastructure", "web-hosting"],
+    categories=["Cloud Infrastructure", "domains", "infrastructure", "web-hosting"],
     actions=[
         ActionDefinition(
             name="check_domain_availability",

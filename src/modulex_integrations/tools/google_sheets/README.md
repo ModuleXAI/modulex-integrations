@@ -1,8 +1,7 @@
 # Google Sheets
 
 Read, write, and manage Google Sheets spreadsheets and worksheets via the Google
-Sheets API v4 (`https://sheets.googleapis.com/v4`) and the Drive API v3
-(`https://www.googleapis.com/drive/v3`) for spreadsheet listing.
+Sheets API v4 (`https://sheets.googleapis.com/v4`).
 
 ## Authentication
 
@@ -11,21 +10,20 @@ Sheets API v4 (`https://sheets.googleapis.com/v4`) and the Drive API v3
 - Create an OAuth client in the [Google Cloud Console — Credentials](https://console.cloud.google.com/apis/credentials).
 - Add the redirect URI `https://api.modulex.dev/credentials/oauth2/callback` to
   the OAuth client's authorized URIs.
-- Enable both the **Google Sheets API** and the **Google Drive API** for the
-  project (the Drive scope is required for `list_spreadsheets`).
+- Enable the **Google Sheets API** for the project. The **Google Drive API**
+  must also be enabled so the OAuth token can be validated against the Drive
+  `about` endpoint with the `drive.file` scope.
 - Required env vars:
   - `GOOGLE_SHEETS_OAUTH2_CLIENT_ID` (format: `<digits>.apps.googleusercontent.com`)
   - `GOOGLE_SHEETS_OAUTH2_CLIENT_SECRET` (format: `GOCSPX-...`)
 - Scopes requested:
   - `https://www.googleapis.com/auth/spreadsheets`
   - `https://www.googleapis.com/auth/drive.file`
-  - `https://www.googleapis.com/auth/drive.readonly`
 
 ## Tools
 
 | name | description | required params |
 | --- | --- | --- |
-| `list_spreadsheets` | List Google Spreadsheets accessible to the authenticated user (search by name optional). | _none_ |
 | `new_spreadsheet` | Create a new spreadsheet, optionally with a first-worksheet name and header row. | `title` |
 | `get_spreadsheet_info` | Inspect a spreadsheet — worksheet names, sheet IDs, row counts, and headers. | `spreadsheet_id` |
 | `list_worksheets` | List all worksheets (tabs) in a spreadsheet. | `spreadsheet_id` |
@@ -47,7 +45,6 @@ fills in from the user's stored OAuth credential.
 
 - Google Sheets API default quota: 300 read requests / minute / project and 300
   write requests / minute / project (with a 60 / minute / user cap for both).
-- Google Drive API default quota: 12,000 queries / minute / user.
 - Cell-value writes use `valueInputOption=USER_ENTERED`, so values are parsed as
   if a user typed them in the UI (numbers/dates/booleans get coerced).
 - `add_rows` uses `insertDataOption=INSERT_ROWS`, so it never overwrites

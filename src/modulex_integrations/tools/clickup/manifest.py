@@ -61,7 +61,12 @@ manifest = IntegrationManifest(
     author="ModuleX",
     logo="modulex:clickup",
     app_url="https://clickup.com",
-    categories=["Project Management", "Productivity", "Communication & Collaboration"],
+    categories=[
+        "Project & Task Management",
+        "Project Management",
+        "Productivity",
+        "Communication & Collaboration",
+    ],
     actions=[
         # --- Workspace / team ----------------------------------------------
         ActionDefinition(

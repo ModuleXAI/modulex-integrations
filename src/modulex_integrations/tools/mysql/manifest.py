@@ -46,7 +46,7 @@ manifest = IntegrationManifest(
     author="ModuleX",
     logo="logos:mysql-icon",
     app_url="https://www.mysql.com/",
-    categories=["Database", "Data Management", "storage"],
+    categories=["Databases", "Database", "Data Management", "storage"],
     actions=[
         ActionDefinition(
             name="execute_raw_query",

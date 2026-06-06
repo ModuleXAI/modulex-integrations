@@ -55,7 +55,7 @@ manifest = IntegrationManifest(
     author="ModuleX",
     logo="modulex:nasdaq",
     app_url="https://data.nasdaq.com",
-    categories=["finance", "data", "research", "analytics"],
+    categories=["Finance & Payments", "finance", "data", "research", "analytics"],
     actions=[
         ActionDefinition(
             name="get_balance_sheet",

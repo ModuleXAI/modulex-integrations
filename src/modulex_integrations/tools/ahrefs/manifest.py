@@ -23,7 +23,7 @@ manifest = IntegrationManifest(
     author="ModuleX",
     logo="modulex:ahrefs",
     app_url="https://ahrefs.com",
-    categories=["SEO", "Marketing", "Web Search & Scraping"],
+    categories=["Marketing & Advertising", "SEO", "Marketing", "Web Search & Scraping"],
     actions=[
         ActionDefinition(
             name="get_backlinks",

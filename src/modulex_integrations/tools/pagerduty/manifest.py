@@ -23,7 +23,11 @@ manifest = IntegrationManifest(
     author="ModuleX",
     logo="logos:pagerduty-icon",
     app_url="https://www.pagerduty.com",
-    categories=["Incident Management", "Developer Tools & Infrastructure"],
+    categories=[
+        "Monitoring & Observability",
+        "Incident Management",
+        "Developer Tools & Infrastructure",
+    ],
     actions=[
         ActionDefinition(
             name="trigger_incident",

@@ -8,24 +8,16 @@ from pydantic import BaseModel, ConfigDict, Field
 __all__ = [
     "AddSlideOutput",
     "AppendToGoogleDocOutput",
-    "CopyFileOutput",
     "CreateFolderOutput",
     "CreateGoogleDocOutput",
     "CreateGoogleSheetOutput",
     "CreateGoogleSlidesOutput",
     "CreateTextFileOutput",
-    "DeleteItemOutput",
     "FormatSheetCellsOutput",
     "FormatSheetTextOutput",
-    "GetFileMetadataOutput",
-    "ListFolderOutput",
-    "MoveItemOutput",
-    "ReadFileOutput",
     "ReadGoogleDocOutput",
     "ReadGoogleSheetOutput",
     "ReadGoogleSlidesOutput",
-    "RenameItemOutput",
-    "SearchFilesOutput",
     "UpdateGoogleDocOutput",
     "UpdateGoogleSheetOutput",
     "UpdateSlideContentOutput",
@@ -37,30 +29,6 @@ class _Base(BaseModel):
     model_config = ConfigDict(extra="forbid")
     success: bool
     error: str | None = None
-
-
-class SearchFilesOutput(_Base):
-    files: list[dict[str, Any]] = Field(default_factory=list)
-    total: int = 0
-    next_page_token: str | None = None
-
-
-class ListFolderOutput(_Base):
-    folder_id: str | None = None
-    folders: list[dict[str, Any]] = Field(default_factory=list)
-    files: list[dict[str, Any]] = Field(default_factory=list)
-    total: int = 0
-    next_page_token: str | None = None
-
-
-class ReadFileOutput(_Base):
-    id: str | None = None
-    name: str | None = None
-    mime_type: str | None = None
-    content: str | None = None
-    size: str | None = None
-    web_view_link: str | None = None
-    message: str | None = None
 
 
 class CreateTextFileOutput(_Base):
@@ -82,46 +50,6 @@ class CreateFolderOutput(_Base):
     id: str | None = None
     name: str | None = None
     web_view_link: str | None = None
-
-
-class DeleteItemOutput(_Base):
-    deleted_id: str | None = None
-    message: str | None = None
-
-
-class RenameItemOutput(_Base):
-    id: str | None = None
-    name: str | None = None
-    mime_type: str | None = None
-    modified_time: str | None = None
-
-
-class MoveItemOutput(_Base):
-    id: str | None = None
-    name: str | None = None
-    new_parent: str | None = None
-    web_view_link: str | None = None
-
-
-class CopyFileOutput(_Base):
-    id: str | None = None
-    name: str | None = None
-    mime_type: str | None = None
-    web_view_link: str | None = None
-
-
-class GetFileMetadataOutput(_Base):
-    id: str | None = None
-    name: str | None = None
-    mime_type: str | None = None
-    created_time: str | None = None
-    modified_time: str | None = None
-    size: str | None = None
-    web_view_link: str | None = None
-    web_content_link: str | None = None
-    parents: list[str] | None = None
-    shared: bool | None = None
-    owners: list[dict[str, Any]] | None = None
 
 
 class CreateGoogleDocOutput(_Base):

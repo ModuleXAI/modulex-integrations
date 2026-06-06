@@ -61,7 +61,7 @@ manifest = IntegrationManifest(
     author="ModuleX",
     logo="logos:postgresql",
     app_url="https://www.postgresql.org/",
-    categories=["Database", "Data Management", "storage"],
+    categories=["Databases", "Database", "Data Management", "storage"],
     actions=[
         ActionDefinition(
             name="execute_raw_query",

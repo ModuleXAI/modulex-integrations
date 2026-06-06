@@ -22,7 +22,7 @@ manifest = IntegrationManifest(
     author="ModuleX",
     logo="logos:google-maps",
     app_url="https://developers.google.com/maps",
-    categories=["Geolocation", "Maps & Places"],
+    categories=["Developer Tools & Infrastructure", "Geolocation", "Maps & Places"],
     actions=[
         ActionDefinition(
             name="search_places",

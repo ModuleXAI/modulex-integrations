@@ -14,11 +14,9 @@ __all__ = [
     "FindRowsOutput",
     "GetSpreadsheetInfoOutput",
     "GetValuesInRangeOutput",
-    "ListSpreadsheetsOutput",
     "ListWorksheetsOutput",
     "NewSpreadsheetOutput",
     "ReadRowsOutput",
-    "SpreadsheetSummary",
     "UpdateCellOutput",
     "UpdateRowOutput",
     "WorksheetInfo",
@@ -33,14 +31,6 @@ class _Base(BaseModel):
 
 
 # --- Nested resource models -------------------------------------------------
-
-
-class SpreadsheetSummary(_Base):
-    """A lightweight summary of a Google Sheets spreadsheet."""
-
-    spreadsheet_id: str | None = None
-    name: str | None = None
-    url: str | None = None
 
 
 class WorksheetSummary(_Base):
@@ -64,13 +54,6 @@ class WorksheetInfo(_Base):
 
 
 # --- Per-action output models ----------------------------------------------
-
-
-class ListSpreadsheetsOutput(_Base):
-    success: bool
-    error: str | None = None
-    spreadsheets: list[SpreadsheetSummary] | None = None
-    count: int | None = None
 
 
 class NewSpreadsheetOutput(_Base):

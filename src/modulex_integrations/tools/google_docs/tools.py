@@ -11,10 +11,7 @@ from modulex_integrations import serialize_pydantic_return
 from modulex_integrations.tools.google_docs.outputs import (
     AppendImageOutput,
     AppendTextOutput,
-    CreateDocumentFromTemplateOutput,
     CreateDocumentOutput,
-    DocumentFile,
-    FindDocumentOutput,
     GetDocumentOutput,
     GetTabContentOutput,
     InsertPageBreakOutput,
@@ -29,8 +26,6 @@ __all__ = [
     "append_image",
     "append_text",
     "create_document",
-    "create_document_from_template",
-    "find_document",
     "get_document",
     "get_tab_content",
     "insert_page_break",
@@ -41,7 +36,6 @@ __all__ = [
 ]
 
 _DOCS_BASE_URL = "https://docs.googleapis.com/v1"
-_DRIVE_BASE_URL = "https://www.googleapis.com/drive/v3"
 
 
 def _get_auth_headers(auth_type: str, auth_data: dict[str, Any]) -> dict[str, str]:
@@ -78,23 +72,6 @@ class CreateDocumentInput(BaseModel):
     auth_data: dict[str, Any] = Field(description="Authentication data")
     title: str = Field(description="Title of the new document")
     text: str | None = Field(default=None, description="Text content to insert into the document")
-    folder_id: str | None = Field(default=None, description="ID of the Google Drive folder to place the document in")
-
-
-class CreateDocumentFromTemplateInput(BaseModel):
-    auth_type: str = Field(description="Authentication type")
-    auth_data: dict[str, Any] = Field(description="Authentication data")
-    template_id: str = Field(description="The ID of the template document containing {{placeholder}} variables")
-    name: str = Field(description="Name for the new document")
-    replace_values: dict[str, str] = Field(description="Key-value pairs to replace placeholders in the template (keys without curly braces)")
-    folder_id: str | None = Field(default=None, description="ID of the Google Drive folder for the new document")
-
-
-class FindDocumentInput(BaseModel):
-    auth_type: str = Field(description="Authentication type")
-    auth_data: dict[str, Any] = Field(description="Authentication data")
-    name_search_term: str | None = Field(default=None, description="Search for a document by name (equivalent to 'name contains' query)")
-    search_query: str | None = Field(default=None, description="Custom Google Drive search query. If specified, name_search_term is ignored")
 
 
 class GetDocumentInput(BaseModel):
@@ -293,7 +270,6 @@ async def create_document(
     auth_data: dict[str, Any],
     title: str,
     text: str | None = None,
-    folder_id: str | None = None,
 ) -> CreateDocumentOutput:
     """Create a new Google Docs document with optional text content."""
     if not auth_data.get("access_token"):
@@ -328,24 +304,6 @@ async def create_document(
                     headers={**headers, "Content-Type": "application/json"},
                     json={"requests": insert_requests},
                 )
-
-            if folder_id and document_id:
-                get_file_resp = await client.get(
-                    f"{_DRIVE_BASE_URL}/files/{document_id}",
-                    headers=headers,
-                    params={"fields": "parents"},
-                )
-                if get_file_resp.status_code == 200:
-                    parents = get_file_resp.json().get("parents", [])
-                    remove_parents = ",".join(parents) if parents else ""
-                    await client.patch(
-                        f"{_DRIVE_BASE_URL}/files/{document_id}",
-                        headers=headers,
-                        params={
-                            "addParents": folder_id,
-                            "removeParents": remove_parents,
-                        },
-                    )
     except httpx.TimeoutException:
         return CreateDocumentOutput(success=False, error="Request timed out.")
     except Exception as exc:
@@ -356,134 +314,6 @@ async def create_document(
         document_id=document_id,
         title=title,
     )
-
-
-@tool(args_schema=CreateDocumentFromTemplateInput)
-@serialize_pydantic_return
-async def create_document_from_template(
-    auth_type: str,
-    auth_data: dict[str, Any],
-    template_id: str,
-    name: str,
-    replace_values: dict[str, str],
-    folder_id: str | None = None,
-) -> CreateDocumentFromTemplateOutput:
-    """Create a new Google Docs document from a template with placeholder replacement."""
-    if not auth_data.get("access_token"):
-        return CreateDocumentFromTemplateOutput(success=False, error="Missing OAuth access token.")
-    headers = _get_auth_headers(auth_type, auth_data)
-    try:
-        async with httpx.AsyncClient(timeout=60.0) as client:
-            copy_resp = await client.post(
-                f"{_DRIVE_BASE_URL}/files/{template_id}/copy",
-                headers={**headers, "Content-Type": "application/json"},
-                json={"name": name},
-            )
-            if copy_resp.status_code != 200:
-                return CreateDocumentFromTemplateOutput(
-                    success=False,
-                    error=f"Failed to copy template ({copy_resp.status_code}): {copy_resp.text}",
-                )
-            copy_data = copy_resp.json()
-            new_doc_id = copy_data.get("id")
-
-            if replace_values and new_doc_id:
-                replace_requests: list[dict[str, Any]] = [
-                    {
-                        "replaceAllText": {
-                            "containsText": {
-                                "text": "{{" + key + "}}",
-                                "matchCase": True,
-                            },
-                            "replaceText": value,
-                        }
-                    }
-                    for key, value in replace_values.items()
-                ]
-                await client.post(
-                    f"{_DOCS_BASE_URL}/documents/{new_doc_id}:batchUpdate",
-                    headers={**headers, "Content-Type": "application/json"},
-                    json={"requests": replace_requests},
-                )
-
-            if folder_id and new_doc_id:
-                get_file_resp = await client.get(
-                    f"{_DRIVE_BASE_URL}/files/{new_doc_id}",
-                    headers=headers,
-                    params={"fields": "parents"},
-                )
-                if get_file_resp.status_code == 200:
-                    parents = get_file_resp.json().get("parents", [])
-                    remove_parents = ",".join(parents) if parents else ""
-                    await client.patch(
-                        f"{_DRIVE_BASE_URL}/files/{new_doc_id}",
-                        headers=headers,
-                        params={
-                            "addParents": folder_id,
-                            "removeParents": remove_parents,
-                        },
-                    )
-    except httpx.TimeoutException:
-        return CreateDocumentFromTemplateOutput(success=False, error="Request timed out.")
-    except Exception as exc:
-        return CreateDocumentFromTemplateOutput(success=False, error=f"Call failed: {exc}")
-
-    return CreateDocumentFromTemplateOutput(
-        success=True,
-        google_doc_id=new_doc_id,
-        name=name,
-    )
-
-
-@tool(args_schema=FindDocumentInput)
-@serialize_pydantic_return
-async def find_document(
-    auth_type: str,
-    auth_data: dict[str, Any],
-    name_search_term: str | None = None,
-    search_query: str | None = None,
-) -> FindDocumentOutput:
-    """Search for Google Docs documents by name or query using Google Drive search."""
-    if not auth_data.get("access_token"):
-        return FindDocumentOutput(success=False, error="Missing OAuth access token.")
-    headers = _get_auth_headers(auth_type, auth_data)
-    try:
-        if search_query:
-            q = search_query
-        elif name_search_term:
-            q = f"name contains '{name_search_term}' and mimeType = 'application/vnd.google-apps.document'"
-        else:
-            q = "mimeType = 'application/vnd.google-apps.document'"
-
-        async with httpx.AsyncClient(timeout=30.0) as client:
-            response = await client.get(
-                f"{_DRIVE_BASE_URL}/files",
-                headers=headers,
-                params={
-                    "q": q,
-                    "fields": "files(id,name,mimeType)",
-                },
-            )
-            if response.status_code != 200:
-                return FindDocumentOutput(
-                    success=False,
-                    error=f"API error ({response.status_code}): {response.text}",
-                )
-            data = response.json()
-    except httpx.TimeoutException:
-        return FindDocumentOutput(success=False, error="Request timed out.")
-    except Exception as exc:
-        return FindDocumentOutput(success=False, error=f"Call failed: {exc}")
-
-    files = [
-        DocumentFile(
-            id=f.get("id"),
-            name=f.get("name"),
-            mime_type=f.get("mimeType"),
-        )
-        for f in data.get("files", [])
-    ]
-    return FindDocumentOutput(success=True, files=files)
 
 
 @tool(args_schema=GetDocumentInput)

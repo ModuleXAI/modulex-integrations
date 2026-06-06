@@ -22,7 +22,7 @@ manifest = IntegrationManifest(
     author="ModuleX",
     logo="modulex:algolia",
     app_url="https://www.algolia.com",
-    categories=["Search", "Developer Tools & Infrastructure"],
+    categories=["Developer Tools & Infrastructure", "Search"],
     actions=[
         ActionDefinition(
             name="browse_records",

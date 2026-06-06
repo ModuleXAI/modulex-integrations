@@ -23,7 +23,7 @@ manifest = IntegrationManifest(
     author="ModuleX",
     logo="logos:google-calendar",
     app_url="https://calendar.google.com",
-    categories=["Productivity & Collaboration", "Scheduling"],
+    categories=["Scheduling & Events", "Productivity & Collaboration", "Scheduling"],
     actions=[
         ActionDefinition(
             name="add_attendees_to_event",
