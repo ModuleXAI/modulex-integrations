@@ -23,8 +23,6 @@ from modulex_integrations.tools.google_slides.outputs import (
     InsertTableRowsOutput,
     InsertTextIntoTableOutput,
     InsertTextOutput,
-    MergeDataOutput,
-    RefreshChartOutput,
     ReplaceAllTextOutput,
 )
 
@@ -43,13 +41,10 @@ __all__ = [
     "insert_table_rows",
     "insert_text",
     "insert_text_into_table",
-    "merge_data",
-    "refresh_chart",
     "replace_all_text",
 ]
 
 _SLIDES_BASE_URL = "https://slides.googleapis.com/v1"
-_DRIVE_BASE_URL = "https://www.googleapis.com/drive/v3"
 _TIMEOUT = 30.0
 
 
@@ -118,13 +113,6 @@ class CreatePresentationInput(BaseModel):
     auth_type: str = Field(description="Authentication type")
     auth_data: dict[str, Any] = Field(description="Authentication data")
     title: str = Field(description="Title of the new presentation.")
-    source_presentation_id: str | None = Field(
-        default=None,
-        description=(
-            "Optional ID of an existing presentation to copy. When omitted, a "
-            "blank presentation is created."
-        ),
-    )
 
 
 class CreateSlideInput(BaseModel):
@@ -251,28 +239,6 @@ class InsertTextIntoTableInput(BaseModel):
         default=None,
         description="Optional 0-based character index within the cell.",
     )
-
-
-class MergeDataInput(BaseModel):
-    auth_type: str = Field(description="Authentication type")
-    auth_data: dict[str, Any] = Field(description="Authentication data")
-    source_presentation_id: str = Field(
-        description="ID of the template presentation to copy."
-    )
-    title: str = Field(description="Title of the new (copied) presentation.")
-    placeholders_and_texts: dict[str, str] = Field(
-        description="Mapping of placeholder text -> replacement string."
-    )
-    placeholders_and_image_urls: dict[str, str] | None = Field(
-        default=None,
-        description="Optional mapping of placeholder text -> image URL.",
-    )
-
-
-class RefreshChartInput(BaseModel):
-    auth_type: str = Field(description="Authentication type")
-    auth_data: dict[str, Any] = Field(description="Authentication data")
-    presentation_id: str = Field(description="ID of the target presentation.")
 
 
 class ReplaceAllTextInput(BaseModel):
@@ -435,27 +401,16 @@ async def create_presentation(
     auth_type: str,
     auth_data: dict[str, Any],
     title: str,
-    source_presentation_id: str | None = None,
 ) -> CreatePresentationOutput:
-    """Create a blank presentation or duplicate an existing one."""
+    """Create a blank presentation."""
     if not auth_data.get("access_token"):
         return CreatePresentationOutput(success=False, error="Missing access token in auth_data.")
     headers = _get_auth_headers(auth_type, auth_data)
     try:
         async with httpx.AsyncClient(timeout=_TIMEOUT) as client:
-            if source_presentation_id:
-                # Copy via Drive API.
-                url = f"{_DRIVE_BASE_URL}/files/{source_presentation_id}/copy"
-                response = await client.post(
-                    url,
-                    headers=headers,
-                    params={"supportsAllDrives": "true", "fields": "*"},
-                    json={"name": title},
-                )
-            else:
-                # Create blank via Slides API.
-                url = f"{_SLIDES_BASE_URL}/presentations"
-                response = await client.post(url, headers=headers, json={"title": title})
+            # Create blank via Slides API.
+            url = f"{_SLIDES_BASE_URL}/presentations"
+            response = await client.post(url, headers=headers, json={"title": title})
     except httpx.TimeoutException:
         return CreatePresentationOutput(success=False, error="Request timed out.")
     except Exception as exc:
@@ -472,17 +427,6 @@ async def create_presentation(
     except Exception:
         data = {}
 
-    if source_presentation_id:
-        # Drive copy response.
-        return CreatePresentationOutput(
-            success=True,
-            presentation_id=data.get("id"),
-            title=data.get("name"),
-            copied_from=source_presentation_id,
-            file_id=data.get("id"),
-            web_view_link=data.get("webViewLink"),
-            raw=data,
-        )
     return CreatePresentationOutput(
         success=True,
         presentation_id=data.get("presentationId"),
@@ -993,181 +937,6 @@ async def insert_text_into_table(
         presentation_id=data.get("presentationId") or presentation_id,
         replies=data.get("replies") or [],
         write_control=data.get("writeControl"),
-    )
-
-
-@tool(args_schema=MergeDataInput)
-@serialize_pydantic_return
-async def merge_data(
-    auth_type: str,
-    auth_data: dict[str, Any],
-    source_presentation_id: str,
-    title: str,
-    placeholders_and_texts: dict[str, str],
-    placeholders_and_image_urls: dict[str, str] | None = None,
-) -> MergeDataOutput:
-    """Duplicate a template presentation and merge placeholder data into it."""
-    if not auth_data.get("access_token"):
-        return MergeDataOutput(success=False, error="Missing access token in auth_data.")
-    headers = _get_auth_headers(auth_type, auth_data)
-    try:
-        async with httpx.AsyncClient(timeout=_TIMEOUT) as client:
-            # Step 1: copy source via Drive.
-            copy_response = await client.post(
-                f"{_DRIVE_BASE_URL}/files/{source_presentation_id}/copy",
-                headers=headers,
-                params={"supportsAllDrives": "true", "fields": "*"},
-                json={"name": title},
-            )
-            if copy_response.status_code not in (200, 201):
-                return MergeDataOutput(
-                    success=False,
-                    error=(
-                        f"Drive copy error ({copy_response.status_code}): "
-                        f"{copy_response.text}"
-                    ),
-                )
-            copy_data = copy_response.json()
-            new_presentation_id = copy_data.get("id")
-            if not new_presentation_id:
-                return MergeDataOutput(
-                    success=False,
-                    error="Drive copy did not return a new file id.",
-                )
-
-            # Step 2: build batchUpdate requests.
-            text_requests: list[dict[str, Any]] = [
-                {
-                    "replaceAllText": {
-                        "containsText": {"text": k, "matchCase": True},
-                        "replaceText": v,
-                    }
-                }
-                for k, v in (placeholders_and_texts or {}).items()
-            ]
-            image_requests: list[dict[str, Any]] = [
-                {
-                    "replaceAllShapesWithImage": {
-                        "imageUrl": v,
-                        "replaceMethod": "CENTER_INSIDE",
-                        "containsText": {"text": k, "matchCase": True},
-                    }
-                }
-                for k, v in (placeholders_and_image_urls or {}).items()
-            ]
-            all_requests = text_requests + image_requests
-
-            # Step 3: batchUpdate the new copy.
-            bu_response = await client.post(
-                f"{_SLIDES_BASE_URL}/presentations/{new_presentation_id}:batchUpdate",
-                headers=headers,
-                json={"requests": all_requests},
-            )
-    except httpx.TimeoutException:
-        return MergeDataOutput(success=False, error="Request timed out.")
-    except Exception as exc:
-        return MergeDataOutput(success=False, error=f"Call failed: {exc}")
-
-    if bu_response.status_code != 200:
-        return MergeDataOutput(
-            success=False,
-            error=(
-                f"batchUpdate error ({bu_response.status_code}): "
-                f"{bu_response.text}"
-            ),
-        )
-
-    try:
-        bu_data = bu_response.json()
-    except Exception:
-        bu_data = {}
-
-    return MergeDataOutput(
-        success=True,
-        presentation_id=bu_data.get("presentationId") or new_presentation_id,
-        copied_from_id=source_presentation_id,
-        new_presentation_title=title,
-        replies=bu_data.get("replies") or [],
-        write_control=bu_data.get("writeControl"),
-    )
-
-
-@tool(args_schema=RefreshChartInput)
-@serialize_pydantic_return
-async def refresh_chart(
-    auth_type: str,
-    auth_data: dict[str, Any],
-    presentation_id: str,
-) -> RefreshChartOutput:
-    """Refresh every Sheets chart embedded in a presentation."""
-    if not auth_data.get("access_token"):
-        return RefreshChartOutput(success=False, error="Missing access token in auth_data.")
-    headers = _get_auth_headers(auth_type, auth_data)
-    try:
-        async with httpx.AsyncClient(timeout=_TIMEOUT) as client:
-            # Step 1: fetch presentation to discover sheetsChart elements.
-            get_response = await client.get(
-                f"{_SLIDES_BASE_URL}/presentations/{presentation_id}",
-                headers=headers,
-            )
-            if get_response.status_code != 200:
-                return RefreshChartOutput(
-                    success=False,
-                    error=(
-                        f"Slides get error ({get_response.status_code}): "
-                        f"{get_response.text}"
-                    ),
-                )
-            presentation = get_response.json()
-            chart_ids: list[str] = []
-            for slide in presentation.get("slides") or []:
-                for element in slide.get("pageElements") or []:
-                    sheets_chart = element.get("sheetsChart")
-                    if sheets_chart and sheets_chart.get("spreadsheetId"):
-                        obj_id = element.get("objectId")
-                        if obj_id:
-                            chart_ids.append(obj_id)
-
-            if not chart_ids:
-                return RefreshChartOutput(
-                    success=True,
-                    presentation_id=presentation_id,
-                    refreshed_chart_count=0,
-                    refreshed_chart_ids=[],
-                )
-
-            # Step 2: issue one batchUpdate per chart (mirrors pipedream loop).
-            for chart_id in chart_ids:
-                bu_response = await client.post(
-                    f"{_SLIDES_BASE_URL}/presentations/{presentation_id}:batchUpdate",
-                    headers=headers,
-                    json={
-                        "requests": [
-                            {"refreshSheetsChart": {"objectId": chart_id}}
-                        ]
-                    },
-                )
-                if bu_response.status_code != 200:
-                    return RefreshChartOutput(
-                        success=False,
-                        presentation_id=presentation_id,
-                        error=(
-                            f"refreshSheetsChart error for {chart_id} "
-                            f"({bu_response.status_code}): {bu_response.text}"
-                        ),
-                        refreshed_chart_count=0,
-                        refreshed_chart_ids=[],
-                    )
-    except httpx.TimeoutException:
-        return RefreshChartOutput(success=False, error="Request timed out.")
-    except Exception as exc:
-        return RefreshChartOutput(success=False, error=f"Call failed: {exc}")
-
-    return RefreshChartOutput(
-        success=True,
-        presentation_id=presentation_id,
-        refreshed_chart_count=len(chart_ids),
-        refreshed_chart_ids=chart_ids,
     )
 
 

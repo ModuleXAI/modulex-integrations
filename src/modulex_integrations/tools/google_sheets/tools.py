@@ -19,11 +19,9 @@ from modulex_integrations.tools.google_sheets.outputs import (
     FindRowsOutput,
     GetSpreadsheetInfoOutput,
     GetValuesInRangeOutput,
-    ListSpreadsheetsOutput,
     ListWorksheetsOutput,
     NewSpreadsheetOutput,
     ReadRowsOutput,
-    SpreadsheetSummary,
     UpdateCellOutput,
     UpdateRowOutput,
     WorksheetInfo,
@@ -39,7 +37,6 @@ __all__ = [
     "find_rows",
     "get_spreadsheet_info",
     "get_values_in_range",
-    "list_spreadsheets",
     "list_worksheets",
     "new_spreadsheet",
     "read_rows",
@@ -48,7 +45,6 @@ __all__ = [
 ]
 
 _SHEETS_BASE = "https://sheets.googleapis.com/v4"
-_DRIVE_BASE = "https://www.googleapis.com/drive/v3"
 _TIMEOUT = 30.0
 
 
@@ -116,16 +112,6 @@ def _rows_to_objects(headers: list[Any], data_rows: list[list[Any]]) -> list[dic
 
 
 # --- Input schemas ---------------------------------------------------------
-
-
-class ListSpreadsheetsInput(BaseModel):
-    auth_type: str = Field(description="Authentication type (oauth2)")
-    auth_data: dict[str, Any] = Field(description="Authentication data containing tokens")
-    query: str | None = Field(
-        default=None,
-        description="Search spreadsheets by name. Leave empty to list all.",
-    )
-    limit: int = Field(default=20, description="Maximum number of spreadsheets to return.")
 
 
 class NewSpreadsheetInput(BaseModel):
@@ -271,58 +257,6 @@ class DeleteRowsInput(BaseModel):
 
 
 # --- @tool functions ------------------------------------------------------
-
-
-@tool(args_schema=ListSpreadsheetsInput)
-@serialize_pydantic_return
-async def list_spreadsheets(
-    auth_type: str,
-    auth_data: dict[str, Any],
-    query: str | None = None,
-    limit: int = 20,
-) -> ListSpreadsheetsOutput:
-    """List Google Spreadsheets accessible to the authenticated user."""
-    if not auth_data.get("access_token"):
-        return ListSpreadsheetsOutput(success=False, error="Missing or empty OAuth access token.")
-    headers = _get_auth_headers(auth_type, auth_data)
-    q_parts = ["mimeType='application/vnd.google-apps.spreadsheet'"]
-    if query:
-        escaped = query.replace("'", "\\'")
-        q_parts.append(f"name contains '{escaped}'")
-    params: dict[str, Any] = {
-        "q": " and ".join(q_parts),
-        "pageSize": max(1, min(int(limit or 20), 1000)),
-        "fields": "files(id,name)",
-    }
-    try:
-        async with httpx.AsyncClient(timeout=_TIMEOUT) as client:
-            response = await client.get(
-                f"{_DRIVE_BASE}/files",
-                headers=headers,
-                params=params,
-            )
-        if response.status_code != 200:
-            return ListSpreadsheetsOutput(success=False, error=_format_http_error(response))
-        data = response.json()
-    except httpx.TimeoutException:
-        return ListSpreadsheetsOutput(success=False, error="Request timed out.")
-    except Exception as exc:
-        return ListSpreadsheetsOutput(success=False, error=f"Call failed: {exc}")
-
-    files = data.get("files", []) or []
-    summaries = [
-        SpreadsheetSummary(
-            spreadsheet_id=f.get("id"),
-            name=f.get("name"),
-            url=f"https://docs.google.com/spreadsheets/d/{f.get('id')}/edit",
-        )
-        for f in files
-    ]
-    return ListSpreadsheetsOutput(
-        success=True,
-        spreadsheets=summaries,
-        count=len(summaries),
-    )
 
 
 @tool(args_schema=NewSpreadsheetInput)

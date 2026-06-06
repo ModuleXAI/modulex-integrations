@@ -4,7 +4,7 @@ Pure HTTP across four Google APIs (Drive v3, Docs v1, Sheets v4,
 Slides v1). Token-based runtime convention with paired
 ``oauth2 + bearer_token``.
 
-24 actions. Key shapes preserved verbatim from legacy:
+16 actions. Key shapes preserved verbatim from legacy:
 
 - **`create_text_file`** uses a manual multipart/related upload
   (Google Drive's media-upload pattern). Pre-formats the JSON
@@ -16,8 +16,6 @@ Slides v1). Token-based runtime convention with paired
 - **`read_google_sheet` / `update_google_sheet`** resolve localized
   sheet names (e.g. `Sayfa1` for Turkish) via `_get_first_sheet_name`
   before composing the A1 range.
-- **`move_item`** reads current parents first, then PATCHes with
-  `addParents`/`removeParents` query params (Drive API quirk).
 - **`format_sheet_*`** convert A1 notation to `GridRange` for the
   Sheets batchUpdate API.
 
@@ -37,24 +35,16 @@ from modulex_integrations import serialize_pydantic_return
 from modulex_integrations.tools.google_drive.outputs import (
     AddSlideOutput,
     AppendToGoogleDocOutput,
-    CopyFileOutput,
     CreateFolderOutput,
     CreateGoogleDocOutput,
     CreateGoogleSheetOutput,
     CreateGoogleSlidesOutput,
     CreateTextFileOutput,
-    DeleteItemOutput,
     FormatSheetCellsOutput,
     FormatSheetTextOutput,
-    GetFileMetadataOutput,
-    ListFolderOutput,
-    MoveItemOutput,
-    ReadFileOutput,
     ReadGoogleDocOutput,
     ReadGoogleSheetOutput,
     ReadGoogleSlidesOutput,
-    RenameItemOutput,
-    SearchFilesOutput,
     UpdateGoogleDocOutput,
     UpdateGoogleSheetOutput,
     UpdateSlideContentOutput,
@@ -64,24 +54,16 @@ from modulex_integrations.tools.google_drive.outputs import (
 __all__ = [
     "add_slide",
     "append_to_google_doc",
-    "copy_file",
     "create_folder",
     "create_google_doc",
     "create_google_sheet",
     "create_google_slides",
     "create_text_file",
-    "delete_item",
     "format_sheet_cells",
     "format_sheet_text",
-    "get_file_metadata",
-    "list_folder",
-    "move_item",
-    "read_file",
     "read_google_doc",
     "read_google_sheet",
     "read_google_slides",
-    "rename_item",
-    "search_files",
     "update_google_doc",
     "update_google_sheet",
     "update_slide_content",
@@ -167,22 +149,6 @@ class _AuthFields(BaseModel):
     auth_data: dict[str, Any] = Field(description="Auth data with access_token")
 
 
-class SearchFilesInput(_AuthFields):
-    query: str
-    page_size: int = 10
-    page_token: str | None = None
-
-
-class ListFolderInput(_AuthFields):
-    folder_id: str = "root"
-    page_size: int = 20
-    page_token: str | None = None
-
-
-class ReadFileInput(_AuthFields):
-    file_id: str
-
-
 class CreateTextFileInput(_AuthFields):
     name: str
     content: str
@@ -198,30 +164,6 @@ class UpdateTextFileInput(_AuthFields):
 class CreateFolderInput(_AuthFields):
     name: str
     parent_folder_id: str | None = None
-
-
-class DeleteItemInput(_AuthFields):
-    item_id: str
-
-
-class RenameItemInput(_AuthFields):
-    item_id: str
-    new_name: str
-
-
-class MoveItemInput(_AuthFields):
-    item_id: str
-    destination_folder_id: str = "root"
-
-
-class CopyFileInput(_AuthFields):
-    file_id: str
-    new_name: str | None = None
-    destination_folder_id: str | None = None
-
-
-class GetFileMetadataInput(_AuthFields):
-    file_id: str
 
 
 class CreateGoogleDocInput(_AuthFields):
@@ -300,205 +242,7 @@ class UpdateSlideContentInput(_AuthFields):
     text: str
 
 
-# --- Drive helpers --------------------------------------------------------
-
-
-def _file_summary(f: dict[str, Any]) -> dict[str, Any]:
-    return {
-        "id": f.get("id"),
-        "name": f.get("name"),
-        "mime_type": f.get("mimeType"),
-        "created_time": f.get("createdTime"),
-        "modified_time": f.get("modifiedTime"),
-        "size": f.get("size"),
-        "web_view_link": f.get("webViewLink"),
-        "parents": f.get("parents"),
-    }
-
-
 # --- Drive tools -----------------------------------------------------------
-
-
-@tool(args_schema=SearchFilesInput)
-@serialize_pydantic_return
-async def search_files(
-    auth_type: str,
-    auth_data: dict[str, Any],
-    query: str,
-    page_size: int = 10,
-    page_token: str | None = None,
-) -> SearchFilesOutput:
-    """Search Drive files by name substring."""
-    err = _validate(auth_data, "search_files")
-    if err:
-        return SearchFilesOutput(success=False, error=err)
-    params: dict[str, Any] = {
-        "q": f"name contains '{query}' and trashed = false",
-        "pageSize": min(page_size, 100),
-        "fields": (
-            "files(id,name,mimeType,createdTime,modifiedTime,size,"
-            "webViewLink,parents),nextPageToken"
-        ),
-        "spaces": "drive",
-        "includeItemsFromAllDrives": "true",
-        "supportsAllDrives": "true",
-    }
-    if page_token:
-        params["pageToken"] = page_token
-    ok, e, data = await _call(
-        "GET", f"{_DRIVE}/files", auth_type, auth_data, params=params
-    )
-    if not ok:
-        return SearchFilesOutput(success=False, error=e)
-    files = [_file_summary(f) for f in data.get("files") or []]
-    return SearchFilesOutput(
-        success=True,
-        files=files,
-        total=len(files),
-        next_page_token=data.get("nextPageToken"),
-    )
-
-
-@tool(args_schema=ListFolderInput)
-@serialize_pydantic_return
-async def list_folder(
-    auth_type: str,
-    auth_data: dict[str, Any],
-    folder_id: str = "root",
-    page_size: int = 20,
-    page_token: str | None = None,
-) -> ListFolderOutput:
-    """List a folder's contents."""
-    err = _validate(auth_data, "list_folder")
-    if err:
-        return ListFolderOutput(success=False, error=err)
-    params: dict[str, Any] = {
-        "q": f"'{folder_id}' in parents and trashed = false",
-        "pageSize": min(page_size, 100),
-        "fields": "files(id,name,mimeType,createdTime,modifiedTime,size,webViewLink),nextPageToken",
-        "spaces": "drive",
-        "includeItemsFromAllDrives": "true",
-        "supportsAllDrives": "true",
-    }
-    if page_token:
-        params["pageToken"] = page_token
-    ok, e, data = await _call(
-        "GET", f"{_DRIVE}/files", auth_type, auth_data, params=params
-    )
-    if not ok:
-        return ListFolderOutput(success=False, error=e)
-    files = data.get("files") or []
-    folders_out = [
-        {
-            "id": f.get("id"),
-            "name": f.get("name"),
-            "modified_time": f.get("modifiedTime"),
-        }
-        for f in files
-        if f.get("mimeType") == _FOLDER_MIME
-    ]
-    files_out = [
-        {
-            "id": f.get("id"),
-            "name": f.get("name"),
-            "mime_type": f.get("mimeType"),
-            "modified_time": f.get("modifiedTime"),
-            "size": f.get("size"),
-            "web_view_link": f.get("webViewLink"),
-        }
-        for f in files
-        if f.get("mimeType") != _FOLDER_MIME
-    ]
-    return ListFolderOutput(
-        success=True,
-        folder_id=folder_id,
-        folders=folders_out,
-        files=files_out,
-        total=len(files),
-        next_page_token=data.get("nextPageToken"),
-    )
-
-
-async def _read_text_response(
-    client: httpx.AsyncClient, url: str, headers: dict[str, str], params: dict[str, Any]
-) -> tuple[bool, str | None, str]:
-    response = await client.get(url, headers=headers, params=params, timeout=_LONG_TIMEOUT)
-    if response.status_code != 200:
-        return False, _api_err("Failed to read", response), ""
-    return True, None, response.text
-
-
-@tool(args_schema=ReadFileInput)
-@serialize_pydantic_return
-async def read_file(
-    auth_type: str, auth_data: dict[str, Any], file_id: str
-) -> ReadFileOutput:
-    """Read file content (exports Docs as plain text)."""
-    err = _validate(auth_data, "read_file")
-    if err:
-        return ReadFileOutput(success=False, error=err)
-    headers = _headers(auth_type, auth_data)
-    try:
-        async with httpx.AsyncClient(timeout=_TIMEOUT) as client:
-            meta = await client.get(
-                f"{_DRIVE}/files/{file_id}",
-                headers=headers,
-                params={"fields": "id,name,mimeType,size,webViewLink"},
-            )
-            if meta.status_code != 200:
-                return ReadFileOutput(
-                    success=False,
-                    error=f"Failed to get file metadata: {meta.status_code}",
-                )
-            metadata = meta.json() or {}
-            mime_type = metadata.get("mimeType", "")
-            if mime_type == _GDOC_MIME:
-                ok, e, text = await _read_text_response(
-                    client,
-                    f"{_DRIVE}/files/{file_id}/export",
-                    headers,
-                    {"mimeType": "text/plain"},
-                )
-                if not ok:
-                    return ReadFileOutput(
-                        success=False, error=f"Failed to export document: {e}"
-                    )
-                return ReadFileOutput(
-                    success=True,
-                    id=file_id,
-                    name=metadata.get("name"),
-                    mime_type=mime_type,
-                    content=text,
-                )
-            if mime_type.startswith("text/"):
-                ok, e, text = await _read_text_response(
-                    client,
-                    f"{_DRIVE}/files/{file_id}",
-                    headers,
-                    {"alt": "media"},
-                )
-                if not ok:
-                    return ReadFileOutput(
-                        success=False, error=f"Failed to download file: {e}"
-                    )
-                return ReadFileOutput(
-                    success=True,
-                    id=file_id,
-                    name=metadata.get("name"),
-                    mime_type=mime_type,
-                    content=text,
-                )
-            return ReadFileOutput(
-                success=True,
-                id=file_id,
-                name=metadata.get("name"),
-                mime_type=mime_type,
-                size=metadata.get("size"),
-                web_view_link=metadata.get("webViewLink"),
-                message="Binary file - use web_view_link to access",
-            )
-    except Exception as exc:
-        return ReadFileOutput(success=False, error=str(exc))
 
 
 @tool(args_schema=CreateTextFileInput)
@@ -664,194 +408,6 @@ async def create_folder(
         id=data.get("id"),
         name=data.get("name"),
         web_view_link=data.get("webViewLink"),
-    )
-
-
-@tool(args_schema=DeleteItemInput)
-@serialize_pydantic_return
-async def delete_item(
-    auth_type: str, auth_data: dict[str, Any], item_id: str
-) -> DeleteItemOutput:
-    """Permanently delete a file or folder."""
-    err = _validate(auth_data, "delete_item")
-    if err:
-        return DeleteItemOutput(success=False, error=err)
-    ok, e, _ = await _call(
-        "DELETE",
-        f"{_DRIVE}/files/{item_id}",
-        auth_type,
-        auth_data,
-        params={"supportsAllDrives": "true"},
-        success_codes=(204,),
-    )
-    if not ok:
-        return DeleteItemOutput(success=False, error=e)
-    return DeleteItemOutput(
-        success=True, deleted_id=item_id, message="Item deleted successfully"
-    )
-
-
-@tool(args_schema=RenameItemInput)
-@serialize_pydantic_return
-async def rename_item(
-    auth_type: str,
-    auth_data: dict[str, Any],
-    item_id: str,
-    new_name: str,
-) -> RenameItemOutput:
-    """Rename a file or folder."""
-    err = _validate(auth_data, "rename_item")
-    if err:
-        return RenameItemOutput(success=False, error=err)
-    ok, e, data = await _call(
-        "PATCH",
-        f"{_DRIVE}/files/{item_id}",
-        auth_type,
-        auth_data,
-        json_body={"name": new_name},
-        params={
-            "fields": "id,name,mimeType,webViewLink,modifiedTime",
-            "supportsAllDrives": "true",
-        },
-    )
-    if not ok:
-        return RenameItemOutput(success=False, error=e)
-    return RenameItemOutput(
-        success=True,
-        id=data.get("id"),
-        name=data.get("name"),
-        mime_type=data.get("mimeType"),
-        modified_time=data.get("modifiedTime"),
-    )
-
-
-@tool(args_schema=MoveItemInput)
-@serialize_pydantic_return
-async def move_item(
-    auth_type: str,
-    auth_data: dict[str, Any],
-    item_id: str,
-    destination_folder_id: str = "root",
-) -> MoveItemOutput:
-    """Move a file/folder to a destination (reads current parents first)."""
-    err = _validate(auth_data, "move_item")
-    if err:
-        return MoveItemOutput(success=False, error=err)
-    ok, e, meta = await _call(
-        "GET",
-        f"{_DRIVE}/files/{item_id}",
-        auth_type,
-        auth_data,
-        params={"fields": "parents"},
-    )
-    if not ok:
-        return MoveItemOutput(
-            success=False, error=f"Failed to get item parents: {e}"
-        )
-    current_parents = meta.get("parents") or []
-    remove_parents = ",".join(current_parents)
-    ok, e, data = await _call(
-        "PATCH",
-        f"{_DRIVE}/files/{item_id}",
-        auth_type,
-        auth_data,
-        params={
-            "addParents": destination_folder_id,
-            "removeParents": remove_parents,
-            "fields": "id,name,mimeType,parents,webViewLink",
-            "supportsAllDrives": "true",
-        },
-    )
-    if not ok:
-        return MoveItemOutput(success=False, error=e)
-    return MoveItemOutput(
-        success=True,
-        id=data.get("id"),
-        name=data.get("name"),
-        new_parent=destination_folder_id,
-        web_view_link=data.get("webViewLink"),
-    )
-
-
-@tool(args_schema=CopyFileInput)
-@serialize_pydantic_return
-async def copy_file(
-    auth_type: str,
-    auth_data: dict[str, Any],
-    file_id: str,
-    new_name: str | None = None,
-    destination_folder_id: str | None = None,
-) -> CopyFileOutput:
-    """Copy a file."""
-    err = _validate(auth_data, "copy_file")
-    if err:
-        return CopyFileOutput(success=False, error=err)
-    body: dict[str, Any] = {}
-    if new_name:
-        body["name"] = new_name
-    if destination_folder_id:
-        body["parents"] = [destination_folder_id]
-    ok, e, data = await _call(
-        "POST",
-        f"{_DRIVE}/files/{file_id}/copy",
-        auth_type,
-        auth_data,
-        json_body=body if body else None,
-        params={
-            "fields": "id,name,mimeType,webViewLink",
-            "supportsAllDrives": "true",
-        },
-        success_codes=(200, 201),
-        timeout=_LONG_TIMEOUT,
-    )
-    if not ok:
-        return CopyFileOutput(success=False, error=e)
-    return CopyFileOutput(
-        success=True,
-        id=data.get("id"),
-        name=data.get("name"),
-        mime_type=data.get("mimeType"),
-        web_view_link=data.get("webViewLink"),
-    )
-
-
-@tool(args_schema=GetFileMetadataInput)
-@serialize_pydantic_return
-async def get_file_metadata(
-    auth_type: str, auth_data: dict[str, Any], file_id: str
-) -> GetFileMetadataOutput:
-    """Get full metadata for a file/folder."""
-    err = _validate(auth_data, "get_file_metadata")
-    if err:
-        return GetFileMetadataOutput(success=False, error=err)
-    ok, e, data = await _call(
-        "GET",
-        f"{_DRIVE}/files/{file_id}",
-        auth_type,
-        auth_data,
-        params={
-            "fields": (
-                "id,name,mimeType,createdTime,modifiedTime,size,"
-                "webViewLink,webContentLink,parents,shared,owners,permissions"
-            ),
-            "supportsAllDrives": "true",
-        },
-    )
-    if not ok:
-        return GetFileMetadataOutput(success=False, error=e)
-    return GetFileMetadataOutput(
-        success=True,
-        id=data.get("id"),
-        name=data.get("name"),
-        mime_type=data.get("mimeType"),
-        created_time=data.get("createdTime"),
-        modified_time=data.get("modifiedTime"),
-        size=data.get("size"),
-        web_view_link=data.get("webViewLink"),
-        web_content_link=data.get("webContentLink"),
-        parents=data.get("parents"),
-        shared=data.get("shared"),
-        owners=data.get("owners"),
     )
 
 

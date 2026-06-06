@@ -20,8 +20,7 @@ manifest = IntegrationManifest(
     display_name="Google Slides",
     description=(
         "Create and edit Google Slides presentations — manage slides, shapes, "
-        "images, tables, and text via the Google Slides REST API; copy or "
-        "discover presentations via the Google Drive REST API."
+        "images, tables, and text via the Google Slides REST API."
     ),
     version="1.0.0",
     author="ModuleX",
@@ -183,25 +182,13 @@ manifest = IntegrationManifest(
         ActionDefinition(
             name="create_presentation",
             description=(
-                "Create a blank Google Slides presentation, or duplicate an "
-                "existing one when source_presentation_id is supplied. "
-                "Blank creation uses the Slides API; duplication uses Drive "
-                "files.copy."
+                "Create a blank Google Slides presentation via the Slides API."
             ),
             parameters={
                 "title": ParameterDef(
                     type="string",
                     description="Title of the new presentation.",
                     required=True,
-                ),
-                "source_presentation_id": ParameterDef(
-                    type="string",
-                    description=(
-                        "Optional ID of an existing presentation to copy. "
-                        "When omitted, a blank presentation is created."
-                    ),
-                    required=False,
-                    default=None,
                 ),
             },
         ),
@@ -585,72 +572,6 @@ manifest = IntegrationManifest(
             },
         ),
         ActionDefinition(
-            name="merge_data",
-            description=(
-                "Duplicate a template presentation and merge data into it by "
-                "replacing placeholders ('{{key}}') with text and/or images. "
-                "Uses Drive files.copy + Slides batchUpdate with "
-                "replaceAllText and replaceAllShapesWithImage requests."
-            ),
-            parameters={
-                "source_presentation_id": ParameterDef(
-                    type="string",
-                    description=(
-                        "ID of the source template presentation that will be "
-                        "copied before placeholders are replaced."
-                    ),
-                    required=True,
-                ),
-                "title": ParameterDef(
-                    type="string",
-                    description=(
-                        "Title of the new (copied) presentation that "
-                        "receives the merged data."
-                    ),
-                    required=True,
-                ),
-                "placeholders_and_texts": ParameterDef(
-                    type="object",
-                    description=(
-                        "Mapping of placeholder text -> replacement string "
-                        "(e.g. {'{{name}}': 'John Doe'}). Each pair becomes "
-                        "a replaceAllText request."
-                    ),
-                    required=True,
-                ),
-                "placeholders_and_image_urls": ParameterDef(
-                    type="object",
-                    description=(
-                        "Optional mapping of placeholder text -> image URL "
-                        "(e.g. {'{{image}}': 'https://...'}). Each pair "
-                        "becomes a replaceAllShapesWithImage request with "
-                        "CENTER_INSIDE."
-                    ),
-                    required=False,
-                    default=None,
-                ),
-            },
-        ),
-        ActionDefinition(
-            name="refresh_chart",
-            description=(
-                "Refresh every embedded Sheets chart in a presentation by "
-                "scanning all slides for sheetsChart page elements and "
-                "issuing a Slides batchUpdate RefreshSheetsChartRequest per "
-                "chart."
-            ),
-            parameters={
-                "presentation_id": ParameterDef(
-                    type="string",
-                    description=(
-                        "ID of the target Google Slides presentation whose "
-                        "Sheets charts should be refreshed."
-                    ),
-                    required=True,
-                ),
-            },
-        ),
-        ActionDefinition(
             name="replace_all_text",
             description=(
                 "Replace every occurrence of a given text snippet inside a "
@@ -730,22 +651,21 @@ manifest = IntegrationManifest(
                 token_url="https://oauth2.googleapis.com/token",
                 scopes=[
                     "https://www.googleapis.com/auth/presentations",
-                    "https://www.googleapis.com/auth/drive",
                 ],
                 token_auth_method="body",
             ),
             test_endpoint=TestEndpoint(
-                url="https://www.googleapis.com/drive/v3/about?fields=user",
+                url="https://slides.googleapis.com/v1/presentations/1",
                 method="GET",
                 headers={"Authorization": "Bearer {access_token}"},
                 success_indicators=SuccessIndicators(
-                    status_codes=[200],
-                    response_fields=["user"],
+                    status_codes=[200, 404],
+                    response_fields=None,
                 ),
                 cost_level="free",
                 description=(
-                    "Validates the OAuth token by fetching the Drive 'about' "
-                    "user profile."
+                    "Validates the OAuth token against the Slides API "
+                    "(200 or 404 both confirm the token is accepted)."
                 ),
             ),
         ),

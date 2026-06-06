@@ -20,8 +20,6 @@ __all__ = [
     "InsertTableRowsOutput",
     "InsertTextIntoTableOutput",
     "InsertTextOutput",
-    "MergeDataOutput",
-    "RefreshChartOutput",
     "ReplaceAllTextOutput",
 ]
 
@@ -59,9 +57,6 @@ class CreatePresentationOutput(_Base):
     presentation_id: str | None = None
     title: str | None = None
     revision_id: str | None = None
-    copied_from: str | None = None
-    file_id: str | None = None
-    web_view_link: str | None = None
     raw: dict[str, Any] | None = None
 
 
@@ -162,24 +157,6 @@ class InsertTextOutput(_Base):
     presentation_id: str | None = None
     replies: list[dict[str, Any]] = Field(default_factory=list)
     write_control: dict[str, Any] | None = None
-
-
-class MergeDataOutput(_Base):
-    success: bool
-    error: str | None = None
-    presentation_id: str | None = None
-    copied_from_id: str | None = None
-    new_presentation_title: str | None = None
-    replies: list[dict[str, Any]] = Field(default_factory=list)
-    write_control: dict[str, Any] | None = None
-
-
-class RefreshChartOutput(_Base):
-    success: bool
-    error: str | None = None
-    presentation_id: str | None = None
-    refreshed_chart_count: int = 0
-    refreshed_chart_ids: list[str] = Field(default_factory=list)
 
 
 class ReplaceAllTextOutput(_Base):

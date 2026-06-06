@@ -26,27 +26,6 @@ manifest = IntegrationManifest(
     categories=["Productivity & Collaboration", "Data & Analytics"],
     actions=[
         ActionDefinition(
-            name="list_spreadsheets",
-            description=(
-                "List Google Spreadsheets accessible to the authenticated user. "
-                "Optionally search by name. Returns spreadsheet IDs that can be "
-                "used with all other tools."
-            ),
-            parameters={
-                "query": ParameterDef(
-                    type="string",
-                    description="Search spreadsheets by name. Leave empty to list all.",
-                    required=False,
-                ),
-                "limit": ParameterDef(
-                    type="integer",
-                    description="Maximum number of spreadsheets to return.",
-                    default=20,
-                    required=False,
-                ),
-            },
-        ),
-        ActionDefinition(
             name="new_spreadsheet",
             description=(
                 "Create a new Google Spreadsheet with an optional worksheet name "
@@ -452,7 +431,6 @@ manifest = IntegrationManifest(
                 scopes=[
                     "https://www.googleapis.com/auth/spreadsheets",
                     "https://www.googleapis.com/auth/drive.file",
-                    "https://www.googleapis.com/auth/drive.readonly",
                 ],
                 token_auth_method="body",
             ),
@@ -467,8 +445,7 @@ manifest = IntegrationManifest(
                 cost_level="free",
                 description=(
                     "Validates the OAuth token via the Drive about endpoint "
-                    "(Sheets are stored in Drive, so a Sheets-scoped token "
-                    "with drive.readonly can read this)."
+                    "(reachable with the drive.file scope)."
                 ),
             ),
         ),

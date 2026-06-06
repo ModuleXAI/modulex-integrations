@@ -261,7 +261,6 @@ manifest = IntegrationManifest(
                 scopes=[
                     "https://www.googleapis.com/auth/tagmanager.edit.containers",
                     "https://www.googleapis.com/auth/tagmanager.readonly",
-                    "https://www.googleapis.com/auth/tagmanager.manage.accounts",
                 ],
             ),
             test_endpoint=TestEndpoint(

@@ -15,7 +15,6 @@ from modulex_integrations.tools.google_sheets import (
     find_rows,
     get_spreadsheet_info,
     get_values_in_range,
-    list_spreadsheets,
     list_worksheets,
     manifest,
     new_spreadsheet,
@@ -32,7 +31,6 @@ from modulex_integrations.tools.google_sheets.outputs import (
     FindRowsOutput,
     GetSpreadsheetInfoOutput,
     GetValuesInRangeOutput,
-    ListSpreadsheetsOutput,
     ListWorksheetsOutput,
     NewSpreadsheetOutput,
     ReadRowsOutput,
@@ -41,7 +39,6 @@ from modulex_integrations.tools.google_sheets.outputs import (
 )
 
 SHEETS_API = "https://sheets.googleapis.com/v4"
-DRIVE_API = "https://www.googleapis.com/drive/v3"
 
 _AUTH: dict[str, Any] = {
     "auth_type": "oauth2",
@@ -57,8 +54,8 @@ def _args(**extra: Any) -> dict[str, Any]:
 
 
 class TestManifest:
-    def test_manifest_exposes_14_actions(self) -> None:
-        assert len(manifest.actions) == 14
+    def test_manifest_exposes_13_actions(self) -> None:
+        assert len(manifest.actions) == 13
 
     def test_manifest_actions_match_tools_tuple(self) -> None:
         assert {a.name for a in manifest.actions} == {t.name for t in TOOLS}
@@ -68,39 +65,6 @@ class TestManifest:
 
 
 # --- Per-action happy-path tests -------------------------------------------
-
-
-@pytest.mark.asyncio
-async def test_list_spreadsheets(httpx_mock):  # type: ignore[no-untyped-def]
-    # TODO: replace with a real Drive Files response from
-    #       https://developers.google.com/drive/api/reference/rest/v3/files/list
-    httpx_mock.add_response(
-        method="GET",
-        url=(
-            f"{DRIVE_API}/files"
-            "?q=mimeType%3D%27application%2Fvnd.google-apps.spreadsheet%27"
-            "&pageSize=20"
-            "&fields=files%28id%2Cname%29"
-        ),
-        json={
-            "files": [
-                {"id": "spreadsheet-id-1", "name": "Budget"},
-                {"id": "spreadsheet-id-2", "name": "Customers"},
-            ],
-        },
-    )
-
-    result_dict = await list_spreadsheets.ainvoke(_args())
-
-    assert isinstance(result_dict, dict)
-    result = ListSpreadsheetsOutput.model_validate(result_dict)
-    assert result.success is True
-    assert result.count == 2
-    assert result.spreadsheets is not None
-    assert result.spreadsheets[0].name == "Budget"
-    assert result.spreadsheets[0].url == (
-        "https://docs.google.com/spreadsheets/d/spreadsheet-id-1/edit"
-    )
 
 
 @pytest.mark.asyncio
@@ -478,12 +442,12 @@ async def test_delete_rows(httpx_mock):  # type: ignore[no-untyped-def]
 
 
 @pytest.mark.asyncio
-async def test_list_spreadsheets_empty_credentials(httpx_mock):  # type: ignore[no-untyped-def]
+async def test_new_spreadsheet_empty_credentials(httpx_mock):  # type: ignore[no-untyped-def]
     """Verify that empty credentials return a clear error without hitting the wire."""
-    result_dict = await list_spreadsheets.ainvoke(
-        _args(**{"auth_type": "oauth2", "auth_data": {}}),
+    result_dict = await new_spreadsheet.ainvoke(
+        _args(**{"auth_type": "oauth2", "auth_data": {}, "title": "My Sheet"}),
     )
     assert isinstance(result_dict, dict)
-    result = ListSpreadsheetsOutput.model_validate(result_dict)
+    result = NewSpreadsheetOutput.model_validate(result_dict)
     assert result.success is False
     assert result.error is not None

@@ -9,7 +9,6 @@ from modulex_integrations.tools.google_sheets.tools import (
     find_rows,
     get_spreadsheet_info,
     get_values_in_range,
-    list_spreadsheets,
     list_worksheets,
     new_spreadsheet,
     read_rows,
@@ -18,7 +17,6 @@ from modulex_integrations.tools.google_sheets.tools import (
 )
 
 TOOLS = (
-    list_spreadsheets,
     new_spreadsheet,
     get_spreadsheet_info,
     list_worksheets,
@@ -44,7 +42,6 @@ __all__ = [
     "find_rows",
     "get_spreadsheet_info",
     "get_values_in_range",
-    "list_spreadsheets",
     "list_worksheets",
     "manifest",
     "new_spreadsheet",

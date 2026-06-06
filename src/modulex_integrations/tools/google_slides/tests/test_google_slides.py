@@ -22,8 +22,6 @@ from modulex_integrations.tools.google_slides import (
     insert_text,
     insert_text_into_table,
     manifest,
-    merge_data,
-    refresh_chart,
     replace_all_text,
 )
 from modulex_integrations.tools.google_slides.outputs import (
@@ -41,13 +39,10 @@ from modulex_integrations.tools.google_slides.outputs import (
     InsertTableRowsOutput,
     InsertTextIntoTableOutput,
     InsertTextOutput,
-    MergeDataOutput,
-    RefreshChartOutput,
     ReplaceAllTextOutput,
 )
 
 SLIDES_API = "https://slides.googleapis.com/v1"
-DRIVE_API = "https://www.googleapis.com/drive/v3"
 
 _AUTH: dict[str, Any] = {
     "auth_type": "oauth2",
@@ -64,8 +59,8 @@ def _args(**extra: Any) -> dict[str, Any]:
 
 
 class TestManifest:
-    def test_manifest_exposes_17_actions(self) -> None:
-        assert len(manifest.actions) == 17
+    def test_manifest_exposes_15_actions(self) -> None:
+        assert len(manifest.actions) == 15
 
     def test_manifest_actions_match_tools_tuple(self) -> None:
         assert {a.name for a in manifest.actions} == {t.name for t in TOOLS}
@@ -151,29 +146,6 @@ async def test_create_presentation_blank(httpx_mock):  # type: ignore[no-untyped
     result = CreatePresentationOutput.model_validate(result_dict)
     assert result.success is True
     assert result.presentation_id == "NEW_PRESID"
-
-
-@pytest.mark.asyncio
-async def test_create_presentation_copy(httpx_mock):  # type: ignore[no-untyped-def]
-    httpx_mock.add_response(
-        method="POST",
-        url=f"{DRIVE_API}/files/SRC_ID/copy?supportsAllDrives=true&fields=*",
-        json={
-            # TODO: fill in a representative Drive files.copy response
-            "id": "COPIED_ID",
-            "name": "My Deck Copy",
-            "webViewLink": "https://docs.google.com/presentation/d/COPIED_ID/edit",
-        },
-    )
-
-    result_dict = await create_presentation.ainvoke(
-        _args(title="My Deck Copy", source_presentation_id="SRC_ID")
-    )
-
-    result = CreatePresentationOutput.model_validate(result_dict)
-    assert result.success is True
-    assert result.presentation_id == "COPIED_ID"
-    assert result.copied_from == "SRC_ID"
 
 
 @pytest.mark.asyncio
@@ -416,79 +388,6 @@ async def test_insert_text_into_table(httpx_mock):  # type: ignore[no-untyped-de
 
     result = InsertTextIntoTableOutput.model_validate(result_dict)
     assert result.success is True
-
-
-@pytest.mark.asyncio
-async def test_merge_data(httpx_mock):  # type: ignore[no-untyped-def]
-    httpx_mock.add_response(
-        method="POST",
-        url=f"{DRIVE_API}/files/SRC_ID/copy?supportsAllDrives=true&fields=*",
-        json={
-            # TODO: fill in a representative Drive files.copy response
-            "id": "COPIED_ID",
-            "name": "Merged Deck",
-        },
-    )
-    httpx_mock.add_response(
-        method="POST",
-        url=f"{SLIDES_API}/presentations/COPIED_ID:batchUpdate",
-        json={
-            # TODO: fill in a representative Slides batchUpdate response
-            "presentationId": "COPIED_ID",
-            "replies": [{}],
-        },
-    )
-
-    result_dict = await merge_data.ainvoke(
-        _args(
-            source_presentation_id="SRC_ID",
-            title="Merged Deck",
-            placeholders_and_texts={"{{name}}": "Alice"},
-        )
-    )
-
-    result = MergeDataOutput.model_validate(result_dict)
-    assert result.success is True
-    assert result.presentation_id == "COPIED_ID"
-
-
-@pytest.mark.asyncio
-async def test_refresh_chart(httpx_mock):  # type: ignore[no-untyped-def]
-    httpx_mock.add_response(
-        method="GET",
-        url=f"{SLIDES_API}/presentations/PRESID",
-        json={
-            # TODO: fill in a representative Slides presentations.get response
-            "presentationId": "PRESID",
-            "slides": [
-                {
-                    "objectId": "S1",
-                    "pageElements": [
-                        {
-                            "objectId": "CHART_1",
-                            "sheetsChart": {"spreadsheetId": "SHEET_1"},
-                        }
-                    ],
-                }
-            ],
-        },
-    )
-    httpx_mock.add_response(
-        method="POST",
-        url=f"{SLIDES_API}/presentations/PRESID:batchUpdate",
-        json={
-            # TODO: fill in a representative Slides batchUpdate response
-            "presentationId": "PRESID",
-            "replies": [{}],
-        },
-    )
-
-    result_dict = await refresh_chart.ainvoke(_args(presentation_id="PRESID"))
-
-    result = RefreshChartOutput.model_validate(result_dict)
-    assert result.success is True
-    assert result.refreshed_chart_count == 1
-    assert result.refreshed_chart_ids == ["CHART_1"]
 
 
 @pytest.mark.asyncio

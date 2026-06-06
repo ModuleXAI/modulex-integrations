@@ -15,8 +15,6 @@ from modulex_integrations.tools.google_slides.tools import (
     insert_table_rows,
     insert_text,
     insert_text_into_table,
-    merge_data,
-    refresh_chart,
     replace_all_text,
 )
 
@@ -35,8 +33,6 @@ TOOLS = (
     insert_table_rows,
     insert_text,
     insert_text_into_table,
-    merge_data,
-    refresh_chart,
     replace_all_text,
 )
 
@@ -57,7 +53,5 @@ __all__ = [
     "insert_text",
     "insert_text_into_table",
     "manifest",
-    "merge_data",
-    "refresh_chart",
     "replace_all_text",
 ]
