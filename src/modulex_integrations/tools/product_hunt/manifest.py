@@ -25,7 +25,7 @@ manifest = IntegrationManifest(
     author="ModuleX",
     logo="logos:producthunt",
     app_url="https://www.producthunt.com",
-    categories=["Productivity & Collaboration", "Marketing"],
+    categories=["Social Media", "Productivity & Collaboration", "Marketing"],
     actions=[
         ActionDefinition(
             name="list_topic_options",

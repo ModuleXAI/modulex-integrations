@@ -35,7 +35,7 @@ manifest = IntegrationManifest(
     author="ModuleX",
     logo="modulex:shortio-themed",
     app_url="https://short.io",
-    categories=["Utilities", "link_management", "analytics"],
+    categories=["Marketing & Advertising", "Utilities", "link_management", "analytics"],
     actions=[
         ActionDefinition(
             name="create_link",

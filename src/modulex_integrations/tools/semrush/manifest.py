@@ -66,7 +66,13 @@ manifest = IntegrationManifest(
     author="ModuleX",
     logo="modulex:semrush",
     app_url="https://www.semrush.com",
-    categories=["Data & Analytics", "analytics", "marketing", "research"],
+    categories=[
+        "Marketing & Advertising",
+        "Data & Analytics",
+        "analytics",
+        "marketing",
+        "research",
+    ],
     actions=[
         ActionDefinition(
             name="domain_overview",

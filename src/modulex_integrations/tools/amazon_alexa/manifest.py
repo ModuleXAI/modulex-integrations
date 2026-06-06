@@ -23,7 +23,7 @@ manifest = IntegrationManifest(
     author="ModuleX",
     logo="modulex:amazon_alexa",
     app_url="https://developer.amazon.com/alexa",
-    categories=["Voice Assistants", "IoT", "Smart Home"],
+    categories=["AI & Machine Learning", "Voice Assistants", "IoT", "Smart Home"],
     actions=[
         ActionDefinition(
             name="simulate_skill",

@@ -23,7 +23,7 @@ manifest = IntegrationManifest(
     author="ModuleX",
     logo="logos:microsoft-power-bi",
     app_url="https://powerbi.microsoft.com",
-    categories=["Business Intelligence", "Analytics", "Productivity"],
+    categories=["Analytics & Data", "Business Intelligence", "Analytics", "Productivity"],
     actions=[
         ActionDefinition(
             name="add_rows_to_push_dataset",

@@ -57,7 +57,7 @@ manifest = IntegrationManifest(
     author="ModuleX",
     logo="modulex:coinbase",
     app_url="https://www.coinbase.com",
-    categories=["Business Services", "finance", "trading", "market"],
+    categories=["Finance & Payments", "Business Services", "finance", "trading", "market"],
     actions=[
         ActionDefinition(
             name="get_accounts",

@@ -37,7 +37,7 @@ manifest = IntegrationManifest(
     author="ModuleX",
     logo="logos:snowflake-icon",
     app_url="https://www.snowflake.com/",
-    categories=["Database", "Data Warehouse", "analytics"],
+    categories=["Databases", "Database", "Data Warehouse", "analytics"],
     actions=[
         ActionDefinition(
             name="execute_sql_query",

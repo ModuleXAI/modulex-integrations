@@ -53,12 +53,7 @@ manifest = IntegrationManifest(
     author="ModuleX",
     logo="modulex:intercom-themed",
     app_url="https://www.intercom.com",
-    categories=[
-        "CRM & Customer",
-        "communication",
-        "automation",
-        "development",
-    ],
+    categories=["Customer Support", "CRM & Customer", "communication", "automation", "development"],
     actions=[
         ActionDefinition(
             name="get_contact",

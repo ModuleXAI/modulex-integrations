@@ -23,7 +23,7 @@ manifest = IntegrationManifest(
     author="ModuleX",
     logo="logos:google-tag-manager",
     app_url="https://tagmanager.google.com",
-    categories=["Analytics", "Marketing"],
+    categories=["Analytics & Data", "Analytics", "Marketing"],
     actions=[
         ActionDefinition(
             name="create_tag",

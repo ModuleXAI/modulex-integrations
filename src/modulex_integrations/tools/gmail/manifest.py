@@ -71,7 +71,7 @@ manifest = IntegrationManifest(
     author="ModuleX",
     logo="logos:google-gmail",
     app_url="https://mail.google.com",
-    categories=["Communication & Collaboration", "email", "productivity"],
+    categories=["Communication", "Communication & Collaboration", "email", "productivity"],
     actions=[
         ActionDefinition(
             name="send_message",

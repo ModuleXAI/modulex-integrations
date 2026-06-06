@@ -23,7 +23,12 @@ manifest = IntegrationManifest(
     author="ModuleX",
     logo="logos:jira",
     app_url="https://www.atlassian.com/software/jira",
-    categories=["Project Management", "Developer Tools & Infrastructure", "Productivity & Collaboration"],
+    categories=[
+        "Project & Task Management",
+        "Project Management",
+        "Developer Tools & Infrastructure",
+        "Productivity & Collaboration",
+    ],
     actions=[
         ActionDefinition(
             name="add_attachment_to_issue",

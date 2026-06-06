@@ -23,7 +23,7 @@ manifest = IntegrationManifest(
     author="ModuleX",
     logo="logos:square",
     app_url="https://squareup.com",
-    categories=["payments", "commerce", "finance"],
+    categories=["Finance & Payments", "payments", "commerce", "finance"],
     actions=[
         ActionDefinition(
             name="create_customer",

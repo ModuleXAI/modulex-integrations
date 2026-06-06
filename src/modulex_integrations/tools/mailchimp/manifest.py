@@ -55,7 +55,7 @@ manifest = IntegrationManifest(
     author="ModuleX",
     logo="logos:mailgun-icon",
     app_url="https://mailchimp.com",
-    categories=["Marketing & Email", "Email Marketing", "CRM"],
+    categories=["Marketing & Advertising", "Marketing & Email", "Email Marketing", "CRM"],
     actions=[
         # --- Lists ---------------------------------------------------------
         ActionDefinition(

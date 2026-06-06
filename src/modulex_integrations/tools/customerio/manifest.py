@@ -41,7 +41,7 @@ manifest = IntegrationManifest(
     author="ModuleX",
     logo="logos:customerio-icon",
     app_url="https://customer.io",
-    categories=["Marketing & Email", "social_media", "customer_support"],
+    categories=["Marketing & Advertising", "Marketing & Email", "social_media", "customer_support"],
     actions=[
         ActionDefinition(
             name="create_or_update_customer",

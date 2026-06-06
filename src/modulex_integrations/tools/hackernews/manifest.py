@@ -40,7 +40,7 @@ manifest = IntegrationManifest(
     author="ModuleX",
     logo="modulex:hackernews",
     app_url="https://news.ycombinator.com",
-    categories=["news", "social", "technology", "community"],
+    categories=["Social Media", "news", "social", "technology", "community"],
     actions=[
         ActionDefinition(
             name="search_stories",

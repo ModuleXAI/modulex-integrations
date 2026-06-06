@@ -22,7 +22,7 @@ manifest = IntegrationManifest(
     author="ModuleX",
     logo="logos:supabase-icon",
     app_url="https://supabase.com",
-    categories=["Database", "Backend", "Developer Tools & Infrastructure"],
+    categories=["Databases", "Database", "Backend", "Developer Tools & Infrastructure"],
     actions=[
         ActionDefinition(
             name="select_row",

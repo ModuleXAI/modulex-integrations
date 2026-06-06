@@ -24,7 +24,7 @@ manifest = IntegrationManifest(
     author="ModuleX",
     logo="logos:monday-icon",
     app_url="https://monday.com",
-    categories=["Productivity & Collaboration", "Project Management"],
+    categories=["Project & Task Management", "Productivity & Collaboration", "Project Management"],
     actions=[
         ActionDefinition(
             name="create_board",

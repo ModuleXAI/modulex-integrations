@@ -71,7 +71,7 @@ manifest = IntegrationManifest(
     author="ModuleX",
     logo="logos:google-drive",
     app_url="https://drive.google.com",
-    categories=["File Storage", "Document Management", "Productivity"],
+    categories=["Cloud Infrastructure", "File Storage", "Document Management", "Productivity"],
     actions=[
         # --- Drive ---------------------------------------------------------
         ActionDefinition(

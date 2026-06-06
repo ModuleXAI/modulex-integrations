@@ -27,7 +27,7 @@ manifest = IntegrationManifest(
     author="ModuleX",
     logo="logos:microsoft-onedrive",
     app_url="https://onedrive.live.com",
-    categories=["file-storage", "productivity"],
+    categories=["Cloud Infrastructure", "file-storage", "productivity"],
     actions=[
         ActionDefinition(
             name="create_folder",

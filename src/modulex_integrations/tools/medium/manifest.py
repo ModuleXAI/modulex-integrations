@@ -23,7 +23,7 @@ manifest = IntegrationManifest(
     author="ModuleX",
     logo="modulex:medium-themed",
     app_url="https://medium.com",
-    categories=["Content & Publishing", "Blogging"],
+    categories=["Social Media", "Content & Publishing", "Blogging"],
     actions=[
         ActionDefinition(
             name="create_post",

@@ -22,7 +22,7 @@ manifest = IntegrationManifest(
     author="ModuleX",
     logo="modulex:databricks",
     app_url="https://www.databricks.com",
-    categories=["Data Engineering", "Analytics", "Machine Learning"],
+    categories=["Analytics & Data", "Data Engineering", "Analytics", "Machine Learning"],
     actions=[
         ActionDefinition(
             name="cancel_all_runs",

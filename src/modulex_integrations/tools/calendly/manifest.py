@@ -50,7 +50,7 @@ manifest = IntegrationManifest(
     author="ModuleX",
     logo="modulex:calendly",
     app_url="https://calendly.com",
-    categories=["Productivity", "calendar", "productivity", "meetings"],
+    categories=["Scheduling & Events", "Productivity", "calendar", "productivity", "meetings"],
     actions=[
         ActionDefinition(
             name="get_current_user",

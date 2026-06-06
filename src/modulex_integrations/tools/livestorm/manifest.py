@@ -23,7 +23,7 @@ manifest = IntegrationManifest(
     author="ModuleX",
     logo="modulex:livestorm-themed",
     app_url="https://livestorm.co",
-    categories=["Marketing", "Webinars & Events"],
+    categories=["Scheduling & Events", "Marketing", "Webinars & Events"],
     actions=[
         ActionDefinition(
             name="create_event",

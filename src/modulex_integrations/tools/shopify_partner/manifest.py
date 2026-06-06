@@ -20,7 +20,7 @@ manifest = IntegrationManifest(
     author="ModuleX",
     logo="logos:shopify",
     app_url="https://partners.shopify.com",
-    categories=["ecommerce", "Developer Tools & Infrastructure"],
+    categories=["E-Commerce", "ecommerce", "Developer Tools & Infrastructure"],
     actions=[
         ActionDefinition(
             name="verify_webhook",

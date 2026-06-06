@@ -37,7 +37,7 @@ manifest = IntegrationManifest(
     author="ModuleX",
     logo="logos:slack-icon",
     app_url="https://slack.com",
-    categories=["Communication & Collaboration", "collaboration", "messaging"],
+    categories=["Communication", "Communication & Collaboration", "collaboration", "messaging"],
     actions=[
         ActionDefinition(
             name="list_channels",

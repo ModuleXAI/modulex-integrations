@@ -23,7 +23,7 @@ manifest = IntegrationManifest(
     author="ModuleX",
     logo="logos:google-search-console",
     app_url="https://search.google.com/search-console",
-    categories=["SEO", "Marketing", "Developer Tools & Infrastructure"],
+    categories=["Marketing & Advertising", "SEO", "Marketing", "Developer Tools & Infrastructure"],
     actions=[
         ActionDefinition(
             name="retrieve_site_performance_data",

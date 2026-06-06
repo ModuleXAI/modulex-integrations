@@ -22,7 +22,7 @@ manifest = IntegrationManifest(
     author="ModuleX",
     logo="modulex:coinmarketcap-themed",
     app_url="https://coinmarketcap.com",
-    categories=["Finance", "Cryptocurrency", "Market Data"],
+    categories=["Finance & Payments", "Finance", "Cryptocurrency", "Market Data"],
     actions=[
         ActionDefinition(
             name="get_cryptocurrency_metadata",

@@ -23,7 +23,7 @@ manifest = IntegrationManifest(
     author="ModuleX",
     logo="modulex:canva",
     app_url="https://www.canva.com",
-    categories=["Design & Creative Tools", "Productivity & Collaboration"],
+    categories=["Productivity & Collaboration", "Design & Creative Tools"],
     actions=[
         ActionDefinition(
             name="create_design",

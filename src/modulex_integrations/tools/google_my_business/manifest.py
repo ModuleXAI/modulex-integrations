@@ -23,7 +23,7 @@ manifest = IntegrationManifest(
     author="ModuleX",
     logo="modulex:google_my_business",
     app_url="https://business.google.com",
-    categories=["Marketing", "Local Business", "Reviews"],
+    categories=["Marketing & Advertising", "Marketing", "Local Business", "Reviews"],
     actions=[
         ActionDefinition(
             name="create_post",

@@ -22,7 +22,7 @@ manifest = IntegrationManifest(
     version="1.0.0",
     author="ModuleX",
     app_url="https://browser-use.com",
-    categories=["Automation", "AI", "Developer Tools & Infrastructure"],
+    categories=["AI & Machine Learning", "Automation", "AI", "Developer Tools & Infrastructure"],
     actions=[
         ActionDefinition(
             name="create_session",

@@ -26,7 +26,7 @@ manifest = IntegrationManifest(
     author="ModuleX",
     logo="modulex:convertapi",
     app_url="https://www.convertapi.com",
-    categories=["Utilities", "convert", "documents"],
+    categories=["Productivity & Collaboration", "Utilities", "convert", "documents"],
     actions=[
         ActionDefinition(
             name="convert_file",

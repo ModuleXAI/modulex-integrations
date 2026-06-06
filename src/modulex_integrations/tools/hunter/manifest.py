@@ -22,7 +22,7 @@ manifest = IntegrationManifest(
     author="ModuleX",
     logo="modulex:hunter",
     app_url="https://hunter.io",
-    categories=["Marketing & Sales", "Lead Generation", "Email"],
+    categories=["Sales", "Marketing & Sales", "Lead Generation", "Email"],
     actions=[
         ActionDefinition(
             name="account_information",

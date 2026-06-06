@@ -22,7 +22,7 @@ manifest = IntegrationManifest(
     author="ModuleX",
     logo="modulex:heygen",
     app_url="https://www.heygen.com",
-    categories=["AI", "Video", "Content Creation"],
+    categories=["AI & Machine Learning", "AI", "Video", "Content Creation"],
     actions=[
         ActionDefinition(
             name="create_talking_photo",

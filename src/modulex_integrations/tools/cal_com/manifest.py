@@ -22,7 +22,7 @@ manifest = IntegrationManifest(
     author="ModuleX",
     logo="modulex:cal_com-themed",
     app_url="https://cal.com",
-    categories=["Productivity & Collaboration", "scheduling", "calendar"],
+    categories=["Scheduling & Events", "Productivity & Collaboration", "scheduling", "calendar"],
     actions=[
         ActionDefinition(
             name="create_booking",

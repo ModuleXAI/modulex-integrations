@@ -22,7 +22,7 @@ manifest = IntegrationManifest(
     version="1.0.0",
     author="ModuleX",
     app_url="https://bloomerang.co",
-    categories=["Nonprofit", "CRM", "Fundraising"],
+    categories=["CRM", "Nonprofit", "Fundraising"],
     actions=[
         ActionDefinition(
             name="create_constituent",

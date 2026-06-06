@@ -41,6 +41,7 @@ manifest = IntegrationManifest(
     logo="modulex:lemon-squeezy",
     app_url="https://lemonsqueezy.com",
     categories=[
+        "Finance & Payments",
         "Business Services",
         "payments",
         "subscriptions",

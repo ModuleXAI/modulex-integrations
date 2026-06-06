@@ -22,7 +22,12 @@ manifest = IntegrationManifest(
     author="ModuleX",
     logo="modulex:sentry-themed",
     app_url="https://sentry.io",
-    categories=["Developer Tools & Infrastructure", "monitoring", "error-tracking"],
+    categories=[
+        "Monitoring & Observability",
+        "Developer Tools & Infrastructure",
+        "monitoring",
+        "error-tracking",
+    ],
     actions=[
         ActionDefinition(
             name="list_issue_events",
