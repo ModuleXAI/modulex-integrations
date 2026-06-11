@@ -120,9 +120,9 @@ manifest = IntegrationManifest(
                 ),
             ],
             oauth_config=OAuthConfig(
-                auth_url="https://reflect.app/oauth/authorize",
-                token_url="https://reflect.app/oauth/token",
-                scopes=[],
+                auth_url="https://reflect.app/oauth",
+                token_url="https://reflect.app/api/oauth/token",
+                scopes=["read:graph", "write:graph"],
             ),
             test_endpoint=TestEndpoint(
                 url="https://reflect.app/api/users/me",

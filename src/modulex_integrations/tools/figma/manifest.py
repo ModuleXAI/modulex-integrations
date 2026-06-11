@@ -103,7 +103,8 @@ manifest = IntegrationManifest(
             oauth_config=OAuthConfig(
                 auth_url="https://www.figma.com/oauth",
                 token_url="https://api.figma.com/v1/oauth/token",
-                scopes=["files:read", "file_comments:write"],
+                scopes=["file_content:read", "file_comments:read", "file_comments:write"],
+                token_auth_method="basic",
             ),
             test_endpoint=TestEndpoint(
                 url="https://api.figma.com/v1/me",
