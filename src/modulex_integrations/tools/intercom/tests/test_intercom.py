@@ -40,8 +40,8 @@ from modulex_integrations.tools.intercom.outputs import (
 
 API = "https://api.intercom.io"
 
-_OAUTH_AUTH: dict[str, Any] = {
-    "auth_type": "oauth2",
+_ACCESS_TOKEN_AUTH: dict[str, Any] = {
+    "auth_type": "bearer_token",
     "auth_data": {"access_token": "ic-oauth-token"},
 }
 _PAT_AUTH: dict[str, Any] = {
@@ -61,19 +61,19 @@ class TestManifest:
     def test_manifest_actions_match_tools_tuple(self) -> None:
         assert {a.name for a in manifest.actions} == {t.name for t in TOOLS}
 
-    def test_manifest_has_paired_oauth2_and_bearer_token_auth(self) -> None:
+    def test_manifest_has_bearer_token_auth(self) -> None:
         types = {a.auth_type for a in manifest.auth_schemas}
-        assert types == {"oauth2", "bearer_token"}
+        assert types == {"bearer_token"}
 
 
 @pytest.mark.asyncio
-async def test_get_contact_oauth(httpx_mock: Any) -> None:
+async def test_get_contact_access_token_key(httpx_mock: Any) -> None:
     httpx_mock.add_response(
         method="GET",
         url=f"{API}/contacts/C1",
         json={"id": "C1", "email": "a@x.io", "name": "Ada"},
     )
-    result_dict = await get_contact.ainvoke(_args(_OAUTH_AUTH, contact_id="C1"))
+    result_dict = await get_contact.ainvoke(_args(_ACCESS_TOKEN_AUTH, contact_id="C1"))
     assert isinstance(result_dict, dict)
     result = GetContactOutput.model_validate(result_dict)
     assert result.success is True
@@ -96,7 +96,7 @@ async def test_get_contact_bearer(httpx_mock: Any) -> None:
 
 @pytest.mark.asyncio
 async def test_get_contact_missing_token_validates() -> None:
-    bad_auth = {"auth_type": "oauth2", "auth_data": {}}
+    bad_auth = {"auth_type": "bearer_token", "auth_data": {}}
     result = GetContactOutput.model_validate(
         await get_contact.ainvoke(dict(bad_auth, contact_id="C1"))
     )
@@ -116,7 +116,7 @@ async def test_search_contacts(httpx_mock: Any) -> None:
         },
     )
     result = SearchContactsOutput.model_validate(
-        await search_contacts.ainvoke(_args(_OAUTH_AUTH, query_value="a@x.io"))
+        await search_contacts.ainvoke(_args(_ACCESS_TOKEN_AUTH, query_value="a@x.io"))
     )
     assert result.success is True
     assert result.total_count == 2
@@ -139,7 +139,7 @@ async def test_upsert_contact_creates_new(httpx_mock: Any) -> None:
         json={"id": "C99", "email": "new@x.io", "name": "New"},
     )
     result = UpsertContactOutput.model_validate(
-        await upsert_contact.ainvoke(_args(_OAUTH_AUTH, email="new@x.io", name="New"))
+        await upsert_contact.ainvoke(_args(_ACCESS_TOKEN_AUTH, email="new@x.io", name="New"))
     )
     assert result.success is True
     assert result.action_type == "created"
@@ -161,7 +161,7 @@ async def test_upsert_contact_updates_existing(httpx_mock: Any) -> None:
     )
     result = UpsertContactOutput.model_validate(
         await upsert_contact.ainvoke(
-            _args(_OAUTH_AUTH, email="a@x.io", name="Ada Lovelace")
+            _args(_ACCESS_TOKEN_AUTH, email="a@x.io", name="Ada Lovelace")
         )
     )
     assert result.success is True
@@ -180,7 +180,7 @@ async def test_create_note_uses_me_admin(httpx_mock: Any) -> None:
         json={"id": "N1", "body": "hello"},
     )
     result = CreateNoteOutput.model_validate(
-        await create_note.ainvoke(_args(_OAUTH_AUTH, contact_id="C1", body="hello"))
+        await create_note.ainvoke(_args(_ACCESS_TOKEN_AUTH, contact_id="C1", body="hello"))
     )
     assert result.success is True
     assert result.result is not None
@@ -193,7 +193,7 @@ async def test_create_note_propagates_me_failure(httpx_mock: Any) -> None:
         method="GET", url=f"{API}/me", status_code=401, text="unauthorized"
     )
     result = CreateNoteOutput.model_validate(
-        await create_note.ainvoke(_args(_OAUTH_AUTH, contact_id="C1", body="x"))
+        await create_note.ainvoke(_args(_ACCESS_TOKEN_AUTH, contact_id="C1", body="x"))
     )
     assert result.success is False
     assert result.error is not None and "admin" in result.error
@@ -208,7 +208,7 @@ async def test_add_tag_to_contact(httpx_mock: Any) -> None:
         json={"id": "T1", "type": "tag", "name": "vip"},
     )
     result = AddTagToContactOutput.model_validate(
-        await add_tag_to_contact.ainvoke(_args(_OAUTH_AUTH, contact_id="C1", tag_id="T1"))
+        await add_tag_to_contact.ainvoke(_args(_ACCESS_TOKEN_AUTH, contact_id="C1", tag_id="T1"))
     )
     assert result.success is True
     assert result.result is not None
@@ -222,7 +222,7 @@ async def test_list_tags(httpx_mock: Any) -> None:
         url=f"{API}/tags",
         json={"type": "list", "data": [{"id": "T1", "name": "vip"}]},
     )
-    result = ListTagsOutput.model_validate(await list_tags.ainvoke(_args(_OAUTH_AUTH)))
+    result = ListTagsOutput.model_validate(await list_tags.ainvoke(_args(_ACCESS_TOKEN_AUTH)))
     assert result.success is True
     assert result.result is not None
     assert result.result["data"][0]["name"] == "vip"
@@ -236,7 +236,7 @@ async def test_list_admins(httpx_mock: Any) -> None:
         json={"type": "list", "admins": [{"id": "A1", "name": "Admin"}]},
     )
     result = ListAdminsOutput.model_validate(
-        await list_admins.ainvoke(_args(_OAUTH_AUTH))
+        await list_admins.ainvoke(_args(_ACCESS_TOKEN_AUTH))
     )
     assert result.success is True
 
@@ -249,7 +249,7 @@ async def test_get_conversation(httpx_mock: Any) -> None:
         json={"id": "CV1", "state": "open"},
     )
     result = GetConversationOutput.model_validate(
-        await get_conversation.ainvoke(_args(_OAUTH_AUTH, conversation_id="CV1"))
+        await get_conversation.ainvoke(_args(_ACCESS_TOKEN_AUTH, conversation_id="CV1"))
     )
     assert result.success is True
     assert result.result is not None
@@ -267,7 +267,7 @@ async def test_list_conversations(httpx_mock: Any) -> None:
         },
     )
     result = ListConversationsOutput.model_validate(
-        await list_conversations.ainvoke(_args(_OAUTH_AUTH))
+        await list_conversations.ainvoke(_args(_ACCESS_TOKEN_AUTH))
     )
     assert result.success is True
     assert len(result.conversations) == 2
@@ -286,7 +286,7 @@ async def test_search_conversations(httpx_mock: Any) -> None:
         },
     )
     result = SearchConversationsOutput.model_validate(
-        await search_conversations.ainvoke(_args(_OAUTH_AUTH, query_value="1700000000"))
+        await search_conversations.ainvoke(_args(_ACCESS_TOKEN_AUTH, query_value="1700000000"))
     )
     assert result.success is True
     assert result.total_count == 1
@@ -307,7 +307,7 @@ async def test_send_incoming_message_auto_role(httpx_mock: Any) -> None:
     )
     result = SendIncomingMessageOutput.model_validate(
         await send_incoming_message.ainvoke(
-            _args(_OAUTH_AUTH, contact_id="C1", body="Hello")
+            _args(_ACCESS_TOKEN_AUTH, contact_id="C1", body="Hello")
         )
     )
     assert result.success is True
@@ -326,7 +326,7 @@ async def test_send_message_to_contact(httpx_mock: Any) -> None:
     result = SendMessageToContactOutput.model_validate(
         await send_message_to_contact.ainvoke(
             _args(
-                _OAUTH_AUTH,
+                _ACCESS_TOKEN_AUTH,
                 from_admin_id="A1",
                 to_contact_id="C1",
                 subject="Hi",
@@ -350,7 +350,7 @@ async def test_reply_to_conversation_admin(httpx_mock: Any) -> None:
     result = ReplyToConversationOutput.model_validate(
         await reply_to_conversation.ainvoke(
             _args(
-                _OAUTH_AUTH,
+                _ACCESS_TOKEN_AUTH,
                 conversation_id="CV1",
                 reply_type="admin",
                 body="Thanks!",
@@ -376,7 +376,7 @@ async def test_reply_to_conversation_clamps_attachments(httpx_mock: Any) -> None
     result = ReplyToConversationOutput.model_validate(
         await reply_to_conversation.ainvoke(
             _args(
-                _OAUTH_AUTH,
+                _ACCESS_TOKEN_AUTH,
                 conversation_id="CV1",
                 reply_type="admin",
                 body="x",

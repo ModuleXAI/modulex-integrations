@@ -6,8 +6,6 @@ from modulex_integrations.schema import (
     BearerTokenAuthSchema,
     EnvVar,
     IntegrationManifest,
-    OAuth2AuthSchema,
-    OAuthConfig,
     ParameterDef,
     SuccessIndicators,
     TestEndpoint,
@@ -23,7 +21,7 @@ def _me_test_endpoint(
     # (api.intercom.io/me) regardless of the user's eventual data region.
     # Reason: INTERCOM_API_BASE_URL is now optional and may be empty —
     # in which case the placeholder substitution would leave a broken
-    # URL. The OAuth token validates against any Intercom region, and
+    # URL. The access token validates against any Intercom region, and
     # tools.py uses the user-supplied base URL at action call time, so
     # this hardcoded test URL is purely for credential validation.
     return TestEndpoint(
@@ -326,52 +324,6 @@ manifest = IntegrationManifest(
         ),
     ],
     auth_schemas=[
-        OAuth2AuthSchema(
-            display_name="OAuth2 Authentication",
-            description="Connect using Intercom OAuth (recommended for production use)",
-            setup_environment_variables=[
-                EnvVar(
-                    name="INTERCOM_OAUTH2_CLIENT_ID",
-                    display_name="Client ID",
-                    description="Your Intercom OAuth App Client ID",
-                    required=True,
-                    sensitive=False,
-                    only_for_custom=True,
-                ),
-                EnvVar(
-                    name="INTERCOM_OAUTH2_CLIENT_SECRET",
-                    display_name="Client Secret",
-                    description="Your Intercom OAuth App Client Secret",
-                    required=True,
-                    sensitive=True,
-                    only_for_custom=True,
-                ),
-                EnvVar(
-                    name="INTERCOM_API_BASE_URL",
-                    display_name="API Base URL",
-                    description=(
-                        "Intercom API base URL (optional — leave empty for "
-                        "https://api.intercom.io US default). Set to "
-                        "https://api.eu.intercom.io for EU workspaces or "
-                        "https://api.au.intercom.io for Australia."
-                    ),
-                    required=False,
-                    sensitive=False,
-                    sample_format="https://api.intercom.io",
-                    about_url="https://developers.intercom.com/docs/build-an-integration/learn-more/rest-apis/api-base-urls/",
-                ),
-            ],
-            oauth_config=OAuthConfig(
-                auth_url="https://app.intercom.com/oauth",
-                token_url="https://api.intercom.io/auth/eagle/token",
-                scopes=[],
-                token_auth_method="body",
-            ),
-            test_endpoint=_me_test_endpoint(
-                "access_token",
-                "Validates OAuth token by fetching authenticated admin info",
-            ),
-        ),
         BearerTokenAuthSchema(
             display_name="Access Token",
             description="Use your Intercom Access Token for direct authentication",

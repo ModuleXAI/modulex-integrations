@@ -89,7 +89,7 @@ def _api_err(action: str, response: httpx.Response) -> str:
 
 
 class _AuthFields(BaseModel):
-    auth_type: str = Field(description="Authentication type (oauth2 or bearer_token)")
+    auth_type: str = Field(description="Authentication type (bearer_token)")
     auth_data: dict[str, Any] = Field(description="Auth data carrying access_token/token")
 
 
