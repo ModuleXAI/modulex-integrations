@@ -1,3 +1,0 @@
-# Runtime dependencies for the cogmento integration.
-# CI assembles this into the root pyproject's [project.optional-dependencies].
-dependencies = []
