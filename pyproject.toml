@@ -105,7 +105,6 @@ jira = "modulex_integrations.tools.jira"
 cal_com = "modulex_integrations.tools.cal_com"
 calendly = "modulex_integrations.tools.calendly"
 canva = "modulex_integrations.tools.canva"
-canvas = "modulex_integrations.tools.canvas"
 instructure_canvas = "modulex_integrations.tools.instructure_canvas"
 linear = "modulex_integrations.tools.linear"
 linkedin = "modulex_integrations.tools.linkedin"
@@ -615,10 +614,6 @@ select = ["E", "F", "I", "N", "W", "B", "C4", "UP", "RUF"]
 "src/modulex_integrations/tools/motion/manifest.py" = ["E501"]
 "src/modulex_integrations/tools/motion/tools.py" = ["E501"]
 "src/modulex_integrations/tools/motion/tests/test_motion.py" = ["E501"]
-# canvas manifest and tools have long description string literals in
-# ParameterDef / Field kwargs that cannot be wrapped.
-"src/modulex_integrations/tools/canvas/manifest.py" = ["E501"]
-"src/modulex_integrations/tools/canvas/tools.py" = ["E501"]
 # coinmarketcap manifest and tools have long description string literals in
 # ParameterDef / Field kwargs that cannot be wrapped.
 "src/modulex_integrations/tools/coinmarketcap/manifest.py" = ["E501"]
