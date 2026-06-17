@@ -6,6 +6,27 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ## [Unreleased]
 
+### Changed (schema)
+
+- `EnvVar.inject_into_auth_data: bool = False` added — additive,
+  defaults to `False` (today's behavior preserved). When `True`, the
+  modulex runtime surfaces the value in `auth_data` at action time:
+  per-credential user input (`only_for_custom=False`) is persisted at
+  OAuth2 creation; server-level secrets (`only_for_custom=True`) are
+  injected from the server environment at tool execution. Fully
+  backward-compatible — every other integration dumps it as `False`
+  and the runtime injection is a no-op for them.
+
+### Fixed
+
+- `google_ads` / `google_merchant_center` — flagged
+  `GOOGLE_ADS_DEVELOPER_TOKEN` (`only_for_custom=True`) and
+  `GOOGLE_MERCHANT_CENTER_MERCHANT_ID` (`only_for_custom=False`) with
+  `inject_into_auth_data=True` so the developer token and merchant ID
+  reach `auth_data` at action time, fixing the "missing from auth_data"
+  errors on `list_account_id_options` / `create_product`. Requires the
+  matching modulex runtime change (external brief #021).
+
 ### Added
 
 - `revolt` integration — 3 actions, auth: bearer_token. Revolt open-source
