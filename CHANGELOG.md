@@ -6,6 +6,27 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ## [Unreleased]
 
+### Changed (schema)
+
+- `EnvVar.inject_into_auth_data: bool = False` added — additive,
+  defaults to `False` (today's behavior preserved). When `True`, the
+  modulex runtime surfaces the value in `auth_data` at action time:
+  per-credential user input (`only_for_custom=False`) is persisted at
+  OAuth2 creation; server-level secrets (`only_for_custom=True`) are
+  injected from the server environment at tool execution. Fully
+  backward-compatible — every other integration dumps it as `False`
+  and the runtime injection is a no-op for them.
+
+### Fixed
+
+- `google_ads` / `google_merchant_center` — flagged
+  `GOOGLE_ADS_DEVELOPER_TOKEN` (`only_for_custom=True`) and
+  `GOOGLE_MERCHANT_CENTER_MERCHANT_ID` (`only_for_custom=False`) with
+  `inject_into_auth_data=True` so the developer token and merchant ID
+  reach `auth_data` at action time, fixing the "missing from auth_data"
+  errors on `list_account_id_options` / `create_product`. Requires the
+  matching modulex runtime change (external brief #021).
+
 ### Added
 
 - `revolt` integration — 3 actions, auth: bearer_token. Revolt open-source
@@ -38,12 +59,6 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
   platform for notes, action items, and meeting management via the Fellow API
   (archive_action_item, complete_action_item, get_note_by_id). Producer-staged
   by integration-drafts; consumer-side audit applied 1 patch before merge.
-
-- `canvas` integration — 5 actions, auth: custom. Canvas LMS integration
-  for course, assignment, and user management via the Canvas REST API
-  (list_accounts, list_courses, list_assignments, search_course_content,
-  update_assignment). Producer-staged by integration-drafts; consumer-side
-  audit applied 2 patches before merge.
 
 - `motion` integration — 6 actions, auth: api_key. AI-powered task and
   project management platform for automatic scheduling via the Motion API
@@ -100,11 +115,6 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
   mail delivery via the PostGrid Print & Mail API (create_contact,
   create_letter, create_postcard). Producer-staged by integration-drafts;
   consumer-side audit applied 1 patch before merge.
-- `canvas` integration — 5 actions, auth: custom. Learning management
-  system for course, assignment, and user management via the Canvas REST
-  API (list_accounts, list_assignments, list_courses,
-  search_course_content, update_assignment). Producer-staged by
-  integration-drafts; consumer-side audit applied 2 patches before merge.
 - `product_hunt` integration — 1 action, auth: oauth2. Discover and explore
   tech products and topics via the Product Hunt GraphQL API
   (list_topic_options). Producer-staged by integration-drafts; consumer-side

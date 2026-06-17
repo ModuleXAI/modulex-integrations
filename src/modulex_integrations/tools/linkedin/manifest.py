@@ -349,10 +349,6 @@ manifest = IntegrationManifest(
                     "profile",
                     "email",
                     "w_member_social",
-                    "r_organization_social",
-                    "w_organization_social",
-                    "rw_organization_admin",
-                    "r_ads",
                 ],
             ),
             test_endpoint=TestEndpoint(

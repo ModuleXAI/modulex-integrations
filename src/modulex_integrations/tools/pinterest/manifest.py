@@ -202,7 +202,7 @@ manifest = IntegrationManifest(
                     "pins:write",
                     "user_accounts:read",
                 ],
-                token_auth_method="body",
+                token_auth_method="basic",
             ),
             test_endpoint=TestEndpoint(
                 url="https://api.pinterest.com/v5/boards",

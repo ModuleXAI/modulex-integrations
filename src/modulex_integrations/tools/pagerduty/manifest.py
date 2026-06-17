@@ -137,8 +137,8 @@ manifest = IntegrationManifest(
                 ),
             ],
             oauth_config=OAuthConfig(
-                auth_url="https://app.pagerduty.com/oauth/authorize",
-                token_url="https://app.pagerduty.com/oauth/token",
+                auth_url="https://identity.pagerduty.com/oauth/authorize",
+                token_url="https://identity.pagerduty.com/oauth/token",
                 scopes=["read", "write"],
             ),
             test_endpoint=TestEndpoint(

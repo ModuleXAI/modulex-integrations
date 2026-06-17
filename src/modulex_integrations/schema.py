@@ -98,6 +98,21 @@ class EnvVar(BaseModel):
     required: bool = True
     sensitive: bool = False
     only_for_custom: bool = False
+    # When True, the runtime must guarantee this value is present in the
+    # credential's ``auth_data`` at action-execution time, so a ``tools.py``
+    # function can read it. The source is *derived*, not declared:
+    #   - ``only_for_custom=False`` -> per-credential user input; the runtime
+    #     persists the user-entered value into ``auth_data`` at credential
+    #     creation (e.g. Google Merchant Center ``merchant_id``).
+    #   - ``only_for_custom=True``  -> server-level secret; for the managed
+    #     app the runtime resolves it from the server environment and injects
+    #     it at credential-resolution time, while a bring-your-own-app user
+    #     supplies their own (e.g. Google Ads ``developer_token``).
+    # Tools read the value via the normalized (prefix-stripped, lowercased)
+    # key. Default False preserves today's behavior: the EnvVar is used only
+    # for OAuth provider config and the credential test endpoint, never for
+    # action calls.
+    inject_into_auth_data: bool = False
     sample_format: str | None = None
     about_url: str | None = None
 

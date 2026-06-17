@@ -522,6 +522,7 @@ manifest = IntegrationManifest(
                     "webinar:write:admin",
                     "report:read:admin",
                 ],
+                token_auth_method="basic",
             ),
             test_endpoint=TestEndpoint(
                 url="https://api.zoom.us/v2/users/me",

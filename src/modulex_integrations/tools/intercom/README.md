@@ -7,19 +7,12 @@ inbound/outbound messaging. All against `api.intercom.io` with the
 
 ## Authentication
 
-### OAuth 2.0 — and bearer_token Access Token
+### bearer_token Access Token
 
-- **Paired `oauth2 + bearer_token` schemas.** Both Bearer-authed;
-  shared code path (the helper accepts either `access_token` from
-  oauth2 or `token` from bearer_token in `auth_data`).
-- OAuth env vars: `INTERCOM_OAUTH2_CLIENT_ID`,
-  `INTERCOM_OAUTH2_CLIENT_SECRET` (both `only_for_custom=True`).
+- **Single `bearer_token` schema.** Bearer-authed; the helper reads
+  `token` (or `access_token`) from `auth_data`.
 - Bearer env var: `INTERCOM_ACCESS_TOKEN`.
-- OAuth flow:
-  - `auth_url`: `https://app.intercom.com/oauth`
-  - `token_url`: `https://api.intercom.io/auth/eagle/token`
-  - body-style token auth, no scopes required.
-- Both `test_endpoint`s hit GET `/me`.
+- `test_endpoint` hits GET `/me`.
 
 ## Runtime convention
 

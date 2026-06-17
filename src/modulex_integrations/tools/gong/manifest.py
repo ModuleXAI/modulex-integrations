@@ -245,6 +245,7 @@ manifest = IntegrationManifest(
                     "api:workspaces:read",
                     "api:calls:read:transcript",
                 ],
+                token_auth_method="basic",
             ),
             test_endpoint=TestEndpoint(
                 url="https://us-66463.api.gong.io/v2/calls",
