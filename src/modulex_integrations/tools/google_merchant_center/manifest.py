@@ -113,7 +113,12 @@ manifest = IntegrationManifest(
                     description="Your Google Merchant Center account ID (numeric)",
                     required=True,
                     sensitive=False,
+                    # Per-credential user input (every merchant has their own
+                    # ID, so it can't be a server global). The runtime persists
+                    # the user-entered value into auth_data at credential
+                    # creation; tools.py reads it as auth_data["merchant_id"].
                     only_for_custom=False,
+                    inject_into_auth_data=True,
                     sample_format="123456789",
                     about_url="https://merchants.google.com/mc/overview",
                 ),

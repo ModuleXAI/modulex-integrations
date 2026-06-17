@@ -567,6 +567,12 @@ manifest = IntegrationManifest(
                     ),
                     required=True,
                     sensitive=True,
+                    # Server-level secret for the managed app (one token for all
+                    # users; per-user access is via OAuth). The runtime resolves
+                    # it from the server environment and injects it into
+                    # auth_data; a bring-your-own-app user supplies their own.
+                    only_for_custom=True,
+                    inject_into_auth_data=True,
                     sample_format="xxxxxxxxxxxxxxxxxxxxxx",
                     about_url="https://developers.google.com/google-ads/api/docs/get-started/dev-token",
                 ),
