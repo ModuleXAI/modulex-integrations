@@ -65,6 +65,9 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ### Added
 
+- `mercury` integration — 1 action, auth: bearer_token. Producer-staged
+  by integration-drafts; consumer-side audit applied 1 patch before merge.
+
 - `linear` — OAuth2 authentication alongside the existing API key.
   Adds an `OAuth2AuthSchema` (`auth_url`
   `https://linear.app/oauth/authorize`, `token_url`

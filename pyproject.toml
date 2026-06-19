@@ -194,6 +194,7 @@ shopify_partner = "modulex_integrations.tools.shopify_partner"
 woocommerce = "modulex_integrations.tools.woocommerce"
 yelp = "modulex_integrations.tools.yelp"
 zoom = "modulex_integrations.tools.zoom"
+mercury = "modulex_integrations.tools.mercury"
 
 [tool.hatch.version]
 # Version is derived from the latest git tag matching v* (e.g. v0.1.0,
