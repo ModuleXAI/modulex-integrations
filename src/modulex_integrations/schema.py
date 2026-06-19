@@ -219,6 +219,27 @@ class OAuthConfig(BaseModel):
     token_url: str
     scopes: list[str] = Field(default_factory=list)
     token_auth_method: Literal["body", "basic"] = "body"
+    # Extra OAuth *authorize*-URL params for providers that require an
+    # explicit opt-in to refresh tokens. Google only issues a
+    # ``refresh_token`` when the authorize request carries
+    # ``access_type="offline"``; ``prompt="consent"`` forces it to be
+    # re-issued on every reconnect (Google otherwise returns one only on
+    # the user's first-ever authorization). The modulex runtime forwards
+    # these from the manifest ``oauth_config`` into the authorize URL
+    # (``credentials.py`` ``additional_params``). Leave as ``None`` for
+    # providers that issue refresh tokens unconditionally.
+    access_type: str | None = None
+    prompt: str | None = None
+    # Whether the provider supports PKCE (RFC 7636) on the auth-code flow.
+    # The modulex runtime defaults to PKCE on for every provider; a few
+    # providers (e.g. Netlify) REJECT the token exchange with
+    # ``invalid_grant`` when an unexpected ``code_verifier`` is present.
+    # Set ``False`` for those so the runtime omits ``code_challenge`` at
+    # authorize time and ``code_verifier`` at token time. The runtime reads
+    # this from the manifest ``oauth_config`` (it currently hardcodes PKCE
+    # on, so honoring this flag is a small modulex-side change — see
+    # external brief).
+    use_pkce: bool = True
 
 
 class OAuth2AuthSchema(_AuthSchemaBase):
