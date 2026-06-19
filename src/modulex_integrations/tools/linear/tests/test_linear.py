@@ -96,6 +96,32 @@ async def test_get_teams_graphql_errors(httpx_mock: Any) -> None:
 
 
 @pytest.mark.asyncio
+async def test_get_teams_after_cursor_is_a_variable_not_interpolated(
+    httpx_mock: Any,
+) -> None:
+    """The pagination cursor must travel as a GraphQL variable, never be
+    interpolated into the query string (injection-safe)."""
+    captured: dict[str, Any] = {}
+
+    def _capture(request: Any) -> Any:
+        import json
+
+        from httpx import Response
+
+        captured.update(json.loads(request.content.decode()))
+        return Response(
+            200, json={"data": {"teams": {"nodes": [], "pageInfo": None}}}
+        )
+
+    httpx_mock.add_callback(_capture, method="POST", url=API)
+    GetTeamsOutput.model_validate(await get_teams.ainvoke(_args(after='evil" x')))
+    # Cursor is bound as a typed variable, not spliced into the query text.
+    assert captured["variables"]["after"] == 'evil" x'
+    assert "evil" not in captured["query"]
+    assert "$after: String" in captured["query"]
+
+
+@pytest.mark.asyncio
 async def test_get_issue(httpx_mock: Any) -> None:
     httpx_mock.add_response(
         method="POST",

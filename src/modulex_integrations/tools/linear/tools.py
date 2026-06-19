@@ -344,17 +344,19 @@ async def get_teams(
     after: str | None = None,
 ) -> GetTeamsOutput:
     """List all teams in the Linear workspace."""
-    after_clause = f', after: "{after}"' if after else ""
     query = f"""
-        query GetTeams($first: Int!) {{
-            teams(first: $first{after_clause}) {{
+        query GetTeams($first: Int!, $after: String) {{
+            teams(first: $first, after: $after) {{
                 nodes {{ ...TeamFields }}
                 pageInfo {{ hasNextPage endCursor }}
             }}
         }}
         {_TEAM_FRAGMENT}
     """
-    ok, err, data = await _graphql(auth_type, auth_data, query, {"first": limit})
+    variables: dict[str, Any] = {"first": limit}
+    if after is not None:
+        variables["after"] = after
+    ok, err, data = await _graphql(auth_type, auth_data, query, variables)
     if not ok or data is None:
         return GetTeamsOutput(success=False, error=err)
 
@@ -594,15 +596,16 @@ async def list_projects(
         if team_id
         else ""
     )
-    after_clause = f', after: "{after}"' if after else ""
 
     graphql_query = f"""
-        query ListProjects($first: Int!, $orderBy: PaginationOrderBy) {{
+        query ListProjects(
+            $first: Int!, $orderBy: PaginationOrderBy, $after: String
+        ) {{
             projects(
                 first: $first
                 {filter_clause}
                 orderBy: $orderBy
-                {after_clause}
+                after: $after
             ) {{
                 nodes {{ ...ProjectFields }}
                 pageInfo {{ hasNextPage endCursor }}
@@ -611,9 +614,10 @@ async def list_projects(
         {_PROJECT_FRAGMENT}
     """
 
-    ok, err, data = await _graphql(
-        auth_type, auth_data, graphql_query, {"first": limit, "orderBy": order_by}
-    )
+    variables: dict[str, Any] = {"first": limit, "orderBy": order_by}
+    if after is not None:
+        variables["after"] = after
+    ok, err, data = await _graphql(auth_type, auth_data, graphql_query, variables)
     if not ok or data is None:
         return ListProjectsOutput(success=False, error=err)
 

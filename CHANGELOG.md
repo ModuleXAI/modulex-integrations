@@ -39,10 +39,13 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
   `success=False`; the constraint rejects it at the input boundary with a
   clear validation error and shows the LLM only valid options.
 
-- `linear` — `get_teams` gained an `after` pagination cursor (mirroring
-  `list_projects`); workspaces with more teams than `limit` could
-  previously only return the first page even though `page_info` flagged
-  the truncation.
+- `linear` — `get_teams` gained an `after` pagination cursor;
+  workspaces with more teams than `limit` could previously only return
+  the first page even though `page_info` flagged the truncation. The
+  cursor is passed as a typed `$after: String` GraphQL variable (not
+  string-interpolated), and `list_projects`'s existing `after` was
+  converted from string interpolation to the same variable form to
+  close a GraphQL-injection vector on the LLM-supplied cursor.
 
 - `google_ads` / `google_merchant_center` — flagged
   `GOOGLE_ADS_DEVELOPER_TOKEN` (`only_for_custom=True`) and
