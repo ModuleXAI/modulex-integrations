@@ -22,11 +22,15 @@ from modulex_integrations.tools.gong.outputs import (
     RetrieveTranscriptsOfCallsOutput,
 )
 
-API = "https://us-66463.api.gong.io/v2"
+API = "https://us-12345.api.gong.io/v2"
 
 _AUTH: dict[str, Any] = {
-    "auth_type": "oauth2",
-    "auth_data": {"access_token": "fake_access_token"},
+    "auth_type": "custom",
+    "auth_data": {
+        "access_key": "fake_access_key",
+        "access_key_secret": "fake_access_key_secret",
+        "api_base_url": "https://us-12345.api.gong.io",
+    },
 }
 
 
@@ -45,8 +49,8 @@ class TestManifest:
     def test_manifest_actions_match_tools_tuple(self) -> None:
         assert {a.name for a in manifest.actions} == {t.name for t in TOOLS}
 
-    def test_manifest_has_oauth2_auth(self) -> None:
-        assert {a.auth_type for a in manifest.auth_schemas} == {"oauth2"}
+    def test_manifest_has_custom_auth(self) -> None:
+        assert {a.auth_type for a in manifest.auth_schemas} == {"custom"}
 
 
 # --- Per-action happy-path tests -------------------------------------------
@@ -186,12 +190,12 @@ async def test_retrieve_transcripts_of_calls(httpx_mock):  # type: ignore[no-unt
 
 @pytest.mark.asyncio
 async def test_list_calls_empty_credential() -> None:
-    """list_calls must fail immediately when access_token is missing/empty."""
+    """list_calls must fail immediately when the Gong credentials are missing/empty."""
     result_dict = await list_calls.ainvoke(
-        {"auth_type": "oauth2", "auth_data": {"access_token": ""}}
+        {"auth_type": "custom", "auth_data": {}}
     )
 
     assert isinstance(result_dict, dict)
     result = ListCallsOutput.model_validate(result_dict)
     assert result.success is False
-    assert "access_token" in (result.error or "")
+    assert "access_key" in (result.error or "")

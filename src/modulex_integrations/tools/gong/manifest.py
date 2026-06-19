@@ -3,10 +3,10 @@ from __future__ import annotations
 
 from modulex_integrations.schema import (
     ActionDefinition,
+    BasicAuthSpec,
+    CustomAuthSchema,
     EnvVar,
     IntegrationManifest,
-    OAuth2AuthSchema,
-    OAuthConfig,
     ParameterDef,
     SuccessIndicators,
     TestEndpoint,
@@ -210,55 +210,59 @@ manifest = IntegrationManifest(
         ),
     ],
     auth_schemas=[
-        OAuth2AuthSchema(
-            display_name="OAuth2 Authentication",
-            description="Connect using Gong OAuth (recommended)",
+        CustomAuthSchema(
+            display_name="Gong API Key",
+            description="Authenticate with a Gong Access Key + Access Key Secret (Company Settings -> API), sent as HTTP Basic auth.",
+            setup_instructions=[
+                "Sign in to Gong as a technical administrator",
+                "Go to Company Settings -> Ecosystem -> API (https://app.gong.io/company/api)",
+                "Click 'Create' to generate an Access Key and Access Key Secret (the Secret is shown only once)",
+                "Find your API base URL at https://app.gong.io/company/api-authentication (e.g. https://us-12345.api.gong.io)",
+            ],
             setup_environment_variables=[
                 EnvVar(
-                    name="GONG_OAUTH2_CLIENT_ID",
-                    display_name="Client ID",
-                    description="Gong OAuth App Client ID",
+                    name="GONG_ACCESS_KEY",
+                    display_name="Access Key",
+                    description="Gong API Access Key",
                     required=True,
                     sensitive=False,
-                    only_for_custom=True,
-                    sample_format="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
                     about_url="https://app.gong.io/company/api",
                 ),
                 EnvVar(
-                    name="GONG_OAUTH2_CLIENT_SECRET",
-                    display_name="Client Secret",
-                    description="Gong OAuth App Client Secret",
+                    name="GONG_ACCESS_KEY_SECRET",
+                    display_name="Access Key Secret",
+                    description="Gong API Access Key Secret (shown only once at creation)",
                     required=True,
                     sensitive=True,
-                    only_for_custom=True,
-                    sample_format="x" * 40,
                     about_url="https://app.gong.io/company/api",
                 ),
+                EnvVar(
+                    name="GONG_API_BASE_URL",
+                    display_name="API Base URL",
+                    description="Your Gong API base URL (region/tenant-specific), e.g. https://us-12345.api.gong.io",
+                    required=True,
+                    sensitive=False,
+                    sample_format="https://us-12345.api.gong.io",
+                    about_url="https://app.gong.io/company/api-authentication",
+                ),
             ],
-            oauth_config=OAuthConfig(
-                auth_url="https://app.gong.io/oauth2/authorize",
-                token_url="https://app.gong.io/oauth2/generate-customer-token",
-                scopes=[
-                    "api:calls:read:basic",
-                    "api:calls:read:extensive",
-                    "api:calls:create",
-                    "api:workspaces:read",
-                    "api:calls:read:transcript",
-                ],
-                token_auth_method="basic",
-            ),
             test_endpoint=TestEndpoint(
-                url="https://us-66463.api.gong.io/v2/calls",
+                url="{GONG_API_BASE_URL}/v2/calls",
                 method="GET",
-                headers={
-                    "Authorization": "Bearer {access_token}",
-                },
+                # Gong Basic Auth: access key as username, access key secret
+                # as password. The modulex runtime synthesises the
+                # ``Authorization: Basic <base64(key:secret)>`` header and
+                # substitutes {GONG_API_BASE_URL} from the credential.
+                auth=BasicAuthSpec(
+                    username_placeholder="GONG_ACCESS_KEY",
+                    password_placeholder="GONG_ACCESS_KEY_SECRET",
+                ),
                 success_indicators=SuccessIndicators(
                     status_codes=[200],
                     response_fields=["requestId"],
                 ),
                 cost_level="free",
-                description="Validates OAuth token by listing calls",
+                description="Validates the Access Key + Secret by listing calls via Basic Auth",
             ),
         ),
     ],

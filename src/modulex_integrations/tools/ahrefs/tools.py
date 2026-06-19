@@ -29,10 +29,10 @@ _TIMEOUT = 30.0
 def _get_auth_headers(auth_type: str, auth_data: dict[str, Any]) -> dict[str, str]:
     """Build headers for the Ahrefs API based on auth_type/auth_data."""
     headers: dict[str, str] = {"Accept": "application/json"}
-    if auth_type == "oauth2":
-        access_token = auth_data.get("access_token")
-        if access_token:
-            headers["Authorization"] = f"Bearer {access_token}"
+    if auth_type == "bearer_token":
+        token = auth_data.get("token")
+        if token:
+            headers["Authorization"] = f"Bearer {token}"
     return headers
 
 
@@ -80,8 +80,8 @@ async def get_backlinks(
     limit: int = 1000,
 ) -> GetBacklinksOutput:
     """Get the backlinks for a domain or URL with details for the referring pages (e.g., anchor and page title)."""
-    if not auth_data.get("access_token"):
-        return GetBacklinksOutput(success=False, error="Missing or empty access_token in auth_data.")
+    if not auth_data.get("token"):
+        return GetBacklinksOutput(success=False, error="Missing or empty API token in auth_data.")
     headers = _get_auth_headers(auth_type, auth_data)
     try:
         async with httpx.AsyncClient(timeout=_TIMEOUT) as client:
@@ -140,8 +140,8 @@ async def get_backlinks_one_per_domain(
     limit: int = 1000,
 ) -> GetBacklinksOnePerDomainOutput:
     """Get one backlink with the highest ahrefs_rank per referring domain for a target URL or domain."""
-    if not auth_data.get("access_token"):
-        return GetBacklinksOnePerDomainOutput(success=False, error="Missing or empty access_token in auth_data.")
+    if not auth_data.get("token"):
+        return GetBacklinksOnePerDomainOutput(success=False, error="Missing or empty API token in auth_data.")
     headers = _get_auth_headers(auth_type, auth_data)
     try:
         async with httpx.AsyncClient(timeout=_TIMEOUT) as client:
@@ -201,8 +201,8 @@ async def get_referring_domains(
     limit: int = 1000,
 ) -> GetReferringDomainsOutput:
     """Get the referring domains that contain backlinks to the target URL or domain."""
-    if not auth_data.get("access_token"):
-        return GetReferringDomainsOutput(success=False, error="Missing or empty access_token in auth_data.")
+    if not auth_data.get("token"):
+        return GetReferringDomainsOutput(success=False, error="Missing or empty API token in auth_data.")
     headers = _get_auth_headers(auth_type, auth_data)
     try:
         async with httpx.AsyncClient(timeout=_TIMEOUT) as client:

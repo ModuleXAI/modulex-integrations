@@ -21,8 +21,8 @@ from modulex_integrations.tools.ahrefs.outputs import (
 API = "https://api.ahrefs.com/v3"
 
 _AUTH: dict[str, Any] = {
-    "auth_type": "oauth2",
-    "auth_data": {"access_token": "fake_access_token"},
+    "auth_type": "bearer_token",
+    "auth_data": {"token": "fake_api_token"},
 }
 
 
@@ -41,8 +41,8 @@ class TestManifest:
     def test_manifest_actions_match_tools_tuple(self) -> None:
         assert {a.name for a in manifest.actions} == {t.name for t in TOOLS}
 
-    def test_manifest_has_oauth2_auth(self) -> None:
-        assert {a.auth_type for a in manifest.auth_schemas} == {"oauth2"}
+    def test_manifest_has_bearer_token_auth(self) -> None:
+        assert {a.auth_type for a in manifest.auth_schemas} == {"bearer_token"}
 
 
 # --- Per-action happy-path tests ----------------------------------------------
@@ -141,12 +141,12 @@ async def test_get_referring_domains(httpx_mock):  # type: ignore[no-untyped-def
 
 @pytest.mark.asyncio
 async def test_get_backlinks_empty_credential() -> None:
-    """Tool returns error envelope when access_token is missing."""
+    """Tool returns error envelope when the API token is missing."""
     result_dict = await get_backlinks.ainvoke(
-        {"auth_type": "oauth2", "auth_data": {}, "target": "example.com", "select": ["url_from"], "mode": "domain", "limit": 10}
+        {"auth_type": "bearer_token", "auth_data": {}, "target": "example.com", "select": ["url_from"], "mode": "domain", "limit": 10}
     )
     assert isinstance(result_dict, dict)
     result = GetBacklinksOutput.model_validate(result_dict)
     assert result.success is False
     assert result.error is not None
-    assert "access_token" in result.error
+    assert "token" in result.error
