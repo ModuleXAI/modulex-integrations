@@ -42,8 +42,12 @@ esac
 tool_dir=$(dirname "$file_path")
 tool_name=$(basename "$tool_dir")
 
-# Locate pyproject.toml relative to the file
-REPO_ROOT="${CLAUDE_PROJECT_DIR:-$(cd "$tool_dir/../../../.." && pwd)}"
+# Locate pyproject.toml relative to the file. Prefer the file's own repo
+# root so a write into a git worktree checks THAT worktree's pyproject
+# (where the merger's M5 phase adds the entry-point), then fall back to
+# $CLAUDE_PROJECT_DIR. Backward-compatible for main-repo writes.
+REPO_ROOT="$(cd "$tool_dir/../../../.." 2>/dev/null && pwd || true)"
+[ -z "$REPO_ROOT" ] && REPO_ROOT="${CLAUDE_PROJECT_DIR:-$tool_dir}"
 pyproject="$REPO_ROOT/pyproject.toml"
 
 if [ ! -f "$pyproject" ]; then
