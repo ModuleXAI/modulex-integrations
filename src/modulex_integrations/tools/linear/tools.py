@@ -1,14 +1,22 @@
 """Linear LangChain ``@tool`` functions.
 
-GraphQL API (``api.linear.app/graphql``). ``api_key`` is sent as the
-raw ``Authorization`` value with no ``Bearer`` prefix — Linear's
-documented contract. Filter clauses for ``search_issues`` /
-``list_projects`` are interpolated into the GraphQL string verbatim
-(matching legacy); values come from internal IDs, not user prose.
+GraphQL API (``api.linear.app/graphql``). Every tool takes
+``auth_type`` and ``auth_data`` as its first two parameters; the
+modulex ``ToolExecutor`` injects them at call time so the LLM never
+sees the credential. Two auth flavours share the one endpoint:
+
+- ``oauth2``: ``auth_data["access_token"]`` → ``Authorization: Bearer …``
+- ``api_key``: ``auth_data["api_key"]`` → raw ``Authorization`` value with
+  NO ``Bearer`` prefix (Linear's documented contract for personal API
+  keys).
+
+Filter clauses for ``search_issues`` / ``list_projects`` are
+interpolated into the GraphQL string verbatim (matching legacy); values
+come from internal IDs, not user prose.
 """
 from __future__ import annotations
 
-from typing import Any
+from typing import Any, Literal
 
 import httpx
 from langchain_core.tools import tool
@@ -98,34 +106,108 @@ fragment TeamFields on Team {
 """
 
 
-def _headers(api_key: str) -> dict[str, str]:
-    return {
-        "Authorization": api_key,
+class _AuthError(Exception):
+    """Raised when the injected credential is missing or unusable."""
+
+
+def _get_auth_headers(auth_type: str, auth_data: dict[str, Any]) -> dict[str, str]:
+    """Build Linear API headers for the given credential.
+
+    ``oauth2`` access tokens use the ``Bearer`` scheme; personal API keys
+    are sent as the raw ``Authorization`` value with no prefix — Linear's
+    documented contract. Raises ``_AuthError`` when the credential is
+    missing so callers surface a uniform ``success=False`` response.
+    """
+    headers: dict[str, str] = {
         "Content-Type": "application/json",
         "Accept": "application/json",
     }
+    if auth_type == "oauth2":
+        access_token = (auth_data or {}).get("access_token")
+        if not access_token or not str(access_token).strip():
+            raise _AuthError(
+                "Linear OAuth access_token is empty. "
+                "Please configure a valid Linear credential."
+            )
+        headers["Authorization"] = f"Bearer {access_token}"
+    elif auth_type == "api_key":
+        api_key = (auth_data or {}).get("api_key")
+        if not api_key or not str(api_key).strip():
+            raise _AuthError(
+                "Linear API key is empty. "
+                "Please configure a valid Linear credential."
+            )
+        headers["Authorization"] = str(api_key)
+    else:
+        raise _AuthError(
+            f"Unsupported auth_type {auth_type!r}; expected 'oauth2' or 'api_key'."
+        )
+    return headers
 
 
-def _empty_key_error(name: str) -> str:
-    return (
-        f"Linear API key is empty for {name}. "
-        "Please configure a valid Linear credential."
-    )
+def _error_detail(err: dict[str, Any]) -> str:
+    """Build the most informative message for one GraphQL error entry.
+
+    Linear's server (built on ``type-graphql``) wraps input-validation
+    failures in a generic ``message`` of ``"Argument Validation Error"``
+    and puts the actionable reason — e.g. ``teamId must be a UUID`` when a
+    team *key* is passed instead of the team UUID — under ``extensions``.
+    We surface that reason so callers learn *which* field was rejected
+    instead of a dead-end generic string.
+
+    Extraction order (first non-empty wins), per Linear's API contract:
+
+    1. ``extensions.userPresentableMessage`` — Linear's canonical,
+       production-guaranteed human-readable reason.
+    2. ``extensions.exception.validationErrors[].constraints`` — per-field
+       ``class-validator`` messages; richer when several fields fail at
+       once, but conditional (Apollo may strip ``exception`` in prod).
+    3. ``extensions.type`` — coarse signal (e.g. ``invalid_input``).
+
+    ``extensions.code`` is deliberately ignored: it defaults to
+    ``INTERNAL_SERVER_ERROR`` and carries no validation signal.
+    """
+    base = err.get("message") or "Unknown error"
+    ext = err.get("extensions")
+    if not isinstance(ext, dict):
+        return base
+
+    detail = ext.get("userPresentableMessage")
+    if not detail:
+        exception = ext.get("exception")
+        if isinstance(exception, dict):
+            constraints: list[str] = []
+            for ve in exception.get("validationErrors") or []:
+                if isinstance(ve, dict) and isinstance(ve.get("constraints"), dict):
+                    constraints.extend(str(v) for v in ve["constraints"].values())
+            detail = "; ".join(dict.fromkeys(constraints)) or None
+    if not detail:
+        detail = ext.get("type")
+
+    if detail and str(detail) not in base:
+        return f"{base}: {detail}"
+    return base
 
 
 async def _graphql(
-    api_key: str,
+    auth_type: str,
+    auth_data: dict[str, Any],
     query: str,
     variables: dict[str, Any] | None = None,
 ) -> tuple[bool, str | None, dict[str, Any] | None]:
     """Execute a GraphQL query/mutation. Returns (ok, error, data)."""
+    try:
+        headers = _get_auth_headers(auth_type, auth_data)
+    except _AuthError as exc:
+        return False, str(exc), None
+
     payload: dict[str, Any] = {"query": query}
     if variables:
         payload["variables"] = variables
 
     try:
         async with httpx.AsyncClient(timeout=_TIMEOUT) as client:
-            response = await client.post(_API_URL, headers=_headers(api_key), json=payload)
+            response = await client.post(_API_URL, headers=headers, json=payload)
         if response.status_code != 200:
             return False, (
                 f"Linear API error: {response.status_code} - {response.text}"
@@ -136,7 +218,7 @@ async def _graphql(
 
     errors = body.get("errors")
     if errors:
-        messages = [e.get("message", str(e)) for e in errors if isinstance(e, dict)]
+        messages = [_error_detail(e) for e in errors if isinstance(e, dict)]
         return False, f"GraphQL errors: {'; '.join(messages)}", None
 
     data = body.get("data")
@@ -148,18 +230,31 @@ async def _graphql(
 # --- Input schemas ---------------------------------------------------------
 
 
+_AUTH_TYPE_FIELD = Field(description="Authentication type (oauth2, api_key)")
+_AUTH_DATA_FIELD = Field(
+    description=(
+        "Authentication data: {access_token: ...} for oauth2, "
+        "{api_key: ...} for api_key"
+    )
+)
+
+
 class GetTeamsInput(BaseModel):
-    api_key: str = Field(description="Linear API key (provided by credential system)")
+    auth_type: str = _AUTH_TYPE_FIELD
+    auth_data: dict[str, Any] = _AUTH_DATA_FIELD
     limit: int = Field(default=50, description="Maximum number of teams")
+    after: str | None = Field(default=None, description="Pagination cursor")
 
 
 class GetIssueInput(BaseModel):
-    api_key: str = Field(description="Linear API key (provided by credential system)")
+    auth_type: str = _AUTH_TYPE_FIELD
+    auth_data: dict[str, Any] = _AUTH_DATA_FIELD
     issue_id: str = Field(description="The ID of the issue to retrieve")
 
 
 class SearchIssuesInput(BaseModel):
-    api_key: str = Field(description="Linear API key (provided by credential system)")
+    auth_type: str = _AUTH_TYPE_FIELD
+    auth_data: dict[str, Any] = _AUTH_DATA_FIELD
     team_id: str | None = Field(default=None, description="Filter by team ID")
     project_id: str | None = Field(default=None, description="Filter by project ID")
     assignee_id: str | None = Field(default=None, description="Filter by assignee")
@@ -167,13 +262,22 @@ class SearchIssuesInput(BaseModel):
     query: str | None = Field(default=None, description="Substring match in titles")
     label_names: list[str] | None = Field(default=None, description="Filter by labels")
     include_archived: bool = Field(default=False, description="Include archived issues")
-    order_by: str | None = Field(default="updatedAt", description="Order field")
+    order_by: Literal["createdAt", "updatedAt"] | None = Field(
+        default="updatedAt",
+        description="Order by 'createdAt' or 'updatedAt' (Linear PaginationOrderBy enum)",
+    )
     limit: int = Field(default=50, description="Maximum number of issues")
 
 
 class CreateIssueInput(BaseModel):
-    api_key: str = Field(description="Linear API key (provided by credential system)")
-    team_id: str = Field(description="The ID of the team for the new issue")
+    auth_type: str = _AUTH_TYPE_FIELD
+    auth_data: dict[str, Any] = _AUTH_DATA_FIELD
+    team_id: str = Field(
+        description=(
+            "Team UUID (the 'id' from get_teams), not the short team key "
+            "like 'ENG'"
+        )
+    )
     title: str = Field(description="The title of the new issue")
     description: str | None = Field(default=None, description="Markdown body")
     assignee_id: str | None = Field(default=None, description="Assignee user ID")
@@ -184,7 +288,8 @@ class CreateIssueInput(BaseModel):
 
 
 class UpdateIssueInput(BaseModel):
-    api_key: str = Field(description="Linear API key (provided by credential system)")
+    auth_type: str = _AUTH_TYPE_FIELD
+    auth_data: dict[str, Any] = _AUTH_DATA_FIELD
     issue_id: str = Field(description="The ID of the issue to update")
     title: str | None = Field(default=None, description="New title")
     description: str | None = Field(default=None, description="New markdown body")
@@ -197,16 +302,26 @@ class UpdateIssueInput(BaseModel):
 
 
 class ListProjectsInput(BaseModel):
-    api_key: str = Field(description="Linear API key (provided by credential system)")
+    auth_type: str = _AUTH_TYPE_FIELD
+    auth_data: dict[str, Any] = _AUTH_DATA_FIELD
     team_id: str | None = Field(default=None, description="Filter by team ID")
-    order_by: str | None = Field(default="updatedAt", description="Order field")
+    order_by: Literal["createdAt", "updatedAt"] | None = Field(
+        default="updatedAt",
+        description="Order by 'createdAt' or 'updatedAt' (Linear PaginationOrderBy enum)",
+    )
     limit: int = Field(default=50, description="Maximum number of projects")
     after: str | None = Field(default=None, description="Pagination cursor")
 
 
 class CreateProjectInput(BaseModel):
-    api_key: str = Field(description="Linear API key (provided by credential system)")
-    team_id: str = Field(description="The ID of the team for the new project")
+    auth_type: str = _AUTH_TYPE_FIELD
+    auth_data: dict[str, Any] = _AUTH_DATA_FIELD
+    team_id: str = Field(
+        description=(
+            "Team UUID (the 'id' from get_teams), not the short team key "
+            "like 'ENG'"
+        )
+    )
     name: str = Field(description="The name of the new project")
     description: str | None = Field(default=None, description="Description")
     status_id: str | None = Field(default=None, description="Status ID")
@@ -222,21 +337,24 @@ class CreateProjectInput(BaseModel):
 
 @tool(args_schema=GetTeamsInput)
 @serialize_pydantic_return
-async def get_teams(api_key: str, limit: int = 50) -> GetTeamsOutput:
+async def get_teams(
+    auth_type: str,
+    auth_data: dict[str, Any],
+    limit: int = 50,
+    after: str | None = None,
+) -> GetTeamsOutput:
     """List all teams in the Linear workspace."""
-    if not api_key or not api_key.strip():
-        return GetTeamsOutput(success=False, error=_empty_key_error("get_teams"))
-
+    after_clause = f', after: "{after}"' if after else ""
     query = f"""
         query GetTeams($first: Int!) {{
-            teams(first: $first) {{
+            teams(first: $first{after_clause}) {{
                 nodes {{ ...TeamFields }}
                 pageInfo {{ hasNextPage endCursor }}
             }}
         }}
         {_TEAM_FRAGMENT}
     """
-    ok, err, data = await _graphql(api_key, query, {"first": limit})
+    ok, err, data = await _graphql(auth_type, auth_data, query, {"first": limit})
     if not ok or data is None:
         return GetTeamsOutput(success=False, error=err)
 
@@ -252,18 +370,17 @@ async def get_teams(api_key: str, limit: int = 50) -> GetTeamsOutput:
 
 @tool(args_schema=GetIssueInput)
 @serialize_pydantic_return
-async def get_issue(api_key: str, issue_id: str) -> GetIssueOutput:
+async def get_issue(
+    auth_type: str, auth_data: dict[str, Any], issue_id: str
+) -> GetIssueOutput:
     """Get a Linear issue by its ID."""
-    if not api_key or not api_key.strip():
-        return GetIssueOutput(success=False, error=_empty_key_error("get_issue"))
-
     query = f"""
         query GetIssue($issueId: String!) {{
             issue(id: $issueId) {{ ...IssueFields }}
         }}
         {_ISSUE_FRAGMENT}
     """
-    ok, err, data = await _graphql(api_key, query, {"issueId": issue_id})
+    ok, err, data = await _graphql(auth_type, auth_data, query, {"issueId": issue_id})
     if not ok or data is None:
         return GetIssueOutput(success=False, error=err)
 
@@ -301,7 +418,8 @@ def _build_search_filter(
 @tool(args_schema=SearchIssuesInput)
 @serialize_pydantic_return
 async def search_issues(
-    api_key: str,
+    auth_type: str,
+    auth_data: dict[str, Any],
     team_id: str | None = None,
     project_id: str | None = None,
     assignee_id: str | None = None,
@@ -309,13 +427,10 @@ async def search_issues(
     query: str | None = None,
     label_names: list[str] | None = None,
     include_archived: bool = False,
-    order_by: str | None = "updatedAt",
+    order_by: Literal["createdAt", "updatedAt"] | None = "updatedAt",
     limit: int = 50,
 ) -> SearchIssuesOutput:
     """Search Linear issues with filters."""
-    if not api_key or not api_key.strip():
-        return SearchIssuesOutput(success=False, error=_empty_key_error("search_issues"))
-
     filter_str = _build_search_filter(
         query, team_id, project_id, assignee_id, state_id, label_names
     )
@@ -337,7 +452,8 @@ async def search_issues(
     """
 
     ok, err, data = await _graphql(
-        api_key,
+        auth_type,
+        auth_data,
         graphql_query,
         {"first": limit, "includeArchived": include_archived, "orderBy": order_by},
     )
@@ -357,7 +473,8 @@ async def search_issues(
 @tool(args_schema=CreateIssueInput)
 @serialize_pydantic_return
 async def create_issue(
-    api_key: str,
+    auth_type: str,
+    auth_data: dict[str, Any],
     team_id: str,
     title: str,
     description: str | None = None,
@@ -368,9 +485,6 @@ async def create_issue(
     priority: int | None = None,
 ) -> CreateIssueOutput:
     """Create a new Linear issue."""
-    if not api_key or not api_key.strip():
-        return CreateIssueOutput(success=False, error=_empty_key_error("create_issue"))
-
     mutation = f"""
         mutation CreateIssue($input: IssueCreateInput!) {{
             issueCreate(input: $input) {{
@@ -395,7 +509,7 @@ async def create_issue(
     if priority is not None:
         input_data["priority"] = priority
 
-    ok, err, data = await _graphql(api_key, mutation, {"input": input_data})
+    ok, err, data = await _graphql(auth_type, auth_data, mutation, {"input": input_data})
     if not ok or data is None:
         return CreateIssueOutput(success=False, error=err)
 
@@ -408,7 +522,8 @@ async def create_issue(
 @tool(args_schema=UpdateIssueInput)
 @serialize_pydantic_return
 async def update_issue(
-    api_key: str,
+    auth_type: str,
+    auth_data: dict[str, Any],
     issue_id: str,
     title: str | None = None,
     description: str | None = None,
@@ -420,9 +535,6 @@ async def update_issue(
     priority: int | None = None,
 ) -> UpdateIssueOutput:
     """Update an existing Linear issue."""
-    if not api_key or not api_key.strip():
-        return UpdateIssueOutput(success=False, error=_empty_key_error("update_issue"))
-
     input_data: dict[str, Any] = {}
     if title is not None:
         input_data["title"] = title
@@ -455,7 +567,7 @@ async def update_issue(
     """
 
     ok, err, data = await _graphql(
-        api_key, mutation, {"issueId": issue_id, "input": input_data}
+        auth_type, auth_data, mutation, {"issueId": issue_id, "input": input_data}
     )
     if not ok or data is None:
         return UpdateIssueOutput(success=False, error=err)
@@ -469,16 +581,14 @@ async def update_issue(
 @tool(args_schema=ListProjectsInput)
 @serialize_pydantic_return
 async def list_projects(
-    api_key: str,
+    auth_type: str,
+    auth_data: dict[str, Any],
     team_id: str | None = None,
-    order_by: str | None = "updatedAt",
+    order_by: Literal["createdAt", "updatedAt"] | None = "updatedAt",
     limit: int = 50,
     after: str | None = None,
 ) -> ListProjectsOutput:
     """List Linear projects with optional team filter + pagination."""
-    if not api_key or not api_key.strip():
-        return ListProjectsOutput(success=False, error=_empty_key_error("list_projects"))
-
     filter_clause = (
         f'filter: {{ accessibleTeams: {{ id: {{ eq: "{team_id}" }} }} }}'
         if team_id
@@ -502,7 +612,7 @@ async def list_projects(
     """
 
     ok, err, data = await _graphql(
-        api_key, graphql_query, {"first": limit, "orderBy": order_by}
+        auth_type, auth_data, graphql_query, {"first": limit, "orderBy": order_by}
     )
     if not ok or data is None:
         return ListProjectsOutput(success=False, error=err)
@@ -520,7 +630,8 @@ async def list_projects(
 @tool(args_schema=CreateProjectInput)
 @serialize_pydantic_return
 async def create_project(
-    api_key: str,
+    auth_type: str,
+    auth_data: dict[str, Any],
     team_id: str,
     name: str,
     description: str | None = None,
@@ -532,11 +643,6 @@ async def create_project(
     label_ids: list[str] | None = None,
 ) -> CreateProjectOutput:
     """Create a new Linear project."""
-    if not api_key or not api_key.strip():
-        return CreateProjectOutput(
-            success=False, error=_empty_key_error("create_project")
-        )
-
     mutation = f"""
         mutation CreateProject($input: ProjectCreateInput!) {{
             projectCreate(input: $input) {{
@@ -563,7 +669,7 @@ async def create_project(
     if label_ids:
         input_data["labelIds"] = label_ids
 
-    ok, err, data = await _graphql(api_key, mutation, {"input": input_data})
+    ok, err, data = await _graphql(auth_type, auth_data, mutation, {"input": input_data})
     if not ok or data is None:
         return CreateProjectOutput(success=False, error=err)
 

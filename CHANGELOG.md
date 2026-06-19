@@ -19,6 +19,31 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ### Fixed
 
+- `linear` — GraphQL errors now surface Linear's actionable reason.
+  The helper previously reported only the top-level `message`, so every
+  input-validation failure collapsed to the generic
+  `"Argument Validation Error"` with no indication of which field was
+  rejected. It now extracts the detail Linear puts in
+  `extensions.userPresentableMessage` (falling back to
+  `exception.validationErrors[].constraints`, then `extensions.type`),
+  e.g. `"Argument Validation Error: teamId must be a UUID"`. Also
+  tightened the `create_issue` / `create_project` `team_id` parameter
+  descriptions to state it is the team **UUID** (the `id` from
+  `get_teams`), not the short team key like `ENG` — the most common
+  cause of the error.
+
+- `linear` — `search_issues` / `list_projects` `order_by` is now typed
+  `Literal["createdAt", "updatedAt"]` instead of a free-form `str`.
+  Linear's `PaginationOrderBy` is an enum with only those two values, so
+  any other value previously failed the *entire* query server-side with
+  `success=False`; the constraint rejects it at the input boundary with a
+  clear validation error and shows the LLM only valid options.
+
+- `linear` — `get_teams` gained an `after` pagination cursor (mirroring
+  `list_projects`); workspaces with more teams than `limit` could
+  previously only return the first page even though `page_info` flagged
+  the truncation.
+
 - `google_ads` / `google_merchant_center` — flagged
   `GOOGLE_ADS_DEVELOPER_TOKEN` (`only_for_custom=True`) and
   `GOOGLE_MERCHANT_CENTER_MERCHANT_ID` (`only_for_custom=False`) with
@@ -28,6 +53,18 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
   matching modulex runtime change (external brief #021).
 
 ### Added
+
+- `linear` — OAuth2 authentication alongside the existing API key.
+  Adds an `OAuth2AuthSchema` (`auth_url`
+  `https://linear.app/oauth/authorize`, `token_url`
+  `https://api.linear.app/oauth/token`, scopes `read`/`write`, env vars
+  `LINEAR_OAUTH2_CLIENT_ID` / `LINEAR_OAUTH2_CLIENT_SECRET`). All tools
+  converted from the key-based `api_key` parameter to the token-based
+  `(auth_type, auth_data)` convention (mirroring `monday`): `oauth2`
+  tokens use `Authorization: Bearer …`, API keys keep Linear's raw
+  `Authorization` header. The runtime already serves both auth families,
+  so no modulex code change is required — only the OAuth app
+  client_id/secret in the deployment environment.
 
 - `revolt` integration — 3 actions, auth: bearer_token. Revolt open-source
   chat platform — group management and friend requests (create_group,

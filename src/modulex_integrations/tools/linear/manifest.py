@@ -6,6 +6,8 @@ from modulex_integrations.schema import (
     ApiKeyAuthSchema,
     EnvVar,
     IntegrationManifest,
+    OAuth2AuthSchema,
+    OAuthConfig,
     ParameterDef,
     SuccessIndicators,
     TestEndpoint,
@@ -39,6 +41,9 @@ manifest = IntegrationManifest(
                     type="integer",
                     description="Maximum number of teams to return",
                     default=50,
+                ),
+                "after": ParameterDef(
+                    type="string", description="Cursor for pagination"
                 ),
             },
         ),
@@ -103,7 +108,11 @@ manifest = IntegrationManifest(
             parameters={
                 "team_id": ParameterDef(
                     type="string",
-                    description="The ID of the team to create the issue in",
+                    description=(
+                        "The team's UUID (the 'id' field returned by "
+                        "get_teams) — NOT the short team key like 'ENG'. "
+                        "Call get_teams first to resolve it."
+                    ),
                     required=True,
                 ),
                 "title": ParameterDef(
@@ -113,16 +122,17 @@ manifest = IntegrationManifest(
                     type="string", description="Markdown description"
                 ),
                 "assignee_id": ParameterDef(
-                    type="string", description="User ID to assign the issue to"
+                    type="string",
+                    description="UUID of the user to assign the issue to",
                 ),
                 "project_id": ParameterDef(
-                    type="string", description="Project ID to add the issue to"
+                    type="string", description="UUID of the project to add the issue to"
                 ),
                 "state_id": ParameterDef(
-                    type="string", description="Workflow state ID"
+                    type="string", description="UUID of the workflow state"
                 ),
                 "label_ids": ParameterDef(
-                    type="array", description="Label IDs to attach"
+                    type="array", description="Label UUIDs to attach"
                 ),
                 "priority": ParameterDef(
                     type="integer",
@@ -195,7 +205,11 @@ manifest = IntegrationManifest(
             parameters={
                 "team_id": ParameterDef(
                     type="string",
-                    description="The ID of the team to create the project in",
+                    description=(
+                        "The team's UUID (the 'id' field returned by "
+                        "get_teams) — NOT the short team key like 'ENG'. "
+                        "Call get_teams first to resolve it."
+                    ),
                     required=True,
                 ),
                 "name": ParameterDef(
@@ -228,6 +242,52 @@ manifest = IntegrationManifest(
         ),
     ],
     auth_schemas=[
+        OAuth2AuthSchema(
+            display_name="OAuth2 Authentication",
+            description="Connect using Linear OAuth (recommended for most use cases)",
+            setup_environment_variables=[
+                EnvVar(
+                    name="LINEAR_OAUTH2_CLIENT_ID",
+                    display_name="Client ID",
+                    description="Linear OAuth application Client ID",
+                    required=True,
+                    sensitive=False,
+                    only_for_custom=True,
+                    sample_format="xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+                    about_url="https://linear.app/settings/api/applications/new",
+                ),
+                EnvVar(
+                    name="LINEAR_OAUTH2_CLIENT_SECRET",
+                    display_name="Client Secret",
+                    description="Linear OAuth application Client Secret",
+                    required=True,
+                    sensitive=True,
+                    only_for_custom=True,
+                    sample_format="x" * 64,
+                    about_url="https://linear.app/settings/api/applications/new",
+                ),
+            ],
+            oauth_config=OAuthConfig(
+                auth_url="https://linear.app/oauth/authorize",
+                token_url="https://api.linear.app/oauth/token",
+                scopes=["read", "write"],
+                token_auth_method="body",
+            ),
+            test_endpoint=TestEndpoint(
+                url="https://api.linear.app/graphql",
+                method="POST",
+                headers={
+                    "Content-Type": "application/json",
+                    "Authorization": "Bearer {access_token}",
+                },
+                body={"query": "query { viewer { id name } }"},
+                success_indicators=SuccessIndicators(
+                    status_codes=[200], response_fields=["data.viewer.id"]
+                ),
+                cost_level="minimal",
+                description="Validates the OAuth token with a trivial viewer query",
+            ),
+        ),
         ApiKeyAuthSchema(
             display_name="API Key Authentication",
             description=(

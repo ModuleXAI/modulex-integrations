@@ -6,6 +6,18 @@ issue CRUD + search, and project list/create.
 
 ## Authentication
 
+Two interchangeable flavours share the one GraphQL endpoint; the modulex
+runtime injects `auth_type` + `auth_data` on every call.
+
+### OAuth2 (recommended)
+
+- App credentials: `LINEAR_OAUTH2_CLIENT_ID`, `LINEAR_OAUTH2_CLIENT_SECRET`.
+- Create an OAuth application at
+  <https://linear.app/settings/api/applications/new>.
+- `auth_url`: `https://linear.app/oauth/authorize`; `token_url`:
+  `https://api.linear.app/oauth/token`; scopes: `read`, `write`.
+- Access token sent as `Authorization: Bearer <access_token>`.
+
 ### API Key (raw, no Bearer prefix)
 
 - Required env var: `LINEAR_API_KEY`.
