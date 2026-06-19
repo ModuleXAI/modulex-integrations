@@ -3,10 +3,9 @@ from __future__ import annotations
 
 from modulex_integrations.schema import (
     ActionDefinition,
+    BearerTokenAuthSchema,
     EnvVar,
     IntegrationManifest,
-    OAuth2AuthSchema,
-    OAuthConfig,
     ParameterDef,
     SuccessIndicators,
     TestEndpoint,
@@ -105,44 +104,35 @@ manifest = IntegrationManifest(
         ),
     ],
     auth_schemas=[
-        OAuth2AuthSchema(
-            display_name="OAuth2 Authentication",
-            description="Connect using Ahrefs OAuth2 (recommended)",
+        BearerTokenAuthSchema(
+            display_name="API Key",
+            description="Authenticate with an Ahrefs API v3 key (Account settings -> API keys; requires an eligible paid plan, key valid 1 year)",
+            setup_instructions=[
+                "Sign in to Ahrefs as a workspace owner or admin",
+                "Go to Account settings -> API keys",
+                "Create a new API key and copy it (each key is valid for 1 year)",
+                "Paste the key into ModuleX",
+            ],
             setup_environment_variables=[
                 EnvVar(
-                    name="AHREFS_OAUTH2_CLIENT_ID",
-                    display_name="Client ID",
-                    description="Ahrefs OAuth App Client ID",
-                    required=True,
-                    sensitive=False,
-                    only_for_custom=True,
-                    about_url="https://ahrefs.com/api/oauth",
-                ),
-                EnvVar(
-                    name="AHREFS_OAUTH2_CLIENT_SECRET",
-                    display_name="Client Secret",
-                    description="Ahrefs OAuth App Client Secret",
+                    name="AHREFS_API_TOKEN",
+                    display_name="Ahrefs API Key",
+                    description="Ahrefs API v3 key, sent as Authorization: Bearer <key>",
                     required=True,
                     sensitive=True,
-                    only_for_custom=True,
-                    about_url="https://ahrefs.com/api/oauth",
+                    about_url="https://docs.ahrefs.com/en/api/docs/api-keys-creation-and-management",
                 ),
             ],
-            oauth_config=OAuthConfig(
-                auth_url="https://ahrefs.com/oauth2/authorize",
-                token_url="https://ahrefs.com/oauth2/token",
-                scopes=["api"],
-            ),
             test_endpoint=TestEndpoint(
                 url="https://api.ahrefs.com/v3/site-explorer/all-backlinks",
                 method="GET",
-                headers={"Authorization": "Bearer {access_token}"},
+                headers={"Authorization": "Bearer {bearer_token}"},
                 params={"target": "ahrefs.com", "select": "url_from", "mode": "domain", "limit": "1"},
                 success_indicators=SuccessIndicators(
                     status_codes=[200],
                 ),
                 cost_level="minimal",
-                description="Validates OAuth token by fetching a single backlink result",
+                description="Validates the API key by fetching a single backlink result",
             ),
         ),
     ],

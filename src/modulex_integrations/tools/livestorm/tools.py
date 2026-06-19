@@ -38,10 +38,11 @@ def _get_auth_headers(auth_type: str, auth_data: dict[str, Any]) -> dict[str, st
         "Accept": "application/vnd.api+json",
         "Content-Type": "application/vnd.api+json",
     }
-    if auth_type == "oauth2":
-        access_token = auth_data.get("access_token")
-        if access_token:
-            headers["Authorization"] = f"Bearer {access_token}"
+    if auth_type == "bearer_token":
+        token = auth_data.get("token")
+        if token:
+            # Livestorm expects the raw token, NOT an "Authorization: Bearer ..." value.
+            headers["Authorization"] = token
     return headers
 
 
@@ -148,8 +149,8 @@ async def create_event(
     questions_enabled: bool | None = None,
 ) -> CreateEventOutput:
     """Create a new event."""
-    if not auth_data.get("access_token"):
-        return CreateEventOutput(success=False, error="Missing access_token in auth_data.")
+    if not auth_data.get("token"):
+        return CreateEventOutput(success=False, error="Missing API token in auth_data.")
     headers = _get_auth_headers(auth_type, auth_data)
     attributes: dict[str, Any] = {
         "owner_id": owner_id,
@@ -211,8 +212,8 @@ async def get_event(
     event_id: str,
 ) -> GetEventOutput:
     """Retrieve a single event."""
-    if not auth_data.get("access_token"):
-        return GetEventOutput(success=False, error="Missing access_token in auth_data.")
+    if not auth_data.get("token"):
+        return GetEventOutput(success=False, error="Missing API token in auth_data.")
     headers = _get_auth_headers(auth_type, auth_data)
     try:
         async with httpx.AsyncClient(timeout=_TIMEOUT) as client:
@@ -243,8 +244,8 @@ async def list_attendees_from_event(
     role_filter: str | None = None,
 ) -> ListAttendeesFromEventOutput:
     """List all the people linked to all the sessions of an event."""
-    if not auth_data.get("access_token"):
-        return ListAttendeesFromEventOutput(success=False, error="Missing access_token in auth_data.")
+    if not auth_data.get("token"):
+        return ListAttendeesFromEventOutput(success=False, error="Missing API token in auth_data.")
     headers = _get_auth_headers(auth_type, auth_data)
     params: dict[str, str] = {}
     if role_filter is not None:
@@ -292,8 +293,8 @@ async def list_events(
     title_filter: str | None = None,
 ) -> ListEventsOutput:
     """List the events of your workspace."""
-    if not auth_data.get("access_token"):
-        return ListEventsOutput(success=False, error="Missing access_token in auth_data.")
+    if not auth_data.get("token"):
+        return ListEventsOutput(success=False, error="Missing API token in auth_data.")
     headers = _get_auth_headers(auth_type, auth_data)
     params: dict[str, str] = {}
     if title_filter is not None:
@@ -340,8 +341,8 @@ async def list_sessions(
     auth_data: dict[str, Any],
 ) -> ListSessionsOutput:
     """List all your event sessions."""
-    if not auth_data.get("access_token"):
-        return ListSessionsOutput(success=False, error="Missing access_token in auth_data.")
+    if not auth_data.get("token"):
+        return ListSessionsOutput(success=False, error="Missing API token in auth_data.")
     headers = _get_auth_headers(auth_type, auth_data)
 
     all_items: list[dict[str, Any]] = []
@@ -392,8 +393,8 @@ async def register_someone_for_session(
     fields: dict[str, Any] | None = None,
 ) -> RegisterSomeoneForSessionOutput:
     """Register a new participant for a session."""
-    if not auth_data.get("access_token"):
-        return RegisterSomeoneForSessionOutput(success=False, error="Missing access_token in auth_data.")
+    if not auth_data.get("token"):
+        return RegisterSomeoneForSessionOutput(success=False, error="Missing API token in auth_data.")
     headers = _get_auth_headers(auth_type, auth_data)
 
     attributes: dict[str, Any] = {}
@@ -464,8 +465,8 @@ async def update_event(
     questions_enabled: bool,
 ) -> UpdateEventOutput:
     """Update an event with its full list of attributes."""
-    if not auth_data.get("access_token"):
-        return UpdateEventOutput(success=False, error="Missing access_token in auth_data.")
+    if not auth_data.get("token"):
+        return UpdateEventOutput(success=False, error="Missing API token in auth_data.")
     headers = _get_auth_headers(auth_type, auth_data)
     attributes: dict[str, Any] = {
         "owner_id": owner_id,

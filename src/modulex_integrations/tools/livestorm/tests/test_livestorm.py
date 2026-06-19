@@ -29,8 +29,8 @@ from modulex_integrations.tools.livestorm.outputs import (
 API = "https://api.livestorm.co/v1"
 
 _AUTH: dict[str, Any] = {
-    "auth_type": "oauth2",
-    "auth_data": {"access_token": "fake_access_token"},
+    "auth_type": "bearer_token",
+    "auth_data": {"token": "fake_api_token"},
 }
 
 
@@ -49,8 +49,8 @@ class TestManifest:
     def test_manifest_actions_match_tools_tuple(self) -> None:
         assert {a.name for a in manifest.actions} == {t.name for t in TOOLS}
 
-    def test_manifest_has_oauth2_auth(self) -> None:
-        assert {a.auth_type for a in manifest.auth_schemas} == {"oauth2"}
+    def test_manifest_has_bearer_token_auth(self) -> None:
+        assert {a.auth_type for a in manifest.auth_schemas} == {"bearer_token"}
 
 
 # --- Per-action happy-path tests ----------------------------------------------
@@ -251,4 +251,4 @@ async def test_create_event_missing_credentials() -> None:
     result = CreateEventOutput.model_validate(result_dict)
     assert result.success is False
     assert result.error is not None
-    assert "access_token" in result.error
+    assert "token" in result.error

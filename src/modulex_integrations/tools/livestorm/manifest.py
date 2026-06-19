@@ -3,10 +3,9 @@ from __future__ import annotations
 
 from modulex_integrations.schema import (
     ActionDefinition,
+    BearerTokenAuthSchema,
     EnvVar,
     IntegrationManifest,
-    OAuth2AuthSchema,
-    OAuthConfig,
     ParameterDef,
     SuccessIndicators,
     TestEndpoint,
@@ -252,39 +251,30 @@ manifest = IntegrationManifest(
         ),
     ],
     auth_schemas=[
-        OAuth2AuthSchema(
-            display_name="OAuth2 Authentication",
-            description="Connect using Livestorm OAuth (recommended)",
+        BearerTokenAuthSchema(
+            display_name="API Token",
+            description="Authenticate with a Livestorm private API token (Account Settings -> Integrations -> Public API; account owner/admin, API access must be enabled)",
+            setup_instructions=[
+                "Sign in to Livestorm as the workspace owner or an admin",
+                "Open Account Settings -> Integrations and scroll to the 'Public API' card",
+                "Generate an API token and copy it (shown only once)",
+                "Paste the token into ModuleX (if the Public API card is missing, contact support@livestorm.co to enable API access)",
+            ],
             setup_environment_variables=[
                 EnvVar(
-                    name="LIVESTORM_OAUTH2_CLIENT_ID",
-                    display_name="Client ID",
-                    description="Livestorm OAuth App Client ID",
-                    required=True,
-                    sensitive=False,
-                    only_for_custom=True,
-                    about_url="https://developers.livestorm.co",
-                ),
-                EnvVar(
-                    name="LIVESTORM_OAUTH2_CLIENT_SECRET",
-                    display_name="Client Secret",
-                    description="Livestorm OAuth App Client Secret",
+                    name="LIVESTORM_API_TOKEN",
+                    display_name="Livestorm API Token",
+                    description="Livestorm private API token, sent as a plain Authorization header (no 'Bearer' prefix)",
                     required=True,
                     sensitive=True,
-                    only_for_custom=True,
-                    about_url="https://developers.livestorm.co",
+                    about_url="https://developers.livestorm.co/docs/api-token-authentication",
                 ),
             ],
-            oauth_config=OAuthConfig(
-                auth_url="https://app.livestorm.co/oauth/authorize",
-                token_url="https://app.livestorm.co/oauth/token",
-                scopes=[],
-            ),
             test_endpoint=TestEndpoint(
                 url="https://api.livestorm.co/v1/events",
                 method="GET",
                 headers={
-                    "Authorization": "Bearer {access_token}",
+                    "Authorization": "{bearer_token}",
                     "Accept": "application/vnd.api+json",
                 },
                 success_indicators=SuccessIndicators(
@@ -292,7 +282,7 @@ manifest = IntegrationManifest(
                     response_fields=["data"],
                 ),
                 cost_level="free",
-                description="Validates OAuth token by listing events",
+                description="Validates the API token by listing events",
             ),
         ),
     ],

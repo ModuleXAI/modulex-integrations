@@ -1,15 +1,18 @@
 # Gong
 
-Revenue intelligence platform for recording, transcribing, and analyzing sales conversations via the Gong REST API (`us-66463.api.gong.io/v2`).
+Revenue intelligence platform for recording, transcribing, and analyzing sales conversations via the Gong REST API (your per-tenant `https://<region>-<id>.api.gong.io/v2` base URL).
 
 ## Authentication
 
-### OAuth2 Authentication (recommended)
+### API Key (HTTP Basic)
 
-- Register an OAuth app at <https://app.gong.io/company/api>.
-- Redirect URI: `https://api.modulex.dev/credentials/oauth2/callback`
-- Required scopes: `api:calls:read:basic`, `api:calls:read:extensive`, `api:calls:create`, `api:workspaces:read`, `api:calls:read:transcript`
-- Env vars (custom app only): `GONG_OAUTH2_CLIENT_ID`, `GONG_OAUTH2_CLIENT_SECRET`
+- A Gong technical administrator creates an **Access Key** + **Access Key Secret**
+  under **Company Settings → Ecosystem → API** (<https://app.gong.io/company/api>).
+  The Secret is shown only once.
+- Find your per-tenant **API base URL** at <https://app.gong.io/company/api-authentication>
+  (e.g. `https://us-12345.api.gong.io`) — it is region/tenant-specific.
+- Env vars: `GONG_ACCESS_KEY`, `GONG_ACCESS_KEY_SECRET`, `GONG_API_BASE_URL`.
+- Sent on every request as `Authorization: Basic base64(accessKey:accessKeySecret)`.
 
 ## Tools
 
@@ -21,7 +24,7 @@ Revenue intelligence platform for recording, transcribing, and analyzing sales c
 | `list_workspace_id_options` | Retrieve available workspace IDs and names | (none required) |
 | `retrieve_transcripts_of_calls` | Retrieve transcripts of calls with optional date range and call ID filtering | (none required) |
 
-Every tool takes an additional `auth_type`/`auth_data` pair that the runtime fills in from the resolved OAuth credential.
+Every tool takes an additional `auth_type`/`auth_data` pair that the runtime fills in from the resolved API-key credential.
 
 ## Limits & Quotas
 

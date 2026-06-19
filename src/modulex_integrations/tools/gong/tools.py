@@ -1,6 +1,7 @@
 """Gong LangChain @tool functions."""
 from __future__ import annotations
 
+import base64
 from typing import Any
 
 import httpx
@@ -25,18 +26,43 @@ __all__ = [
     "retrieve_transcripts_of_calls",
 ]
 
-_BASE_URL = "https://us-66463.api.gong.io/v2"
 _TIMEOUT = 30.0
 
 
+def _base_url(auth_data: dict[str, Any]) -> str:
+    """Return the per-tenant Gong API base (ending in ``/v2``) from auth_data.
+
+    Gong issues a region/tenant-specific host (e.g.
+    ``https://us-12345.api.gong.io``); the user supplies it via the
+    ``GONG_API_BASE_URL`` EnvVar, which the runtime normalizes into
+    auth_data as ``api_base_url`` (or ``base_url``). Returns ``""`` when no
+    base URL is present.
+    """
+    raw = (auth_data.get("api_base_url") or auth_data.get("base_url") or "").rstrip("/")
+    if not raw:
+        return ""
+    return raw if raw.endswith("/v2") else f"{raw}/v2"
+
+
 def _get_auth_headers(auth_type: str, auth_data: dict[str, Any]) -> dict[str, str]:
-    """Build headers for the Gong API based on auth_type/auth_data."""
+    """Build headers for the Gong API (HTTP Basic from access key + secret)."""
     headers: dict[str, str] = {"Accept": "application/json"}
-    if auth_type == "oauth2":
-        access_token = auth_data.get("access_token")
-        if access_token:
-            headers["Authorization"] = f"Bearer {access_token}"
+    if auth_type == "custom":
+        access_key = auth_data.get("access_key")
+        access_key_secret = auth_data.get("access_key_secret")
+        if access_key and access_key_secret:
+            token = base64.b64encode(f"{access_key}:{access_key_secret}".encode()).decode()
+            headers["Authorization"] = f"Basic {token}"
     return headers
+
+
+def _missing_credentials(auth_data: dict[str, Any]) -> bool:
+    """True when any of the three required Gong credential fields is absent."""
+    return not (
+        _base_url(auth_data)
+        and auth_data.get("access_key")
+        and auth_data.get("access_key_secret")
+    )
 
 
 # --- Input schemas --------------------------------------------------------
@@ -129,8 +155,9 @@ async def add_new_call(
     language_code: str | None = None,
 ) -> AddNewCallOutput:
     """Add a new call to Gong."""
-    if not auth_data.get("access_token"):
-        return AddNewCallOutput(success=False, error="Missing or empty access_token in auth_data.")
+    if _missing_credentials(auth_data):
+        return AddNewCallOutput(success=False, error="Missing Gong credentials (access_key, access_key_secret, api_base_url) in auth_data.")
+    base = _base_url(auth_data)
     headers = _get_auth_headers(auth_type, auth_data)
     headers["Content-Type"] = "application/json"
 
@@ -167,7 +194,7 @@ async def add_new_call(
     try:
         async with httpx.AsyncClient(timeout=_TIMEOUT) as client:
             response = await client.post(
-                f"{_BASE_URL}/calls",
+                f"{base}/calls",
                 headers=headers,
                 json=payload,
             )
@@ -209,8 +236,9 @@ async def get_extensive_data(
     include_media: bool = False,
 ) -> GetExtensiveDataOutput:
     """List detailed call data with content selectors for topics, trackers, transcripts, and more."""
-    if not auth_data.get("access_token"):
-        return GetExtensiveDataOutput(success=False, error="Missing or empty access_token in auth_data.")
+    if _missing_credentials(auth_data):
+        return GetExtensiveDataOutput(success=False, error="Missing Gong credentials (access_key, access_key_secret, api_base_url) in auth_data.")
+    base = _base_url(auth_data)
     headers = _get_auth_headers(auth_type, auth_data)
     headers["Content-Type"] = "application/json"
 
@@ -262,7 +290,7 @@ async def get_extensive_data(
                     request_payload["cursor"] = cursor
 
                 response = await client.post(
-                    f"{_BASE_URL}/calls/extensive",
+                    f"{base}/calls/extensive",
                     headers=headers,
                     json=request_payload,
                 )
@@ -298,8 +326,9 @@ async def list_calls(
     cursor: str | None = None,
 ) -> ListCallsOutput:
     """List calls with optional date range filtering."""
-    if not auth_data.get("access_token"):
-        return ListCallsOutput(success=False, error="Missing or empty access_token in auth_data.")
+    if _missing_credentials(auth_data):
+        return ListCallsOutput(success=False, error="Missing Gong credentials (access_key, access_key_secret, api_base_url) in auth_data.")
+    base = _base_url(auth_data)
     headers = _get_auth_headers(auth_type, auth_data)
 
     params: dict[str, str] = {}
@@ -313,7 +342,7 @@ async def list_calls(
     try:
         async with httpx.AsyncClient(timeout=_TIMEOUT) as client:
             response = await client.get(
-                f"{_BASE_URL}/calls",
+                f"{base}/calls",
                 headers=headers,
                 params=params,
             )
@@ -343,14 +372,15 @@ async def list_workspace_id_options(
     auth_data: dict[str, Any],
 ) -> ListWorkspaceIdOptionsOutput:
     """Retrieve available workspace IDs and names."""
-    if not auth_data.get("access_token"):
-        return ListWorkspaceIdOptionsOutput(success=False, error="Missing or empty access_token in auth_data.")
+    if _missing_credentials(auth_data):
+        return ListWorkspaceIdOptionsOutput(success=False, error="Missing Gong credentials (access_key, access_key_secret, api_base_url) in auth_data.")
+    base = _base_url(auth_data)
     headers = _get_auth_headers(auth_type, auth_data)
 
     try:
         async with httpx.AsyncClient(timeout=_TIMEOUT) as client:
             response = await client.get(
-                f"{_BASE_URL}/workspaces",
+                f"{base}/workspaces",
                 headers=headers,
             )
         if response.status_code != 200:
@@ -383,8 +413,9 @@ async def retrieve_transcripts_of_calls(
     call_ids: list[str] | None = None,
 ) -> RetrieveTranscriptsOfCallsOutput:
     """Retrieve transcripts of calls with optional date range and call ID filtering."""
-    if not auth_data.get("access_token"):
-        return RetrieveTranscriptsOfCallsOutput(success=False, error="Missing or empty access_token in auth_data.")
+    if _missing_credentials(auth_data):
+        return RetrieveTranscriptsOfCallsOutput(success=False, error="Missing Gong credentials (access_key, access_key_secret, api_base_url) in auth_data.")
+    base = _base_url(auth_data)
     headers = _get_auth_headers(auth_type, auth_data)
     headers["Content-Type"] = "application/json"
 
@@ -405,7 +436,7 @@ async def retrieve_transcripts_of_calls(
     try:
         async with httpx.AsyncClient(timeout=_TIMEOUT) as client:
             response = await client.post(
-                f"{_BASE_URL}/calls/transcript",
+                f"{base}/calls/transcript",
                 headers=headers,
                 json=payload,
             )

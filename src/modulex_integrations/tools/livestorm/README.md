@@ -4,14 +4,16 @@ Video engagement platform for webinars and virtual events via the Livestorm REST
 
 ## Authentication
 
-### OAuth2 Authentication (recommended)
+### API Token
 
-- Register an OAuth application at the [Livestorm developer portal](https://developers.livestorm.co).
-- Redirect URI: `https://api.modulex.dev/credentials/oauth2/callback`
-- Required env vars (custom app only):
-  - `LIVESTORM_OAUTH2_CLIENT_ID` — OAuth App Client ID
-  - `LIVESTORM_OAUTH2_CLIENT_SECRET` — OAuth App Client Secret
-- Scopes: none documented; the platform grants full API access upon authorization.
+- As the workspace owner or an admin, generate a token under
+  **Account Settings → Integrations → Public API**
+  ([docs](https://developers.livestorm.co/docs/api-token-authentication)). The
+  token is shown only once. If the Public API card is missing, contact
+  `support@livestorm.co` to enable API access for your account.
+- Env var: `LIVESTORM_API_TOKEN`.
+- Sent as a **plain** `Authorization: <token>` header (no `Bearer` prefix),
+  with `Accept: application/vnd.api+json`.
 
 ## Tools
 
@@ -25,7 +27,7 @@ Video engagement platform for webinars and virtual events via the Livestorm REST
 | `register_someone_for_session` | Register a new participant for a session | `session_id` |
 | `update_event` | Update an event with its full list of attributes | `event_id`, `owner_id`, `title`, `slug`, `status`, `description`, `recording_enabled`, `chat_enabled`, `everyone_can_speak`, `detailed_registration_page_enabled`, `light_registration_page_enabled`, `recording_public`, `show_in_company_page`, `polls_enabled`, `questions_enabled` |
 
-Every tool takes an additional `auth_type`/`auth_data` pair that the runtime fills in from the resolved OAuth credential.
+Every tool takes an additional `auth_type`/`auth_data` pair that the runtime fills in from the resolved API-token credential.
 
 ## Limits & Quotas
 

@@ -4,14 +4,13 @@ SEO backlink analysis and referring domain data via the Ahrefs REST API (`api.ah
 
 ## Authentication
 
-### OAuth2 Authentication (recommended)
+### API Key (bearer token)
 
-- Register an OAuth app at [Ahrefs API OAuth](https://ahrefs.com/api/oauth).
-- Redirect URI: `https://api.modulex.dev/credentials/oauth2/callback`
-- Scopes requested: `api`
-- Required env vars (only for custom OAuth app):
-  - `AHREFS_OAUTH2_CLIENT_ID` — OAuth App Client ID
-  - `AHREFS_OAUTH2_CLIENT_SECRET` — OAuth App Client Secret
+- Sign in to Ahrefs as a workspace owner or admin and create a key under
+  **Account settings → API keys** ([docs](https://docs.ahrefs.com/en/api/docs/api-keys-creation-and-management)).
+- Requires an eligible paid Ahrefs plan; each key is valid for 1 year.
+- Env var: `AHREFS_API_TOKEN` — the Ahrefs API v3 key.
+- Sent on every request as `Authorization: Bearer <key>`.
 
 ## Tools
 
@@ -21,7 +20,7 @@ SEO backlink analysis and referring domain data via the Ahrefs REST API (`api.ah
 | `get_backlinks_one_per_domain` | Get one backlink with the highest ahrefs_rank per referring domain for a target URL or domain | `target`, `select` |
 | `get_referring_domains` | Get the referring domains that contain backlinks to the target URL or domain | `target`, `select` |
 
-Every tool takes an additional `auth_type`/`auth_data` pair that the runtime fills in from the resolved OAuth2 credential.
+Every tool takes an additional `auth_type`/`auth_data` pair that the runtime fills in from the resolved API-key credential.
 
 ## Limits & Quotas
 
