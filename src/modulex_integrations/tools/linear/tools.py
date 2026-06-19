@@ -10,9 +10,11 @@ sees the credential. Two auth flavours share the one endpoint:
   NO ``Bearer`` prefix (Linear's documented contract for personal API
   keys).
 
-Filter clauses for ``search_issues`` / ``list_projects`` are
-interpolated into the GraphQL string verbatim (matching legacy); values
-come from internal IDs, not user prose.
+Filters for ``search_issues`` / ``list_projects`` and pagination cursors
+are passed as typed GraphQL variables (``$filter``, ``$after``), never
+interpolated into the query string, so user-supplied values — notably
+``search_issues``'s free-text ``query`` — cannot alter the query
+structure.
 """
 from __future__ import annotations
 
@@ -399,22 +401,28 @@ def _build_search_filter(
     assignee_id: str | None,
     state_id: str | None,
     label_names: list[str] | None,
-) -> str:
-    parts: list[str] = []
+) -> dict[str, Any]:
+    """Build a Linear ``IssueFilter`` object.
+
+    Returned as a dict and passed to the GraphQL call as a typed
+    ``$filter: IssueFilter`` variable — never interpolated into the query
+    string — so user-supplied values (notably the free-text ``query``)
+    cannot alter the query structure.
+    """
+    filter_obj: dict[str, Any] = {}
     if query:
-        parts.append(f'title: {{ containsIgnoreCase: "{query}" }}')
+        filter_obj["title"] = {"containsIgnoreCase": query}
     if team_id:
-        parts.append(f'team: {{ id: {{ eq: "{team_id}" }} }}')
+        filter_obj["team"] = {"id": {"eq": team_id}}
     if project_id:
-        parts.append(f'project: {{ id: {{ eq: "{project_id}" }} }}')
+        filter_obj["project"] = {"id": {"eq": project_id}}
     if assignee_id:
-        parts.append(f'assignee: {{ id: {{ eq: "{assignee_id}" }} }}')
+        filter_obj["assignee"] = {"id": {"eq": assignee_id}}
     if state_id:
-        parts.append(f'state: {{ id: {{ eq: "{state_id}" }} }}')
+        filter_obj["state"] = {"id": {"eq": state_id}}
     if label_names:
-        names = ", ".join(f'"{name}"' for name in label_names)
-        parts.append(f'labels: {{ name: {{ in: [{names}] }} }}')
-    return ", ".join(parts)
+        filter_obj["labels"] = {"name": {"in": label_names}}
+    return filter_obj
 
 
 @tool(args_schema=SearchIssuesInput)
@@ -433,16 +441,20 @@ async def search_issues(
     limit: int = 50,
 ) -> SearchIssuesOutput:
     """Search Linear issues with filters."""
-    filter_str = _build_search_filter(
+    filter_obj = _build_search_filter(
         query, team_id, project_id, assignee_id, state_id, label_names
     )
-    filter_clause = f"filter: {{ {filter_str} }}" if filter_str else ""
 
     graphql_query = f"""
-        query SearchIssues($first: Int!, $includeArchived: Boolean, $orderBy: PaginationOrderBy) {{
+        query SearchIssues(
+            $first: Int!,
+            $filter: IssueFilter,
+            $includeArchived: Boolean,
+            $orderBy: PaginationOrderBy
+        ) {{
             issues(
                 first: $first
-                {filter_clause}
+                filter: $filter
                 includeArchived: $includeArchived
                 orderBy: $orderBy
             ) {{
@@ -453,12 +465,14 @@ async def search_issues(
         {_ISSUE_FRAGMENT}
     """
 
-    ok, err, data = await _graphql(
-        auth_type,
-        auth_data,
-        graphql_query,
-        {"first": limit, "includeArchived": include_archived, "orderBy": order_by},
-    )
+    variables: dict[str, Any] = {
+        "first": limit,
+        "includeArchived": include_archived,
+        "orderBy": order_by,
+    }
+    if filter_obj:
+        variables["filter"] = filter_obj
+    ok, err, data = await _graphql(auth_type, auth_data, graphql_query, variables)
     if not ok or data is None:
         return SearchIssuesOutput(success=False, error=err)
 
@@ -591,19 +605,20 @@ async def list_projects(
     after: str | None = None,
 ) -> ListProjectsOutput:
     """List Linear projects with optional team filter + pagination."""
-    filter_clause = (
-        f'filter: {{ accessibleTeams: {{ id: {{ eq: "{team_id}" }} }} }}'
-        if team_id
-        else ""
-    )
+    filter_obj: dict[str, Any] = {}
+    if team_id:
+        filter_obj["accessibleTeams"] = {"id": {"eq": team_id}}
 
     graphql_query = f"""
         query ListProjects(
-            $first: Int!, $orderBy: PaginationOrderBy, $after: String
+            $first: Int!,
+            $filter: ProjectFilter,
+            $orderBy: PaginationOrderBy,
+            $after: String
         ) {{
             projects(
                 first: $first
-                {filter_clause}
+                filter: $filter
                 orderBy: $orderBy
                 after: $after
             ) {{
@@ -615,6 +630,8 @@ async def list_projects(
     """
 
     variables: dict[str, Any] = {"first": limit, "orderBy": order_by}
+    if filter_obj:
+        variables["filter"] = filter_obj
     if after is not None:
         variables["after"] = after
     ok, err, data = await _graphql(auth_type, auth_data, graphql_query, variables)

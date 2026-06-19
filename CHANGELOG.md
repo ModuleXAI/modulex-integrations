@@ -41,11 +41,19 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 - `linear` — `get_teams` gained an `after` pagination cursor;
   workspaces with more teams than `limit` could previously only return
-  the first page even though `page_info` flagged the truncation. The
-  cursor is passed as a typed `$after: String` GraphQL variable (not
-  string-interpolated), and `list_projects`'s existing `after` was
-  converted from string interpolation to the same variable form to
-  close a GraphQL-injection vector on the LLM-supplied cursor.
+  the first page even though `page_info` flagged the truncation.
+
+- `linear` — hardened all GraphQL calls against injection. Filter
+  objects (`search_issues`'s team/project/assignee/state/labels and the
+  free-text `query`; `list_projects`'s team filter) and pagination
+  cursors (`after`) are now passed as typed GraphQL variables
+  (`$filter: IssueFilter` / `$filter: ProjectFilter`, `$after: String`)
+  instead of being string-interpolated into the query body, so an
+  LLM-supplied value can no longer alter query structure. The
+  highest-risk vector was `search_issues`'s `query` — literal free text
+  spliced into the query string. Filter type names and nested shapes
+  were verified against Linear's published schema; behavior is
+  unchanged for valid inputs.
 
 - `google_ads` / `google_merchant_center` — flagged
   `GOOGLE_ADS_DEVELOPER_TOKEN` (`only_for_custom=True`) and

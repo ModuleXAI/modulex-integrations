@@ -157,27 +157,40 @@ async def test_get_issue_not_found(httpx_mock: Any) -> None:
     assert result.error is not None and "missing" in result.error
 
 
-@pytest.mark.asyncio
-async def test_search_issues_interpolates_filters(httpx_mock: Any) -> None:
-    captured: dict[str, Any] = {}
+def _capture_payload(captured: dict[str, Any], nodes: list[dict[str, Any]]) -> Any:
+    """httpx_mock callback that records the request JSON payload and returns
+    an issues page with the given nodes."""
+    import json
 
-    def _capture(request: Any) -> Any:
-        import json
+    from httpx import Response
+
+    def _cb(request: Any) -> Any:
         captured.update(json.loads(request.content.decode()))
-        from httpx import Response
         return Response(
             200,
             json={
                 "data": {
                     "issues": {
-                        "nodes": [{"id": "I1", "identifier": "BE-1", "title": "x"}],
+                        "nodes": nodes,
                         "pageInfo": {"hasNextPage": False, "endCursor": None},
                     }
                 }
             },
         )
 
-    httpx_mock.add_callback(_capture, method="POST", url=API)
+    return _cb
+
+
+@pytest.mark.asyncio
+async def test_search_issues_filter_is_a_variable_not_interpolated(
+    httpx_mock: Any,
+) -> None:
+    captured: dict[str, Any] = {}
+    httpx_mock.add_callback(
+        _capture_payload(captured, [{"id": "I1", "identifier": "BE-1", "title": "x"}]),
+        method="POST",
+        url=API,
+    )
     result = SearchIssuesOutput.model_validate(
         await search_issues.ainvoke(
             _args(team_id="T1", query="bug", label_names=["urgent", "bug"], limit=10)
@@ -185,17 +198,32 @@ async def test_search_issues_interpolates_filters(httpx_mock: Any) -> None:
     )
     assert result.success is True
     assert result.count == 1
-    # The filter clause is interpolated in the GraphQL string.
-    q = captured["query"]
-    assert 'team: { id: { eq: "T1" } }' in q
-    assert 'title: { containsIgnoreCase: "bug" }' in q
-    assert 'labels: { name: { in: ["urgent", "bug"] } }' in q
-    # Variables carry pagination + ordering.
-    assert captured["variables"] == {
-        "first": 10,
-        "includeArchived": False,
-        "orderBy": "updatedAt",
+    # The filter is sent as a typed $filter variable, not spliced into the query.
+    assert captured["variables"]["filter"] == {
+        "title": {"containsIgnoreCase": "bug"},
+        "team": {"id": {"eq": "T1"}},
+        "labels": {"name": {"in": ["urgent", "bug"]}},
     }
+    assert captured["variables"]["first"] == 10
+    assert captured["variables"]["includeArchived"] is False
+    assert captured["variables"]["orderBy"] == "updatedAt"
+    # User-supplied filter values never appear in the query text.
+    assert "bug" not in captured["query"]
+    assert "T1" not in captured["query"]
+    assert "$filter: IssueFilter" in captured["query"]
+
+
+@pytest.mark.asyncio
+async def test_search_issues_query_injection_is_neutralised(httpx_mock: Any) -> None:
+    """A malicious free-text query lands in the $filter variable and can
+    never alter the query string."""
+    captured: dict[str, Any] = {}
+    httpx_mock.add_callback(_capture_payload(captured, []), method="POST", url=API)
+    evil = 'x" } }, badField: { eq: "pwned'
+    SearchIssuesOutput.model_validate(await search_issues.ainvoke(_args(query=evil)))
+    assert captured["variables"]["filter"]["title"]["containsIgnoreCase"] == evil
+    assert "badField" not in captured["query"]
+    assert "pwned" not in captured["query"]
 
 
 @pytest.mark.asyncio
