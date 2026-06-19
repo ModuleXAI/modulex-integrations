@@ -113,6 +113,10 @@ manifest = IntegrationManifest(
                 auth_url="https://app.netlify.com/authorize",
                 token_url="https://api.netlify.com/oauth/token",
                 scopes=[],
+                # Netlify rejects the token exchange with invalid_grant when a
+                # PKCE code_verifier is present (it does not support PKCE), so
+                # the runtime must omit code_challenge/code_verifier here.
+                use_pkce=False,
             ),
             test_endpoint=TestEndpoint(
                 url="https://api.netlify.com/api/v1/user",

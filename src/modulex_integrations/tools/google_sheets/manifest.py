@@ -428,6 +428,8 @@ manifest = IntegrationManifest(
             oauth_config=OAuthConfig(
                 auth_url="https://accounts.google.com/o/oauth2/v2/auth",
                 token_url="https://oauth2.googleapis.com/token",
+                access_type="offline",
+                prompt="consent",
                 scopes=[
                     "https://www.googleapis.com/auth/spreadsheets",
                     "https://www.googleapis.com/auth/drive.file",
