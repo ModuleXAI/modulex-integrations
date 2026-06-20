@@ -59,7 +59,7 @@ class TestManifest:
         assert len(manifest.auth_schemas) == 1
 
     def test_manifest_logo(self) -> None:
-        assert manifest.logo == "modulex:crowdstrike-themed"
+        assert manifest.logo == "modulex:crowdstrike"
 
 
 # --- Happy-path tests ------------------------------------------------------

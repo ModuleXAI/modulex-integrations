@@ -36,7 +36,7 @@ manifest = IntegrationManifest(
     ),
     version="1.0.0",
     author="ModuleX",
-    logo="modulex:dropcontact-themed",
+    logo="modulex:dropcontact",
     app_url="https://www.dropcontact.com",
     categories=["Sales", "CRM", "enrichment"],
     actions=[

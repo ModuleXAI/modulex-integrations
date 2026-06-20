@@ -52,7 +52,7 @@ manifest = IntegrationManifest(
     ),
     version="1.0.0",
     author="ModuleX",
-    logo="modulex:kalshi-themed",
+    logo="modulex:kalshi",
     app_url="https://kalshi.com",
     categories=["Finance & Payments", "prediction-markets", "data-analytics"],
     actions=[

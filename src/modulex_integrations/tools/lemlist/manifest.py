@@ -30,7 +30,7 @@ manifest = IntegrationManifest(
     ),
     version="1.0.0",
     author="ModuleX",
-    logo="modulex:lemlist-themed",
+    logo="modulex:lemlist",
     app_url="https://www.lemlist.com",
     categories=["Sales", "email-marketing", "sales-engagement"],
     actions=[

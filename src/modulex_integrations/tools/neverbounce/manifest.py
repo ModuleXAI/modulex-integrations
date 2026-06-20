@@ -24,7 +24,7 @@ manifest = IntegrationManifest(
     ),
     version="1.0.0",
     author="ModuleX",
-    logo="modulex:neverbounce-themed",
+    logo="modulex:neverbounce",
     app_url="https://www.neverbounce.com",
     categories=["Sales", "enrichment", "sales-engagement"],
     actions=[

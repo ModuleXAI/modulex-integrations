@@ -34,7 +34,7 @@ manifest = IntegrationManifest(
     ),
     version="1.0.0",
     author="ModuleX",
-    logo="modulex:enrow-themed",
+    logo="modulex:enrow",
     app_url="https://enrow.io",
     categories=["Sales", "enrichment", "sales-engagement"],
     actions=[

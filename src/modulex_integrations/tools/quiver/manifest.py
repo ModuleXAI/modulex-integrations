@@ -37,7 +37,7 @@ manifest = IntegrationManifest(
     ),
     version="1.0.0",
     author="ModuleX",
-    logo="modulex:quiver-themed",
+    logo="modulex:quiver",
     app_url="https://quiver.ai",
     categories=["AI & Machine Learning", "image-generation", "design"],
     actions=[

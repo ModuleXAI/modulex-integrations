@@ -38,7 +38,7 @@ manifest = IntegrationManifest(
     ),
     version="1.0.0",
     author="ModuleX",
-    logo="modulex:greptile-themed",
+    logo="modulex:greptile",
     app_url="https://www.greptile.com",
     categories=["Developer Tools & Infrastructure", "version-control", "knowledge-base"],
     actions=[

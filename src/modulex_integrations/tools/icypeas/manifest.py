@@ -24,7 +24,7 @@ manifest = IntegrationManifest(
     ),
     version="1.0.0",
     author="ModuleX",
-    logo="modulex:icypeas-themed",
+    logo="modulex:icypeas",
     app_url="https://www.icypeas.com",
     categories=["Sales", "enrichment", "sales-engagement"],
     actions=[

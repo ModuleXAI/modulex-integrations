@@ -39,7 +39,7 @@ manifest = IntegrationManifest(
     ),
     version="1.0.0",
     author="ModuleX",
-    logo="modulex:incidentio-themed",
+    logo="logos:incident-icon",
     app_url="https://incident.io",
     categories=["Monitoring & Observability", "incident-management", "on-call"],
     actions=[

@@ -30,7 +30,7 @@ manifest = IntegrationManifest(
     ),
     version="1.0.0",
     author="ModuleX",
-    logo="modulex:instantly-themed",
+    logo="modulex:instantly",
     app_url="https://instantly.ai",
     categories=["Marketing & Advertising", "email", "sales-engagement"],
     actions=[

@@ -30,7 +30,7 @@ manifest = IntegrationManifest(
     ),
     version="1.0.0",
     author="ModuleX",
-    logo="modulex:revenuecat-themed",
+    logo="modulex:revenuecat",
     app_url="https://www.revenuecat.com",
     categories=["Finance & Payments", "payments", "subscriptions"],
     actions=[

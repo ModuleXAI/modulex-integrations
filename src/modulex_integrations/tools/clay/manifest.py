@@ -31,7 +31,7 @@ manifest = IntegrationManifest(
     ),
     version="1.0.0",
     author="ModuleX",
-    logo="modulex:clay-themed",
+    logo="modulex:clay",
     app_url="https://www.clay.com",
     categories=["Sales", "CRM", "enrichment"],
     actions=[

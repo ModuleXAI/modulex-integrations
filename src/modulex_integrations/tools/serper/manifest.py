@@ -29,7 +29,7 @@ manifest = IntegrationManifest(
     ),
     version="1.0.0",
     author="ModuleX",
-    logo="modulex:serper-themed",
+    logo="modulex:serper",
     app_url="https://serper.dev",
     categories=["Web Search & Scraping", "search", "seo"],
     actions=[

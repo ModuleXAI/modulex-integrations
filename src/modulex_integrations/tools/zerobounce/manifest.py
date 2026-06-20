@@ -24,7 +24,7 @@ manifest = IntegrationManifest(
     ),
     version="1.0.0",
     author="ModuleX",
-    logo="modulex:zerobounce-themed",
+    logo="modulex:zerobounce",
     app_url="https://www.zerobounce.net",
     categories=["Sales", "enrichment", "sales-engagement"],
     actions=[

@@ -75,7 +75,7 @@ manifest = IntegrationManifest(
     ),
     version="1.0.0",
     author="ModuleX",
-    logo="modulex:similarweb-themed",
+    logo="modulex:similarweb",
     app_url="https://www.similarweb.com",
     categories=["Analytics & Data", "marketing", "seo"],
     actions=[

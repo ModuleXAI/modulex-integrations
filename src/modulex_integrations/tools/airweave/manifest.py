@@ -30,7 +30,7 @@ manifest = IntegrationManifest(
     ),
     version="1.0.0",
     author="ModuleX",
-    logo="modulex:airweave-themed",
+    logo="modulex:airweave",
     app_url="https://airweave.ai",
     categories=["Web Search & Scraping", "vector-search", "knowledge-base"],
     actions=[

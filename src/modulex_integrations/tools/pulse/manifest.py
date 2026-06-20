@@ -28,7 +28,7 @@ manifest = IntegrationManifest(
     ),
     version="1.0.0",
     author="ModuleX",
-    logo="modulex:pulse-themed",
+    logo="modulex:pulse",
     app_url="https://www.runpulse.com",
     categories=["AI & Machine Learning", "document-processing", "ocr"],
     actions=[

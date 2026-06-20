@@ -55,7 +55,7 @@ manifest = IntegrationManifest(
     ),
     version="1.0.0",
     author="ModuleX",
-    logo="modulex:loops-themed",
+    logo="modulex:loops",
     app_url="https://loops.so",
     categories=["Marketing & Advertising", "email-marketing", "automation"],
     actions=[

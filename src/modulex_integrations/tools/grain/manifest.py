@@ -25,7 +25,7 @@ manifest = IntegrationManifest(
     ),
     version="1.0.0",
     author="ModuleX",
-    logo="modulex:grain-themed",
+    logo="modulex:grain",
     app_url="https://grain.com",
     categories=["Productivity & Collaboration", "meeting", "note-taking"],
     actions=[

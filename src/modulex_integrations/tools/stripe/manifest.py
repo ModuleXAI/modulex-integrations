@@ -70,7 +70,7 @@ manifest = IntegrationManifest(
     ),
     version="1.0.0",
     author="ModuleX",
-    logo="modulex:stripe-themed",
+    logo="modulex:stripe",
     app_url="https://stripe.com",
     categories=["Finance & Payments", "payments", "subscriptions"],
     actions=[

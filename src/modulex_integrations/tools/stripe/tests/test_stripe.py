@@ -108,8 +108,8 @@ class TestManifest:
     def test_manifest_has_api_key_auth(self) -> None:
         assert {a.auth_type for a in manifest.auth_schemas} == {"api_key"}
 
-    def test_logo_is_themed(self) -> None:
-        assert manifest.logo == "modulex:stripe-themed"
+    def test_logo(self) -> None:
+        assert manifest.logo == "modulex:stripe"
 
     def test_first_category_is_finance_and_payments(self) -> None:
         assert manifest.categories[0] == "Finance & Payments"

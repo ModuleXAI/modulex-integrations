@@ -24,7 +24,7 @@ manifest = IntegrationManifest(
     ),
     version="1.0.0",
     author="ModuleX",
-    logo="modulex:amplitude-themed",
+    logo="logos:amplitude-icon",
     app_url="https://amplitude.com",
     categories=["Analytics & Data", "Product Analytics", "Marketing"],
     actions=[

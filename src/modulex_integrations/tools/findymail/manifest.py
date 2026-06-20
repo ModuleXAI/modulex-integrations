@@ -35,7 +35,7 @@ manifest = IntegrationManifest(
     ),
     version="1.0.0",
     author="ModuleX",
-    logo="modulex:findymail-themed",
+    logo="modulex:findymail",
     app_url="https://www.findymail.com",
     categories=["Sales", "enrichment", "sales-engagement"],
     actions=[

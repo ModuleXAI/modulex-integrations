@@ -47,7 +47,7 @@ manifest = IntegrationManifest(
     ),
     version="1.0.0",
     author="ModuleX",
-    logo="modulex:grafana-themed",
+    logo="modulex:grafana",
     app_url="https://grafana.com",
     categories=["Monitoring & Observability", "monitoring", "data-analytics"],
     actions=[

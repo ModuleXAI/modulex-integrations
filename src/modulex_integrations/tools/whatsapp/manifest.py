@@ -30,7 +30,7 @@ manifest = IntegrationManifest(
     ),
     version="1.0.0",
     author="ModuleX",
-    logo="modulex:whatsapp-themed",
+    logo="logos:whatsapp-icon",
     app_url="https://www.whatsapp.com",
     categories=["Communication", "messaging", "automation"],
     actions=[

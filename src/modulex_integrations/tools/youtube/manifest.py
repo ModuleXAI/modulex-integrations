@@ -38,7 +38,7 @@ manifest = IntegrationManifest(
     ),
     version="1.0.0",
     author="ModuleX",
-    logo="modulex:youtube-themed",
+    logo="modulex:youtube",
     app_url="https://www.youtube.com",
     categories=["Social Media", "marketing", "content-management"],
     actions=[

@@ -50,7 +50,7 @@ manifest = IntegrationManifest(
     ),
     version="1.0.0",
     author="ModuleX",
-    logo="modulex:vanta-themed",
+    logo="modulex:vanta",
     app_url="https://www.vanta.com",
     categories=["Monitoring & Observability", "Security", "Compliance", "GRC"],
     actions=[

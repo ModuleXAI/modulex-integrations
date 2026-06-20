@@ -54,8 +54,8 @@ class TestManifest:
     def test_manifest_has_api_key_auth(self) -> None:
         assert {a.auth_type for a in manifest.auth_schemas} == {"api_key"}
 
-    def test_manifest_logo_is_themed(self) -> None:
-        assert manifest.logo == "modulex:dropcontact-themed"
+    def test_manifest_logo(self) -> None:
+        assert manifest.logo == "modulex:dropcontact"
 
 
 # --- Happy path ------------------------------------------------------------

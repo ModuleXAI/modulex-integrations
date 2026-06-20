@@ -28,7 +28,7 @@ manifest = IntegrationManifest(
     ),
     version="1.0.0",
     author="ModuleX",
-    logo="modulex:granola-themed",
+    logo="modulex:granola",
     app_url="https://granola.ai",
     categories=["Productivity & Collaboration", "meeting", "note-taking"],
     actions=[

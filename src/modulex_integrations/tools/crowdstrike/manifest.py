@@ -46,7 +46,7 @@ manifest = IntegrationManifest(
     ),
     version="1.0.0",
     author="ModuleX",
-    logo="modulex:crowdstrike-themed",
+    logo="modulex:crowdstrike",
     app_url="https://www.crowdstrike.com",
     categories=["Monitoring & Observability", "security", "identity"],
     actions=[

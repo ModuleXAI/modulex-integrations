@@ -32,7 +32,7 @@ manifest = IntegrationManifest(
     ),
     version="1.0.0",
     author="ModuleX",
-    logo="modulex:mem0-themed",
+    logo="modulex:mem0",
     app_url="https://mem0.ai",
     categories=["AI & Machine Learning", "knowledge-base", "agentic"],
     actions=[

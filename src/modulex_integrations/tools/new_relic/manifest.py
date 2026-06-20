@@ -36,7 +36,7 @@ manifest = IntegrationManifest(
     ),
     version="1.0.0",
     author="ModuleX",
-    logo="modulex:new_relic-themed",
+    logo="modulex:new_relic",
     app_url="https://newrelic.com",
     categories=["Monitoring & Observability", "monitoring", "observability"],
     actions=[

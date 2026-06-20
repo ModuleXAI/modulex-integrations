@@ -38,7 +38,7 @@ manifest = IntegrationManifest(
     ),
     version="1.0.0",
     author="ModuleX",
-    logo="modulex:obsidian-themed",
+    logo="modulex:obsidian",
     app_url="https://obsidian.md",
     categories=["Productivity & Collaboration", "note-taking", "knowledge-base"],
     actions=[
