@@ -216,6 +216,13 @@ instantly = "modulex_integrations.tools.instantly"
 kalshi = "modulex_integrations.tools.kalshi"
 lemlist = "modulex_integrations.tools.lemlist"
 linkup = "modulex_integrations.tools.linkup"
+loops = "modulex_integrations.tools.loops"
+mem0 = "modulex_integrations.tools.mem0"
+neverbounce = "modulex_integrations.tools.neverbounce"
+new_relic = "modulex_integrations.tools.new_relic"
+obsidian = "modulex_integrations.tools.obsidian"
+pulse = "modulex_integrations.tools.pulse"
+quiver = "modulex_integrations.tools.quiver"
 
 [tool.hatch.version]
 # Version is derived from the latest git tag matching v* (e.g. v0.1.0,

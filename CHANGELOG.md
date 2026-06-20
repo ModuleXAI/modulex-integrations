@@ -65,6 +65,20 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ### Added
 
+- `loops` integration — 10 actions, auth: api_key.
+
+- `mem0` integration — 3 actions, auth: api_key.
+
+- `neverbounce` integration — 2 actions, auth: api_key.
+
+- `new_relic` integration — 4 actions, auth: api_key.
+
+- `obsidian` integration — 15 actions, auth: api_key.
+
+- `pulse` integration — 1 action, auth: api_key.
+
+- `quiver` integration — 3 actions, auth: api_key.
+
 - `greptile` integration — 4 actions, auth: api_key.
 
 - `icypeas` integration — 2 actions, auth: api_key.
