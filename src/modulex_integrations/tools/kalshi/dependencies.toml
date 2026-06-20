@@ -1,0 +1,10 @@
+# Runtime dependencies for the kalshi integration.
+#
+# The Kalshi Trade API is hit via raw HTTP (httpx, in core deps), but
+# each authenticated request must be signed with the user's RSA private
+# key (RSA-PSS over SHA-256). The signing uses the `cryptography`
+# package, which is not part of the core deps.
+
+dependencies = [
+    "cryptography>=41.0.0",
+]

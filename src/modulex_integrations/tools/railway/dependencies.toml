@@ -1,0 +1,6 @@
+# Runtime dependencies for the railway integration.
+#
+# Railway's public GraphQL API is hit via raw HTTP (httpx). httpx and
+# langchain-core are in core deps; nothing extra needed.
+
+dependencies = []

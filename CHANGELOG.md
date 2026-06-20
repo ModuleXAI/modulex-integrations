@@ -6,6 +6,8 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ## [Unreleased]
 
+## [0.10.0] - 2026-06-19
+
 ### Changed (schema)
 
 - `EnvVar.inject_into_auth_data: bool = False` added — additive,
@@ -64,6 +66,108 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
   matching modulex runtime change (external brief #021).
 
 ### Added
+
+- `twilio_voice` integration — 3 actions, auth: api_key.
+
+- `vanta` integration — 29 actions, auth: custom.
+
+- `vercel` integration — 56 actions, auth: api_key. Vercel REST API
+  integration spanning deployments, projects, domains, DNS records,
+  environment variables, teams, webhooks, and aliases.
+
+- `whatsapp` integration — 1 action, auth: api_key.
+
+- `wiza` integration — 4 actions, auth: api_key.
+
+- `youtube` integration — 9 actions, auth: api_key.
+
+- `zerobounce` integration — 2 actions, auth: api_key.
+
+- `railway` integration — 20 actions, auth: api_key.
+
+- `resend` integration — 8 actions, auth: api_key.
+
+- `revenuecat` integration — 10 actions, auth: api_key. In-app subscription
+  and customer management via the RevenueCat REST API v1 (create_purchase,
+  defer_google_subscription, delete_customer, get_customer, grant_entitlement,
+  list_offerings, refund_google_subscription, revoke_entitlement,
+  revoke_google_subscription, update_subscriber_attributes).
+
+- `serper` integration — 1 action, auth: api_key.
+
+- `similarweb` integration — 5 actions, auth: api_key.
+
+- `sixtyfour` integration — 4 actions, auth: api_key.
+
+- `stripe` integration — 50 actions, auth: api_key. Stripe
+  payments REST API covering payment intents, customers, subscriptions,
+  invoices, charges, products, prices, and events — create / retrieve /
+  update / delete / list / search across each resource. Bodies are sent
+  form-encoded (`application/x-www-form-urlencoded`) with Stripe's
+  bracket notation for nested fields.
+
+- `loops` integration — 10 actions, auth: api_key.
+
+- `mem0` integration — 3 actions, auth: api_key.
+
+- `neverbounce` integration — 2 actions, auth: api_key.
+
+- `new_relic` integration — 4 actions, auth: api_key.
+
+- `obsidian` integration — 15 actions, auth: api_key.
+
+- `pulse` integration — 1 action, auth: api_key.
+
+- `quiver` integration — 3 actions, auth: api_key.
+
+- `greptile` integration — 4 actions, auth: api_key.
+
+- `icypeas` integration — 2 actions, auth: api_key.
+
+- `incidentio` integration — 46 actions, auth: api_key.
+
+- `instantly` integration — 13 actions, auth: api_key.
+
+- `kalshi` integration — 22 actions, auth: api_key. Kalshi Trade API
+  for prediction-market data and trading: 13 public market-data actions
+  (markets, events, series, trades, orderbook) plus 9 authenticated
+  portfolio/order actions signed per-request with the user's RSA private
+  key (RSA-PSS over SHA-256, via `cryptography`).
+
+- `lemlist` integration — 3 actions, auth: api_key.
+
+- `linkup` integration — 1 action, auth: api_key.
+
+- `dropcontact` integration — 1 action, auth: api_key.
+
+- `enrow` integration — 2 actions, auth: api_key.
+
+- `findymail` integration — 11 actions, auth: api_key.
+
+- `gamma` integration — 5 actions, auth: api_key.
+
+- `grafana` integration — 25 actions, auth: api_key.
+
+- `grain` integration — 9 actions, auth: api_key.
+
+- `granola` integration — 3 actions, auth: api_key.
+
+- `agentmail` integration — 21 actions, auth: api_key.
+
+- `airweave` integration — 1 action, auth: api_key.
+
+- `amplitude` integration — 11 actions, auth: custom.
+
+- `brandfetch` integration — 2 actions, auth: api_key.
+
+- `clay` integration — 1 action, auth: api_key.
+
+- `crowdstrike` integration — 3 actions, auth: api_key.
+
+- `daytona` integration — 12 actions, auth: api_key.
+
+- `mercury` integration — 1 action, auth: bearer_token. Producer-staged
+  by integration-drafts; consumer-side audit applied 1 patch before merge.
 
 - `linear` — OAuth2 authentication alongside the existing API key.
   Adds an `OAuth2AuthSchema` (`auth_url`

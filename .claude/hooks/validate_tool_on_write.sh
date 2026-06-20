@@ -62,10 +62,18 @@ if ! python3 -m py_compile "$file_path" 2>/tmp/validate_tool.err; then
 fi
 rm -f /tmp/validate_tool.err
 
-# Discover the consumer venv. The repo lives at $CLAUDE_PROJECT_DIR which
-# is set by Claude Code. If we're elsewhere, climb up to find a sibling
-# .venv.
-REPO_ROOT="${CLAUDE_PROJECT_DIR:-$(git rev-parse --show-toplevel 2>/dev/null || pwd)}"
+# Discover the consumer venv. Derive REPO_ROOT from the written file's own
+# path first — a write into a git worktree must validate against THAT
+# worktree's .venv (whose editable install resolves the new tool), not the
+# session's main checkout ($CLAUDE_PROJECT_DIR). Fall back to
+# $CLAUDE_PROJECT_DIR for anything outside the tools tree. The file sits at
+# <root>/src/modulex_integrations/tools/<name>/<file>.py, so four levels up
+# from its directory is the owning repo root. Backward-compatible: for a
+# main-repo write the derived root equals $CLAUDE_PROJECT_DIR.
+REPO_ROOT="$(cd "$(dirname "$file_path")/../../../.." 2>/dev/null && pwd || true)"
+if [ -z "$REPO_ROOT" ]; then
+  REPO_ROOT="${CLAUDE_PROJECT_DIR:-$(git rev-parse --show-toplevel 2>/dev/null || pwd)}"
+fi
 PYTHON=""
 for cand in \
   "$REPO_ROOT/.venv/bin/python" \

@@ -1,0 +1,6 @@
+# Runtime dependencies for the twilio_voice integration.
+#
+# The Twilio Programmable Voice REST API is hit via raw HTTP (httpx).
+# httpx and langchain-core are in core deps; nothing extra needed.
+
+dependencies = []

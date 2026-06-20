@@ -1,0 +1,3 @@
+# Runtime dependencies for the similarweb integration that are NOT already
+# in the modulex-integrations core (httpx + langchain-core). None are needed.
+dependencies = []
