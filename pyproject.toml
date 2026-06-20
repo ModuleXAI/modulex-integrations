@@ -195,6 +195,13 @@ woocommerce = "modulex_integrations.tools.woocommerce"
 yelp = "modulex_integrations.tools.yelp"
 zoom = "modulex_integrations.tools.zoom"
 mercury = "modulex_integrations.tools.mercury"
+agentmail = "modulex_integrations.tools.agentmail"
+airweave = "modulex_integrations.tools.airweave"
+amplitude = "modulex_integrations.tools.amplitude"
+brandfetch = "modulex_integrations.tools.brandfetch"
+clay = "modulex_integrations.tools.clay"
+crowdstrike = "modulex_integrations.tools.crowdstrike"
+daytona = "modulex_integrations.tools.daytona"
 
 [tool.hatch.version]
 # Version is derived from the latest git tag matching v* (e.g. v0.1.0,

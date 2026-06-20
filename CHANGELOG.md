@@ -65,6 +65,20 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ### Added
 
+- `agentmail` integration — 21 actions, auth: api_key.
+
+- `airweave` integration — 1 action, auth: api_key.
+
+- `amplitude` integration — 11 actions, auth: custom.
+
+- `brandfetch` integration — 2 actions, auth: api_key.
+
+- `clay` integration — 1 action, auth: api_key.
+
+- `crowdstrike` integration — 3 actions, auth: api_key.
+
+- `daytona` integration — 12 actions, auth: api_key.
+
 - `mercury` integration — 1 action, auth: bearer_token. Producer-staged
   by integration-drafts; consumer-side audit applied 1 patch before merge.
 

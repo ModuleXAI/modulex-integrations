@@ -1,0 +1,80 @@
+"""AgentMail integration — discovered by modulex via the
+``modulex.tools`` entry point.
+
+Public surface: ``manifest`` (IntegrationManifest) and ``TOOLS``
+(tuple of LangChain ``StructuredTool`` objects, one per action).
+"""
+from modulex_integrations.tools.agentmail.manifest import manifest
+from modulex_integrations.tools.agentmail.tools import (
+    create_draft,
+    create_inbox,
+    delete_draft,
+    delete_inbox,
+    delete_thread,
+    forward_message,
+    get_draft,
+    get_inbox,
+    get_message,
+    get_thread,
+    list_drafts,
+    list_inboxes,
+    list_messages,
+    list_threads,
+    reply_message,
+    send_draft,
+    send_message,
+    update_draft,
+    update_inbox,
+    update_message,
+    update_thread,
+)
+
+TOOLS = (
+    send_message,
+    reply_message,
+    forward_message,
+    list_threads,
+    get_thread,
+    update_thread,
+    delete_thread,
+    list_messages,
+    get_message,
+    update_message,
+    create_draft,
+    list_drafts,
+    get_draft,
+    update_draft,
+    delete_draft,
+    send_draft,
+    create_inbox,
+    list_inboxes,
+    get_inbox,
+    update_inbox,
+    delete_inbox,
+)
+
+__all__ = [
+    "TOOLS",
+    "create_draft",
+    "create_inbox",
+    "delete_draft",
+    "delete_inbox",
+    "delete_thread",
+    "forward_message",
+    "get_draft",
+    "get_inbox",
+    "get_message",
+    "get_thread",
+    "list_drafts",
+    "list_inboxes",
+    "list_messages",
+    "list_threads",
+    "manifest",
+    "reply_message",
+    "send_draft",
+    "send_message",
+    "update_draft",
+    "update_inbox",
+    "update_message",
+    "update_thread",
+]
