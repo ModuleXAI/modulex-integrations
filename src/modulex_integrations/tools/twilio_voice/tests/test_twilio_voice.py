@@ -45,7 +45,7 @@ class TestManifest:
         assert {a.auth_type for a in manifest.auth_schemas} == {"api_key"}
 
     def test_manifest_logo(self) -> None:
-        assert manifest.logo == "modulex:twilio"
+        assert manifest.logo == "logos:twilio-icon"
 
 
 # --- Happy-path tests ------------------------------------------------------

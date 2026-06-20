@@ -33,7 +33,7 @@ manifest = IntegrationManifest(
     ),
     version="1.0.0",
     author="ModuleX",
-    logo="modulex:twilio",
+    logo="logos:twilio-icon",
     app_url="https://www.twilio.com",
     categories=["Communication", "messaging", "text-to-speech"],
     actions=[
