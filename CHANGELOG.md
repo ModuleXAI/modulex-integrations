@@ -65,6 +65,29 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ### Added
 
+- `railway` integration — 20 actions, auth: api_key.
+
+- `resend` integration — 8 actions, auth: api_key.
+
+- `revenuecat` integration — 10 actions, auth: api_key. In-app subscription
+  and customer management via the RevenueCat REST API v1 (create_purchase,
+  defer_google_subscription, delete_customer, get_customer, grant_entitlement,
+  list_offerings, refund_google_subscription, revoke_entitlement,
+  revoke_google_subscription, update_subscriber_attributes).
+
+- `serper` integration — 1 action, auth: api_key.
+
+- `similarweb` integration — 5 actions, auth: api_key.
+
+- `sixtyfour` integration — 4 actions, auth: api_key.
+
+- `stripe` integration — 50 actions, auth: api_key. Stripe
+  payments REST API covering payment intents, customers, subscriptions,
+  invoices, charges, products, prices, and events — create / retrieve /
+  update / delete / list / search across each resource. Bodies are sent
+  form-encoded (`application/x-www-form-urlencoded`) with Stripe's
+  bracket notation for nested fields.
+
 - `loops` integration — 10 actions, auth: api_key.
 
 - `mem0` integration — 3 actions, auth: api_key.

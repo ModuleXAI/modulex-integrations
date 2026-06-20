@@ -223,6 +223,13 @@ new_relic = "modulex_integrations.tools.new_relic"
 obsidian = "modulex_integrations.tools.obsidian"
 pulse = "modulex_integrations.tools.pulse"
 quiver = "modulex_integrations.tools.quiver"
+railway = "modulex_integrations.tools.railway"
+resend = "modulex_integrations.tools.resend"
+revenuecat = "modulex_integrations.tools.revenuecat"
+serper = "modulex_integrations.tools.serper"
+similarweb = "modulex_integrations.tools.similarweb"
+sixtyfour = "modulex_integrations.tools.sixtyfour"
+stripe = "modulex_integrations.tools.stripe"
 
 [tool.hatch.version]
 # Version is derived from the latest git tag matching v* (e.g. v0.1.0,
