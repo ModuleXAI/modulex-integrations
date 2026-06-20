@@ -100,7 +100,7 @@ def _build_request_body(
     urls: list[str] | None,
     additional_fields: dict[str, Any] | None,
 ) -> dict[str, Any]:
-    """Mirror of pipedream's getRequestBody — assembles a Person body from flat params."""
+    """Assemble a Google People API Person body from the flat action params."""
     body: dict[str, Any] = {}
     if "addresses" in person_fields:
         body["addresses"] = [
@@ -155,7 +155,7 @@ def _build_request_body(
 
 
 def _merge_person_fields(person_fields: list[str], extras: dict[str, Any] | None) -> str:
-    """Mirror of pipedream's getPersonFields — return a comma-joined unique field list."""
+    """Return a comma-joined, de-duplicated personFields list."""
     merged = list(person_fields)
     if extras:
         for key in extras.keys():

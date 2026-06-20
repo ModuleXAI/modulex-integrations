@@ -579,8 +579,8 @@ async def list_folder_id_options(
     options: list[FolderOption] = []
     try:
         async with httpx.AsyncClient(timeout=_TIMEOUT) as client:
-            # BFS over folder tree using the $batch endpoint, matching the
-            # pipedream component's batched-fanout behaviour.
+            # BFS over the folder tree, fanning out batched requests via
+            # the Microsoft Graph $batch endpoint.
             stack: list[tuple[str | None, str]] = [(None, "")]
             history: list[tuple[str, str]] = []
             batch_limit = 20

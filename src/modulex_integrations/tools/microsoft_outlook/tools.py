@@ -83,7 +83,7 @@ def _check_auth(auth_type: str, auth_data: dict[str, Any]) -> str | None:
 
 
 def _user_path(user_id: str | None) -> str:
-    """Mirror the pipedream `_userPath(userId)` helper."""
+    """Return the Microsoft Graph user path: /users/{id}, or /me when unset."""
     return f"/users/{user_id}" if user_id else "/me"
 
 
