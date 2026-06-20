@@ -65,6 +65,20 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ### Added
 
+- `dropcontact` integration — 1 action, auth: api_key.
+
+- `enrow` integration — 2 actions, auth: api_key.
+
+- `findymail` integration — 11 actions, auth: api_key.
+
+- `gamma` integration — 5 actions, auth: api_key.
+
+- `grafana` integration — 25 actions, auth: api_key.
+
+- `grain` integration — 9 actions, auth: api_key.
+
+- `granola` integration — 3 actions, auth: api_key.
+
 - `agentmail` integration — 21 actions, auth: api_key.
 
 - `airweave` integration — 1 action, auth: api_key.

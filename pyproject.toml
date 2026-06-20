@@ -202,6 +202,13 @@ brandfetch = "modulex_integrations.tools.brandfetch"
 clay = "modulex_integrations.tools.clay"
 crowdstrike = "modulex_integrations.tools.crowdstrike"
 daytona = "modulex_integrations.tools.daytona"
+dropcontact = "modulex_integrations.tools.dropcontact"
+enrow = "modulex_integrations.tools.enrow"
+findymail = "modulex_integrations.tools.findymail"
+gamma = "modulex_integrations.tools.gamma"
+grafana = "modulex_integrations.tools.grafana"
+grain = "modulex_integrations.tools.grain"
+granola = "modulex_integrations.tools.granola"
 
 [tool.hatch.version]
 # Version is derived from the latest git tag matching v* (e.g. v0.1.0,
