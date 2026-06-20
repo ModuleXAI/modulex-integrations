@@ -1,0 +1,4 @@
+# Runtime dependencies for the Lemlist integration that are NOT already in
+# the modulex-integrations core (httpx + langchain-core). Lemlist uses only
+# core, so this list is empty.
+dependencies = []

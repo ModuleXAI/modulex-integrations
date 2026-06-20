@@ -65,6 +65,24 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ### Added
 
+- `greptile` integration — 4 actions, auth: api_key.
+
+- `icypeas` integration — 2 actions, auth: api_key.
+
+- `incidentio` integration — 46 actions, auth: api_key.
+
+- `instantly` integration — 13 actions, auth: api_key.
+
+- `kalshi` integration — 22 actions, auth: api_key. Kalshi Trade API
+  for prediction-market data and trading: 13 public market-data actions
+  (markets, events, series, trades, orderbook) plus 9 authenticated
+  portfolio/order actions signed per-request with the user's RSA private
+  key (RSA-PSS over SHA-256, via `cryptography`).
+
+- `lemlist` integration — 3 actions, auth: api_key.
+
+- `linkup` integration — 1 action, auth: api_key.
+
 - `dropcontact` integration — 1 action, auth: api_key.
 
 - `enrow` integration — 2 actions, auth: api_key.

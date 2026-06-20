@@ -209,6 +209,13 @@ gamma = "modulex_integrations.tools.gamma"
 grafana = "modulex_integrations.tools.grafana"
 grain = "modulex_integrations.tools.grain"
 granola = "modulex_integrations.tools.granola"
+greptile = "modulex_integrations.tools.greptile"
+icypeas = "modulex_integrations.tools.icypeas"
+incidentio = "modulex_integrations.tools.incidentio"
+instantly = "modulex_integrations.tools.instantly"
+kalshi = "modulex_integrations.tools.kalshi"
+lemlist = "modulex_integrations.tools.lemlist"
+linkup = "modulex_integrations.tools.linkup"
 
 [tool.hatch.version]
 # Version is derived from the latest git tag matching v* (e.g. v0.1.0,
