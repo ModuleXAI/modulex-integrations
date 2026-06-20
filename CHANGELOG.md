@@ -65,6 +65,22 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ### Added
 
+- `twilio_voice` integration — 3 actions, auth: api_key.
+
+- `vanta` integration — 29 actions, auth: custom.
+
+- `vercel` integration — 56 actions, auth: api_key. Vercel REST API
+  integration spanning deployments, projects, domains, DNS records,
+  environment variables, teams, webhooks, and aliases.
+
+- `whatsapp` integration — 1 action, auth: api_key.
+
+- `wiza` integration — 4 actions, auth: api_key.
+
+- `youtube` integration — 9 actions, auth: api_key.
+
+- `zerobounce` integration — 2 actions, auth: api_key.
+
 - `railway` integration — 20 actions, auth: api_key.
 
 - `resend` integration — 8 actions, auth: api_key.

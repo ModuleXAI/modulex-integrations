@@ -230,6 +230,13 @@ serper = "modulex_integrations.tools.serper"
 similarweb = "modulex_integrations.tools.similarweb"
 sixtyfour = "modulex_integrations.tools.sixtyfour"
 stripe = "modulex_integrations.tools.stripe"
+twilio_voice = "modulex_integrations.tools.twilio_voice"
+vanta = "modulex_integrations.tools.vanta"
+vercel = "modulex_integrations.tools.vercel"
+whatsapp = "modulex_integrations.tools.whatsapp"
+wiza = "modulex_integrations.tools.wiza"
+youtube = "modulex_integrations.tools.youtube"
+zerobounce = "modulex_integrations.tools.zerobounce"
 
 [tool.hatch.version]
 # Version is derived from the latest git tag matching v* (e.g. v0.1.0,
