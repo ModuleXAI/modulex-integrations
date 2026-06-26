@@ -15,9 +15,16 @@ are passed as typed GraphQL variables (``$filter``, ``$after``), never
 interpolated into the query string, so user-supplied values — notably
 ``search_issues``'s free-text ``query`` — cannot alter the query
 structure.
+
+Anywhere a team is referenced (``team_id`` on create/update/search/list),
+the value may be the team's UUID, its short *key* (``ENG`` — the prefix in
+``ENG-123``), or its *name*. Linear's API only accepts the UUID, but the
+key/name are what users see, so non-UUID references are resolved to the
+UUID via :func:`_resolve_team_id` before the request is sent.
 """
 from __future__ import annotations
 
+import re
 from typing import Any, Literal
 
 import httpx
@@ -229,6 +236,86 @@ async def _graphql(
     return True, None, data
 
 
+_UUID_RE = re.compile(
+    r"^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-"
+    r"[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+)
+
+
+def _looks_like_uuid(value: str) -> bool:
+    """True when ``value`` is a canonical 8-4-4-4-12 UUID string.
+
+    Linear's ``issueCreate`` / ``projectCreate`` inputs and team filters all
+    require the team's UUID. A UUID-shaped value is forwarded untouched; any
+    other string (a team *key* like ``ENG`` or a *name* like ``Engineering``)
+    is treated as a human reference and resolved via :func:`_resolve_team_id`.
+    """
+    return bool(_UUID_RE.match(value.strip()))
+
+
+async def _resolve_team_id(
+    auth_type: str,
+    auth_data: dict[str, Any],
+    team_ref: str,
+) -> tuple[bool, str | None, str | None]:
+    """Resolve a team reference to its Linear team UUID.
+
+    ``team_ref`` may be the UUID itself (returned unchanged, *no* network
+    call), the short team *key* shown in issue identifiers (``ENG`` →
+    ``ENG-123``), or the team *name*. Linear's API only accepts the UUID,
+    but the key/name are what users see, so we look them up via the teams
+    list and match case-insensitively. On no match the error lists the
+    available teams so the caller can pick one. Returns
+    ``(ok, error, team_id)``.
+    """
+    ref = (team_ref or "").strip()
+    if not ref:
+        return False, "team_id is required.", None
+    if _looks_like_uuid(ref):
+        return True, None, ref
+
+    query = """
+        query ResolveTeam($first: Int!, $after: String) {
+            teams(first: $first, after: $after) {
+                nodes { id name key }
+                pageInfo { hasNextPage endCursor }
+            }
+        }
+    """
+    target = ref.casefold()
+    available: list[str] = []
+    after: str | None = None
+    while True:
+        variables: dict[str, Any] = {"first": 250}
+        if after is not None:
+            variables["after"] = after
+        ok, err, data = await _graphql(auth_type, auth_data, query, variables)
+        if not ok or data is None:
+            return False, err or "Failed to look up Linear teams.", None
+        teams_obj = data.get("teams") or {}
+        for node in teams_obj.get("nodes") or []:
+            key = str(node.get("key") or "")
+            name = str(node.get("name") or "")
+            if target in (key.casefold(), name.casefold()):
+                return True, None, str(node.get("id") or "")
+            available.append(f"{key} ({name})")
+        page = teams_obj.get("pageInfo") or {}
+        if page.get("hasNextPage") and page.get("endCursor"):
+            after = str(page["endCursor"])
+            continue
+        break
+
+    listing = ", ".join(available) if available else "no teams found"
+    return (
+        False,
+        (
+            f"No Linear team matches {team_ref!r}. Pass the team's UUID, key, "
+            f"or name. Available teams: {listing}."
+        ),
+        None,
+    )
+
+
 # --- Input schemas ---------------------------------------------------------
 
 
@@ -257,7 +344,10 @@ class GetIssueInput(BaseModel):
 class SearchIssuesInput(BaseModel):
     auth_type: str = _AUTH_TYPE_FIELD
     auth_data: dict[str, Any] = _AUTH_DATA_FIELD
-    team_id: str | None = Field(default=None, description="Filter by team ID")
+    team_id: str | None = Field(
+        default=None,
+        description="Filter by team — UUID, team key like 'ENG', or team name",
+    )
     project_id: str | None = Field(default=None, description="Filter by project ID")
     assignee_id: str | None = Field(default=None, description="Filter by assignee")
     state_id: str | None = Field(default=None, description="Filter by workflow state")
@@ -276,8 +366,9 @@ class CreateIssueInput(BaseModel):
     auth_data: dict[str, Any] = _AUTH_DATA_FIELD
     team_id: str = Field(
         description=(
-            "Team UUID (the 'id' from get_teams), not the short team key "
-            "like 'ENG'"
+            "Team to create the issue in. Accepts the team UUID (the 'id' "
+            "from get_teams), the short team key like 'ENG', or the team "
+            "name — keys and names are resolved to the UUID automatically."
         )
     )
     title: str = Field(description="The title of the new issue")
@@ -296,7 +387,10 @@ class UpdateIssueInput(BaseModel):
     title: str | None = Field(default=None, description="New title")
     description: str | None = Field(default=None, description="New markdown body")
     assignee_id: str | None = Field(default=None, description="New assignee user ID")
-    team_id: str | None = Field(default=None, description="Move to a different team")
+    team_id: str | None = Field(
+        default=None,
+        description="Move to a different team — UUID, team key like 'ENG', or name",
+    )
     project_id: str | None = Field(default=None, description="Move to a different project")
     state_id: str | None = Field(default=None, description="Change workflow state")
     label_ids: list[str] | None = Field(default=None, description="Replace labels")
@@ -306,7 +400,10 @@ class UpdateIssueInput(BaseModel):
 class ListProjectsInput(BaseModel):
     auth_type: str = _AUTH_TYPE_FIELD
     auth_data: dict[str, Any] = _AUTH_DATA_FIELD
-    team_id: str | None = Field(default=None, description="Filter by team ID")
+    team_id: str | None = Field(
+        default=None,
+        description="Filter by team — UUID, team key like 'ENG', or team name",
+    )
     order_by: Literal["createdAt", "updatedAt"] | None = Field(
         default="updatedAt",
         description="Order by 'createdAt' or 'updatedAt' (Linear PaginationOrderBy enum)",
@@ -320,8 +417,9 @@ class CreateProjectInput(BaseModel):
     auth_data: dict[str, Any] = _AUTH_DATA_FIELD
     team_id: str = Field(
         description=(
-            "Team UUID (the 'id' from get_teams), not the short team key "
-            "like 'ENG'"
+            "Team to create the project in. Accepts the team UUID (the 'id' "
+            "from get_teams), the short team key like 'ENG', or the team "
+            "name — keys and names are resolved to the UUID automatically."
         )
     )
     name: str = Field(description="The name of the new project")
@@ -441,6 +539,11 @@ async def search_issues(
     limit: int = 50,
 ) -> SearchIssuesOutput:
     """Search Linear issues with filters."""
+    if team_id is not None:
+        ok, err, team_id = await _resolve_team_id(auth_type, auth_data, team_id)
+        if not ok or team_id is None:
+            return SearchIssuesOutput(success=False, error=err)
+
     filter_obj = _build_search_filter(
         query, team_id, project_id, assignee_id, state_id, label_names
     )
@@ -501,6 +604,10 @@ async def create_issue(
     priority: int | None = None,
 ) -> CreateIssueOutput:
     """Create a new Linear issue."""
+    ok, err, resolved_team_id = await _resolve_team_id(auth_type, auth_data, team_id)
+    if not ok or resolved_team_id is None:
+        return CreateIssueOutput(success=False, error=err)
+
     mutation = f"""
         mutation CreateIssue($input: IssueCreateInput!) {{
             issueCreate(input: $input) {{
@@ -511,7 +618,7 @@ async def create_issue(
         {_ISSUE_FRAGMENT}
     """
 
-    input_data: dict[str, Any] = {"teamId": team_id, "title": title}
+    input_data: dict[str, Any] = {"teamId": resolved_team_id, "title": title}
     if description:
         input_data["description"] = description
     if assignee_id:
@@ -559,7 +666,12 @@ async def update_issue(
     if assignee_id is not None:
         input_data["assigneeId"] = assignee_id
     if team_id is not None:
-        input_data["teamId"] = team_id
+        ok, err, resolved_team_id = await _resolve_team_id(
+            auth_type, auth_data, team_id
+        )
+        if not ok or resolved_team_id is None:
+            return UpdateIssueOutput(success=False, error=err)
+        input_data["teamId"] = resolved_team_id
     if project_id is not None:
         input_data["projectId"] = project_id
     if state_id is not None:
@@ -605,6 +717,11 @@ async def list_projects(
     after: str | None = None,
 ) -> ListProjectsOutput:
     """List Linear projects with optional team filter + pagination."""
+    if team_id is not None:
+        ok, err, team_id = await _resolve_team_id(auth_type, auth_data, team_id)
+        if not ok or team_id is None:
+            return ListProjectsOutput(success=False, error=err)
+
     filter_obj: dict[str, Any] = {}
     if team_id:
         filter_obj["accessibleTeams"] = {"id": {"eq": team_id}}
@@ -664,6 +781,10 @@ async def create_project(
     label_ids: list[str] | None = None,
 ) -> CreateProjectOutput:
     """Create a new Linear project."""
+    ok, err, resolved_team_id = await _resolve_team_id(auth_type, auth_data, team_id)
+    if not ok or resolved_team_id is None:
+        return CreateProjectOutput(success=False, error=err)
+
     mutation = f"""
         mutation CreateProject($input: ProjectCreateInput!) {{
             projectCreate(input: $input) {{
@@ -674,7 +795,7 @@ async def create_project(
         {_PROJECT_FRAGMENT}
     """
 
-    input_data: dict[str, Any] = {"teamIds": [team_id], "name": name}
+    input_data: dict[str, Any] = {"teamIds": [resolved_team_id], "name": name}
     if description:
         input_data["description"] = description
     if status_id:
