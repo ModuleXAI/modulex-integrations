@@ -6,12 +6,9 @@ isolation, subscription, and Conversational-AI agents.
 
 ## Authentication
 
-- **Paired `api_key + modulex_key` schemas** (both Bearer-authed —
-  the runtime picks which credential to inject; tool code is
-  auth-agnostic).
+- **Single `api_key` schema** (Bearer-authed, bring-your-own-key).
 - `api_key` env: `ELEVENLABS_API_KEY` (sensitive).
-- `modulex_key` env: none (managed by ModuleX).
-- Both `test_endpoint`s hit `GET /v1/user/subscription` and assert
+- The `test_endpoint` hits `GET /v1/user/subscription` and asserts
   the `tier` field.
 
 ## Runtime convention

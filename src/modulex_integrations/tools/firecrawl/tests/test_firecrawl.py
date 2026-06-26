@@ -41,11 +41,11 @@ class TestManifest:
     def test_manifest_actions_match_tools_tuple(self) -> None:
         assert {a.name for a in manifest.actions} == {t.name for t in TOOLS}
 
-    def test_manifest_has_paired_api_key_and_modulex_key_auth(self) -> None:
+    def test_manifest_has_api_key_auth(self) -> None:
         types = {a.auth_type for a in manifest.auth_schemas}
-        assert types == {"api_key", "modulex_key"}
+        assert types == {"api_key"}
 
-    def test_both_test_endpoints_post_to_scrape(self) -> None:
+    def test_test_endpoints_post_to_scrape(self) -> None:
         for auth in manifest.auth_schemas:
             assert auth.test_endpoint is not None
             assert auth.test_endpoint.method == "POST"

@@ -6,6 +6,23 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ## [Unreleased]
 
+### Added
+
+- `linear` — `team_id` on `create_issue`, `create_project`,
+  `update_issue`, `search_issues`, and `list_projects` now accepts the
+  team's short key (e.g. `ENG`) or name in addition to its UUID.
+  Non-UUID references are resolved to the UUID via a teams lookup before
+  the request; an unresolvable reference fails clearly and lists the
+  available teams. UUID values skip the lookup entirely (no extra
+  round-trip).
+
+### Changed
+
+- `elevenlabs`, `firecrawl` — dropped the `modulex_key` managed-key
+  auth schema; both now ship a single `api_key` (bring-your-own-key)
+  schema. The tool code is unchanged (already auth-agnostic — the
+  injected credential is the same `api_key: str` parameter either way).
+
 ## [0.10.0] - 2026-06-19
 
 ### Changed (schema)

@@ -6,7 +6,6 @@ from modulex_integrations.schema import (
     ApiKeyAuthSchema,
     EnvVar,
     IntegrationManifest,
-    ModulexKeyAuthSchema,
     ParameterDef,
     SuccessIndicators,
     TestEndpoint,
@@ -308,17 +307,6 @@ manifest = IntegrationManifest(
             ],
             test_endpoint=_scrape_test_endpoint(
                 "Validates API key with minimal scrape of example.com"
-            ),
-        ),
-        ModulexKeyAuthSchema(
-            display_name="ModuleX Managed Key",
-            description=(
-                "Use ModuleX's managed API keys with usage tracked against "
-                "your weekly credit limit"
-            ),
-            setup_environment_variables=[],
-            test_endpoint=_scrape_test_endpoint(
-                "Validates system API key with minimal scrape of example.com"
             ),
         ),
     ],

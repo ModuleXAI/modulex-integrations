@@ -28,6 +28,9 @@ from modulex_integrations.tools.linear.outputs import (
 
 API = "https://api.linear.app/graphql"
 _API_KEY = "lin_api_fake"
+# A canonical 8-4-4-4-12 UUID — the shape Linear's API requires for teamId.
+# Passing this bypasses team resolution (no teams lookup round-trip).
+_TEAM_UUID = "a1b2c3d4-e5f6-4a5b-8c9d-0e1f2a3b4c5d"
 
 
 def _args(**extra: Any) -> dict[str, Any]:
@@ -36,6 +39,13 @@ def _args(**extra: Any) -> dict[str, Any]:
 
 def _gql(body: dict[str, Any]) -> dict[str, Any]:
     return body
+
+
+def _request_bodies(httpx_mock: Any) -> list[dict[str, Any]]:
+    """Decode every captured request's JSON body, in order."""
+    import json
+
+    return [json.loads(r.content.decode()) for r in httpx_mock.get_requests()]
 
 
 class TestManifest:
@@ -193,7 +203,12 @@ async def test_search_issues_filter_is_a_variable_not_interpolated(
     )
     result = SearchIssuesOutput.model_validate(
         await search_issues.ainvoke(
-            _args(team_id="T1", query="bug", label_names=["urgent", "bug"], limit=10)
+            _args(
+                team_id=_TEAM_UUID,
+                query="bug",
+                label_names=["urgent", "bug"],
+                limit=10,
+            )
         )
     )
     assert result.success is True
@@ -201,7 +216,7 @@ async def test_search_issues_filter_is_a_variable_not_interpolated(
     # The filter is sent as a typed $filter variable, not spliced into the query.
     assert captured["variables"]["filter"] == {
         "title": {"containsIgnoreCase": "bug"},
-        "team": {"id": {"eq": "T1"}},
+        "team": {"id": {"eq": _TEAM_UUID}},
         "labels": {"name": {"in": ["urgent", "bug"]}},
     }
     assert captured["variables"]["first"] == 10
@@ -209,7 +224,7 @@ async def test_search_issues_filter_is_a_variable_not_interpolated(
     assert captured["variables"]["orderBy"] == "updatedAt"
     # User-supplied filter values never appear in the query text.
     assert "bug" not in captured["query"]
-    assert "T1" not in captured["query"]
+    assert _TEAM_UUID not in captured["query"]
     assert "$filter: IssueFilter" in captured["query"]
 
 
@@ -245,11 +260,119 @@ async def test_create_issue(httpx_mock: Any) -> None:
         },
     )
     result = CreateIssueOutput.model_validate(
-        await create_issue.ainvoke(_args(team_id="T1", title="New bug", priority=2))
+        await create_issue.ainvoke(
+            _args(team_id=_TEAM_UUID, title="New bug", priority=2)
+        )
     )
     assert result.success is True
     assert result.issue is not None
     assert result.issue["identifier"] == "BE-99"
+
+
+@pytest.mark.asyncio
+async def test_create_issue_resolves_team_key(httpx_mock: Any) -> None:
+    """Passing a team KEY (or name) resolves to the team UUID, and the
+    issueCreate mutation receives the UUID — not the raw key. This is the
+    fix for 'teamId must be a UUID' when users pass the human-facing key."""
+    # First request: the team-resolution lookup.
+    httpx_mock.add_response(
+        method="POST",
+        url=API,
+        json={
+            "data": {
+                "teams": {
+                    "nodes": [
+                        {
+                            "id": "11111111-1111-4111-8111-111111111111",
+                            "name": "Frontend",
+                            "key": "FE",
+                        },
+                        {"id": _TEAM_UUID, "name": "Engineering", "key": "ENG"},
+                    ],
+                    "pageInfo": {"hasNextPage": False, "endCursor": None},
+                }
+            }
+        },
+    )
+    # Second request: the create mutation.
+    httpx_mock.add_response(
+        method="POST",
+        url=API,
+        json={
+            "data": {
+                "issueCreate": {
+                    "success": True,
+                    "issue": {"id": "I1", "identifier": "ENG-1", "title": "x"},
+                }
+            }
+        },
+    )
+    # Lowercase 'eng' also proves the match is case-insensitive against 'ENG'.
+    result = CreateIssueOutput.model_validate(
+        await create_issue.ainvoke(_args(team_id="eng", title="x"))
+    )
+    assert result.success is True
+    assert result.issue is not None
+    assert result.issue["identifier"] == "ENG-1"
+
+    bodies = _request_bodies(httpx_mock)
+    assert len(bodies) == 2
+    # The mutation carried the resolved UUID, never the raw 'eng' key.
+    assert bodies[1]["variables"]["input"]["teamId"] == _TEAM_UUID
+
+
+@pytest.mark.asyncio
+async def test_create_issue_unknown_team_lists_available(httpx_mock: Any) -> None:
+    """An unresolvable team reference fails clearly and lists the available
+    teams, rather than firing a doomed create mutation."""
+    httpx_mock.add_response(
+        method="POST",
+        url=API,
+        json={
+            "data": {
+                "teams": {
+                    "nodes": [
+                        {"id": _TEAM_UUID, "name": "Engineering", "key": "ENG"},
+                    ],
+                    "pageInfo": {"hasNextPage": False, "endCursor": None},
+                }
+            }
+        },
+    )
+    result = CreateIssueOutput.model_validate(
+        await create_issue.ainvoke(_args(team_id="NOPE", title="x"))
+    )
+    assert result.success is False
+    assert result.error is not None
+    assert "No Linear team matches" in result.error
+    assert "ENG" in result.error  # available teams are listed for the caller
+    # Only the resolution lookup happened; no create mutation was sent.
+    assert len(httpx_mock.get_requests()) == 1
+
+
+@pytest.mark.asyncio
+async def test_create_issue_uuid_skips_resolution(httpx_mock: Any) -> None:
+    """A UUID team_id is forwarded directly — no teams lookup round-trip."""
+    httpx_mock.add_response(
+        method="POST",
+        url=API,
+        json={
+            "data": {
+                "issueCreate": {
+                    "success": True,
+                    "issue": {"id": "I1", "identifier": "ENG-1", "title": "x"},
+                }
+            }
+        },
+    )
+    result = CreateIssueOutput.model_validate(
+        await create_issue.ainvoke(_args(team_id=_TEAM_UUID, title="x"))
+    )
+    assert result.success is True
+    # Exactly one request — the mutation. Resolution was skipped.
+    assert len(httpx_mock.get_requests()) == 1
+    body = _request_bodies(httpx_mock)[0]
+    assert body["variables"]["input"]["teamId"] == _TEAM_UUID
 
 
 @pytest.mark.asyncio
@@ -260,7 +383,7 @@ async def test_create_issue_mutation_failure(httpx_mock: Any) -> None:
         json={"data": {"issueCreate": {"success": False, "issue": None}}},
     )
     result = CreateIssueOutput.model_validate(
-        await create_issue.ainvoke(_args(team_id="T1", title="x"))
+        await create_issue.ainvoke(_args(team_id=_TEAM_UUID, title="x"))
     )
     assert result.success is False
     assert result.error is not None and "create" in result.error
@@ -270,9 +393,10 @@ async def test_create_issue_mutation_failure(httpx_mock: Any) -> None:
 async def test_create_issue_argument_validation_surfaces_reason(
     httpx_mock: Any,
 ) -> None:
-    """A team KEY passed as team_id yields Linear's generic 'Argument
-    Validation Error'; the real reason lives in extensions and must be
-    surfaced so the failure is debuggable."""
+    """When the mutation itself returns Linear's generic 'Argument
+    Validation Error', the real reason lives in extensions and must be
+    surfaced so the failure is debuggable. (team_id is a UUID here, so
+    resolution is skipped and the request reaches the mutation.)"""
     httpx_mock.add_response(
         method="POST",
         url=API,
@@ -285,7 +409,7 @@ async def test_create_issue_argument_validation_surfaces_reason(
                     "extensions": {
                         "code": "INTERNAL_SERVER_ERROR",
                         "type": "invalid_input",
-                        "userPresentableMessage": "teamId must be a UUID",
+                        "userPresentableMessage": "dueDate must be a valid date",
                         "userError": True,
                     },
                 }
@@ -293,13 +417,13 @@ async def test_create_issue_argument_validation_surfaces_reason(
         },
     )
     result = CreateIssueOutput.model_validate(
-        await create_issue.ainvoke(_args(team_id="ENG", title="x"))
+        await create_issue.ainvoke(_args(team_id=_TEAM_UUID, title="x"))
     )
     assert result.success is False
     assert result.error is not None
     # Generic wrapper preserved, actionable reason appended.
     assert "Argument Validation Error" in result.error
-    assert "teamId must be a UUID" in result.error
+    assert "dueDate must be a valid date" in result.error
 
 
 @pytest.mark.asyncio
@@ -333,7 +457,7 @@ async def test_graphql_error_falls_back_to_validation_constraints(
         },
     )
     result = CreateIssueOutput.model_validate(
-        await create_issue.ainvoke(_args(team_id="T1", title="x", priority=9))
+        await create_issue.ainvoke(_args(team_id=_TEAM_UUID, title="x", priority=9))
     )
     assert result.success is False
     assert result.error is not None
@@ -352,7 +476,7 @@ async def test_graphql_error_without_extensions_is_unchanged(
         json={"errors": [{"message": "Authentication required"}]},
     )
     result = CreateIssueOutput.model_validate(
-        await create_issue.ainvoke(_args(team_id="T1", title="x"))
+        await create_issue.ainvoke(_args(team_id=_TEAM_UUID, title="x"))
     )
     assert result.success is False
     assert result.error == "GraphQL errors: Authentication required"
@@ -404,7 +528,7 @@ async def test_list_projects(httpx_mock: Any) -> None:
         },
     )
     result = ListProjectsOutput.model_validate(
-        await list_projects.ainvoke(_args(team_id="T1", limit=5))
+        await list_projects.ainvoke(_args(team_id=_TEAM_UUID, limit=5))
     )
     assert result.success is True
     assert result.count == 1
@@ -426,7 +550,7 @@ async def test_create_project(httpx_mock: Any) -> None:
         },
     )
     result = CreateProjectOutput.model_validate(
-        await create_project.ainvoke(_args(team_id="T1", name="New project"))
+        await create_project.ainvoke(_args(team_id=_TEAM_UUID, name="New project"))
     )
     assert result.success is True
     assert result.project is not None
