@@ -7,16 +7,13 @@ status polling, LLM-based structured extraction, and batch scraping.
 
 ## Authentication
 
-### API Key (Bearer) — and ModuleX Managed Key
+### API Key (Bearer)
 
-- **First integration with paired `api_key + modulex_key` schemas.**
-  Both schemas auth identically via `Authorization: Bearer <key>`;
-  the runtime picks one based on which credential the operator
-  configures. The tool code is auth-agnostic — `api_key: str` is the
-  parameter regardless of which schema fed it.
+- **Single `api_key` schema** (bring-your-own-key), authed via
+  `Authorization: Bearer <key>`. `api_key: str` is the tool parameter.
 - API-key env var: `FIRECRAWL_API_KEY`.
-- Both schemas' `test_endpoint` hits POST `/scrape` with
-  `example.com` to validate the credential cheaply.
+- The `test_endpoint` hits POST `/scrape` with `example.com` to
+  validate the credential cheaply.
 
 ## Tools
 

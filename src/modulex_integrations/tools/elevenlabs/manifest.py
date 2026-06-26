@@ -6,7 +6,6 @@ from modulex_integrations.schema import (
     ApiKeyAuthSchema,
     EnvVar,
     IntegrationManifest,
-    ModulexKeyAuthSchema,
     ParameterDef,
     SuccessIndicators,
     TestEndpoint,
@@ -319,18 +318,6 @@ manifest = IntegrationManifest(
                     about_url="https://elevenlabs.io/app/settings/api-keys",
                 ),
             ],
-            test_endpoint=_test_endpoint("api_key"),
-        ),
-        ModulexKeyAuthSchema(
-            display_name="ModuleX Managed Key",
-            description=(
-                "Use ModuleX's managed API keys with usage tracked against "
-                "your weekly credit limit"
-            ),
-            setup_environment_variables=[],
-            # The modulex runtime resolves the real API key from the
-            # modulex_key_pool when this schema is used; {api_key} is
-            # substituted server-side by the credential resolver.
             test_endpoint=_test_endpoint("api_key"),
         ),
     ],

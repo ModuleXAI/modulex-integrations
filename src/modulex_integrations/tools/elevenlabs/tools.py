@@ -1,9 +1,8 @@
 """ElevenLabs LangChain ``@tool`` functions.
 
 Wraps the synchronous ``elevenlabs`` SDK inside async tool functions.
-Key-based runtime convention (``api_key: str`` first arg) with paired
-``api_key + modulex_key`` schemas (both Bearer-authed; the runtime
-picks which credential to inject).
+Key-based runtime convention (``api_key: str`` first arg) with a single
+Bearer-authed ``api_key`` schema (bring-your-own-key).
 
 15 actions across TTS, STT, sound effects, voice library / cloning /
 isolation, subscription, and Conversational-AI (agents + knowledge

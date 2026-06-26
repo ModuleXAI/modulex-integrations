@@ -16,6 +16,13 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
   available teams. UUID values skip the lookup entirely (no extra
   round-trip).
 
+### Changed
+
+- `elevenlabs`, `firecrawl` — dropped the `modulex_key` managed-key
+  auth schema; both now ship a single `api_key` (bring-your-own-key)
+  schema. The tool code is unchanged (already auth-agnostic — the
+  injected credential is the same `api_key: str` parameter either way).
+
 ## [0.10.0] - 2026-06-19
 
 ### Changed (schema)

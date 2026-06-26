@@ -61,9 +61,9 @@ class TestManifest:
     def test_manifest_actions_match_tools_tuple(self) -> None:
         assert {a.name for a in manifest.actions} == {t.name for t in TOOLS}
 
-    def test_manifest_has_paired_auth(self) -> None:
+    def test_manifest_has_api_key_auth(self) -> None:
         types = {a.auth_type for a in manifest.auth_schemas}
-        assert types == {"api_key", "modulex_key"}
+        assert types == {"api_key"}
 
 
 @pytest.mark.asyncio
