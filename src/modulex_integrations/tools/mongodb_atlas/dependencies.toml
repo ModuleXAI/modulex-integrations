@@ -1,0 +1,7 @@
+# Runtime dependencies for the mongodb_atlas integration.
+#
+# MongoDB authenticates over its own wire protocol, so this integration
+# uses PyMongo's async API (AsyncMongoClient, GA since 4.13) instead of
+# httpx. `bson` (BSON <-> Extended JSON) ships inside pymongo.
+
+dependencies = ["pymongo>=4.13"]
