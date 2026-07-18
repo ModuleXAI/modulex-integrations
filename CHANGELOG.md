@@ -8,6 +8,25 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ### Added
 
+- `mongodb_atlas` integration — 6 actions, auth: custom. Atlas Vector
+  Search (`$vectorSearch`) plus database/collection/search-index
+  introspection and document insert/delete via the PyMongo async
+  driver.
+- `pinecone` integration — 9 actions, auth: custom. Vector query,
+  raw-text `search_records` (integrated-embedding indexes), index
+  CRUD/stats, and vector upsert/delete over the native REST API.
+- `qdrant` integration — 7 actions, auth: custom. Universal
+  `points/query` search (vector, or text + model on Qdrant Cloud
+  inference), collection CRUD/info, and point upsert/delete.
+- `weaviate` integration — 7 actions, auth: custom. GraphQL
+  nearVector/nearText search, schema management, and object
+  insert/delete.
+
+  All four are pure pass-through vector-database tools: they call the
+  provider's own HTTP API (or driver) with the integration's own
+  credential and return native response shapes — no ModuleX-side
+  query embedding or result normalization.
+
 - `linear` — `team_id` on `create_issue`, `create_project`,
   `update_issue`, `search_issues`, and `list_projects` now accepts the
   team's short key (e.g. `ENG`) or name in addition to its UUID.
