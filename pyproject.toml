@@ -57,8 +57,10 @@ dev = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/ModuleXAI/modulex-integrations"
+Homepage = "https://modulex.dev"
+Documentation = "https://docs.modulex.dev"
 Repository = "https://github.com/ModuleXAI/modulex-integrations"
+Changelog = "https://github.com/ModuleXAI/modulex-integrations/blob/main/CHANGELOG.md"
 Issues = "https://github.com/ModuleXAI/modulex-integrations/issues"
 
 # Entry points — each migrated tool gets one line here.

@@ -22,7 +22,7 @@ manifest = IntegrationManifest(
     author="ModuleX",
     logo="modulex:mercury-themed",
     app_url="https://mercury.com",
-    categories=["Finance", "Banking"],
+    categories=["Finance & Payments", "Banking"],
     actions=[
         ActionDefinition(
             name="get_account_info",
