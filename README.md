@@ -49,7 +49,7 @@
   <a href="src/modulex_integrations/tools/mongodb_atlas"><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/ModuleXAI/logox/main/tools/mongodb_atlas_dark.svg"><img src="https://raw.githubusercontent.com/ModuleXAI/logox/main/tools/mongodb_atlas_light.svg" alt="MongoDB Atlas" height="34"></picture></a>
 </p>
 
-<p align="center">…and 160+ more in <a href="src/modulex_integrations/tools"><code>src/modulex_integrations/tools/</code></a>.</p>
+<p align="center">…and 160+ more — browse the full catalog at <a href="https://modulex.dev/integrations"><b>modulex.dev/integrations</b></a>, or the source in <a href="src/modulex_integrations/tools"><code>src/modulex_integrations/tools/</code></a>.</p>
 
 ---
 
@@ -201,6 +201,7 @@ pytest && ruff check src tests && mypy src/modulex_integrations
 ## Links
 
 - **Website** — [modulex.dev](https://modulex.dev)
+- **Integration gallery** — [modulex.dev/integrations](https://modulex.dev/integrations)
 - **Documentation** — [docs.modulex.dev](https://docs.modulex.dev)
 - **PyPI** — [pypi.org/project/modulex-integrations](https://pypi.org/project/modulex-integrations/)
 - **Issues** — [github.com/ModuleXAI/modulex-integrations/issues](https://github.com/ModuleXAI/modulex-integrations/issues)
