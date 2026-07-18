@@ -6,6 +6,8 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ## [Unreleased]
 
+## [0.12.0] - 2026-07-18
+
 ### Added
 
 - `mongodb_atlas` integration — 6 actions, auth: custom. Atlas Vector
@@ -26,6 +28,10 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
   provider's own HTTP API (or driver) with the integration's own
   credential and return native response shapes — no ModuleX-side
   query embedding or result normalization.
+
+## [0.11.0] - 2026-06-26
+
+### Added
 
 - `linear` — `team_id` on `create_issue`, `create_project`,
   `update_issue`, `search_issues`, and `list_projects` now accepts the
