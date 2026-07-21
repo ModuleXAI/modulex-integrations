@@ -7,13 +7,10 @@ from pydantic import BaseModel, ConfigDict, Field
 
 __all__ = [
     "AccountItem",
-    "CreateTagOutput",
     "GetTagOutput",
     "GetTagsOutput",
     "ListAccountIdOptionsOutput",
     "TagResource",
-    "UpdateTagOutput",
-    "UpdateVariableOutput",
 ]
 
 
@@ -57,11 +54,6 @@ class AccountItem(_Base):
 # --- Per-action output models ----------------------------------------------
 
 
-class CreateTagOutput(_Base):
-    success: bool
-    tag: TagResource | None = None
-
-
 class GetTagOutput(_Base):
     success: bool
     tag: TagResource | None = None
@@ -75,13 +67,3 @@ class GetTagsOutput(_Base):
 class ListAccountIdOptionsOutput(_Base):
     success: bool
     accounts: list[AccountItem] = Field(default_factory=list)
-
-
-class UpdateTagOutput(_Base):
-    success: bool
-    tag: TagResource | None = None
-
-
-class UpdateVariableOutput(_Base):
-    success: bool
-    data: dict[str, Any] | None = None

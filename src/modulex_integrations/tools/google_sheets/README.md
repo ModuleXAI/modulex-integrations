@@ -17,8 +17,13 @@ Sheets API v4 (`https://sheets.googleapis.com/v4`).
   - `GOOGLE_SHEETS_OAUTH2_CLIENT_ID` (format: `<digits>.apps.googleusercontent.com`)
   - `GOOGLE_SHEETS_OAUTH2_CLIENT_SECRET` (format: `GOCSPX-...`)
 - Scopes requested:
-  - `https://www.googleapis.com/auth/spreadsheets`
   - `https://www.googleapis.com/auth/drive.file`
+
+> **Per-file access.** `drive.file` grants access only to spreadsheets this
+> application created, or that the user has explicitly shared with it through a
+> file picker. Actions that take a `spreadsheet_id` for a pre-existing
+> spreadsheet the app did not create will fail until that file is shared with
+> the app.
 
 ## Tools
 

@@ -5,11 +5,16 @@ v4 (Sheets) REST APIs. Pure HTTP, no SDK dep. 16 actions.
 
 ## Authentication
 
-- **Paired `oauth2 + bearer_token` schemas.** OAuth requests four
-  scopes covering Drive (app-created files) + Docs + Sheets + Slides:
-  `drive.file`, `documents`, `spreadsheets`, `presentations`. The
-  broad `drive` scope was dropped — access is now limited to files
-  the app creates or that the user explicitly opens.
+- **Paired `oauth2 + bearer_token` schemas.** OAuth requests a single
+  scope — `drive.file` — which covers the Drive, Docs, Sheets, and
+  Slides APIs on a per-file basis. The broad `drive` scope and the
+  API-wide `documents` / `spreadsheets` / `presentations` scopes were
+  dropped: access is limited to files the app creates or that the
+  user explicitly shares with it through a file picker.
+
+> **Per-file access.** Actions that take a pre-existing file, document,
+> spreadsheet, or presentation ID will fail unless the app created that
+> file or the user has shared it with the app.
 - OAuth env vars: `GOOGLE_DRIVE_OAUTH2_CLIENT_ID`,
   `GOOGLE_DRIVE_OAUTH2_CLIENT_SECRET` (both `only_for_custom`).
 - Bearer env var: `GOOGLE_ACCESS_TOKEN`.

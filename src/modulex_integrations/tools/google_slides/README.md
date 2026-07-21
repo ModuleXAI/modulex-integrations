@@ -11,9 +11,17 @@ This integration supports a single auth method. Token validation hits Slides `GE
 - Create an OAuth 2.0 Client ID in the [Google Cloud Console Credentials page](https://console.cloud.google.com/apis/credentials).
 - Register `https://api.modulex.dev/credentials/oauth2/callback` as an authorized redirect URI on the OAuth client.
 - Enable the Google Slides API on the Google Cloud project (APIs & Services -> Library).
+- Enable the Google Drive API as well, so the OAuth token can be validated
+  against the Drive `about` endpoint with the `drive.file` scope.
 - Required env vars: `GOOGLE_SLIDES_OAUTH2_CLIENT_ID`, `GOOGLE_SLIDES_OAUTH2_CLIENT_SECRET`.
 - Scopes requested:
-  - `https://www.googleapis.com/auth/presentations` (read/write Slides)
+  - `https://www.googleapis.com/auth/drive.file` (read/write, per-file)
+
+> **Per-file access.** `drive.file` grants access only to presentations this
+> application created, or that the user has explicitly shared with it through a
+> file picker. Actions that take a `presentation_id` for a pre-existing
+> presentation the app did not create will fail until that file is shared with
+> the app.
 
 ## Tools
 

@@ -7,10 +7,17 @@ Create, read, and edit Google Docs documents via the Google Docs API (`docs.goog
 ### OAuth2 Authentication
 
 - Create OAuth credentials at the [Google Cloud Console](https://console.cloud.google.com/apis/credentials).
-- Enable the Google Docs API in your project.
+- Enable the Google Docs API in your project. The Google Drive API must also be
+  enabled so the OAuth token can be validated against the Drive `about`
+  endpoint with the `drive.file` scope.
 - Required env vars: `GOOGLE_DOCS_OAUTH2_CLIENT_ID` and `GOOGLE_DOCS_OAUTH2_CLIENT_SECRET` (only when using your own OAuth app).
-- Scopes requested: `https://www.googleapis.com/auth/documents`.
+- Scopes requested: `https://www.googleapis.com/auth/drive.file`.
 - Redirect URI: `https://api.modulex.dev/credentials/oauth2/callback`.
+
+> **Per-file access.** `drive.file` grants access only to documents this
+> application created, or that the user has explicitly shared with it through a
+> file picker. Actions that take a `doc_id` for a pre-existing document the app
+> did not create will fail until that document is shared with the app.
 
 ## Tools
 

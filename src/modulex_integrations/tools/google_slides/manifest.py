@@ -652,22 +652,22 @@ manifest = IntegrationManifest(
                 access_type="offline",
                 prompt="consent",
                 scopes=[
-                    "https://www.googleapis.com/auth/presentations",
+                    "https://www.googleapis.com/auth/drive.file",
                 ],
                 token_auth_method="body",
             ),
             test_endpoint=TestEndpoint(
-                url="https://slides.googleapis.com/v1/presentations/1",
+                url="https://www.googleapis.com/drive/v3/about?fields=user",
                 method="GET",
                 headers={"Authorization": "Bearer {access_token}"},
                 success_indicators=SuccessIndicators(
-                    status_codes=[200, 404],
-                    response_fields=None,
+                    status_codes=[200],
+                    response_fields=["user"],
                 ),
                 cost_level="free",
                 description=(
-                    "Validates the OAuth token against the Slides API "
-                    "(200 or 404 both confirm the token is accepted)."
+                    "Validates the OAuth token via the Drive about endpoint "
+                    "(reachable with the drive.file scope)."
                 ),
             ),
         ),
