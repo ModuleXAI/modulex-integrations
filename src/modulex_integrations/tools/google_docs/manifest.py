@@ -269,21 +269,24 @@ manifest = IntegrationManifest(
                 access_type="offline",
                 prompt="consent",
                 scopes=[
-                    "https://www.googleapis.com/auth/documents",
+                    "https://www.googleapis.com/auth/drive.file",
                 ],
             ),
             test_endpoint=TestEndpoint(
-                url="https://docs.googleapis.com/v1/documents/1",
+                url="https://www.googleapis.com/drive/v3/about?fields=user",
                 method="GET",
                 headers={
                     "Authorization": "Bearer {access_token}",
                 },
                 success_indicators=SuccessIndicators(
-                    status_codes=[200, 404],
-                    response_fields=[],
+                    status_codes=[200],
+                    response_fields=["user"],
                 ),
                 cost_level="free",
-                description="Validates OAuth token by attempting to fetch a document",
+                description=(
+                    "Validates the OAuth token via the Drive about endpoint "
+                    "(reachable with the drive.file scope)."
+                ),
             ),
         ),
     ],

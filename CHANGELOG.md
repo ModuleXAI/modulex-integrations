@@ -6,6 +6,21 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ## [Unreleased]
 
+### Changed
+
+- `google_docs`, `google_sheets`, `google_slides`, `google_drive` — OAuth now
+  requests only `drive.file` instead of the API-wide `documents`,
+  `spreadsheets`, and `presentations` scopes. Access is per-file: actions
+  operating on a pre-existing file require that the app created it or that the
+  user shared it with the app. No actions were removed.
+- `google_tag_manager` — now read-only. Requests only `tagmanager.readonly`;
+  the `tagmanager.edit.containers` scope was dropped.
+
+### Removed
+
+- `google_tag_manager` — `create_tag`, `update_tag`, and `update_variable`
+  actions (6 actions → 3), along with their output models.
+
 ## [0.12.0] - 2026-07-18
 
 ### Added
