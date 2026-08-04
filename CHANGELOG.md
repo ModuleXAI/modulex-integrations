@@ -6,6 +6,9 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ## [Unreleased]
 
+## [0.14.0] - 2026-08-04
+
+
 ### Added
 
 - `agentphone` integration — 22 actions, auth: api_key.
@@ -65,6 +68,8 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
   ticket comments and threads, contact lookup, and organization (portal)
   discovery over the Zoho Desk REST API, with data-center-aware host
   resolution.
+
+## [0.13.0] - 2026-07-21
 
 ### Changed
 
