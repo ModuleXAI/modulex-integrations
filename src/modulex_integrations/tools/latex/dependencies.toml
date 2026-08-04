@@ -1,0 +1,6 @@
+# Runtime dependencies for the latex integration.
+#
+# The LaTeX-on-HTTP API is hit over plain HTTP (httpx) and answers with
+# JSON. httpx and langchain-core are in core deps; nothing extra needed.
+
+dependencies = []

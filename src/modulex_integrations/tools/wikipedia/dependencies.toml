@@ -1,0 +1,7 @@
+# Runtime dependencies for the wikipedia integration.
+#
+# Every action is a plain HTTP GET against wikipedia.org, issued with
+# httpx and parsed as JSON. httpx and langchain-core are in core deps;
+# nothing extra needed.
+
+dependencies = []

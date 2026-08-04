@@ -9,6 +9,19 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 ### Added
 
 - `agentphone` integration — 22 actions, auth: api_key.
+- `fireflies` integration — 10 actions, auth: api_key. Transcript listing and
+  retrieval, user and contact directory, audio upload by URL, live-meeting
+  join, and bite creation/listing over the Fireflies GraphQL API.
+- `greenhouse` integration — 11 actions, auth: api_key. Candidates, jobs,
+  applications, users, departments, offices, and job stages over the
+  Greenhouse Harvest read API.
+- `latex` integration — 3 actions, auth: modulex_key. TeX Live package search,
+  single-package metadata, and font search. The service takes no credential;
+  the managed-key schema is declarative only.
+- `reddit` integration — 38 actions, auth: custom. Posts, comments, search,
+  user and subreddit surfaces, the inbox, writes and per-thing state toggles,
+  plus the six moderator actions. Static script-app credentials, no browser
+  redirect.
 - `ashby` integration — 28 actions, auth: api_key. Candidates, applications and
   stage changes, jobs, openings and postings, offers, interviews, notes, plus
   the reference-data lists, over the Ashby ATS API.
@@ -26,6 +39,10 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
   single-paper metadata lookup, and an author's recent submissions over the
   public arXiv API. The API takes no credential; the managed-key schema is
   declarative only.
+- `wikipedia` integration — 4 actions, auth: modulex_key. Page summary, article
+  search, full page content with HTML, and a random article, across any language
+  edition. The API takes no credential; the managed-key schema is declarative
+  only.
 - `ses` integration — 19 actions, auth: custom. Amazon SES API v2 sending
   (simple, templated, bulk, custom verification), email identity and DKIM
   management, email templates, suppression list, configuration sets, and
