@@ -1,0 +1,83 @@
+"""AgentPhone integration — discovered by modulex via the
+``modulex.tools`` entry point.
+
+Public surface: ``manifest`` (IntegrationManifest) and ``TOOLS``
+(tuple of LangChain ``StructuredTool`` objects, one per action).
+"""
+from modulex_integrations.tools.agentphone.manifest import manifest
+from modulex_integrations.tools.agentphone.tools import (
+    create_call,
+    create_contact,
+    create_number,
+    delete_contact,
+    get_call,
+    get_call_transcript,
+    get_contact,
+    get_conversation,
+    get_conversation_messages,
+    get_number_messages,
+    get_usage,
+    get_usage_daily,
+    get_usage_monthly,
+    list_calls,
+    list_contacts,
+    list_conversations,
+    list_numbers,
+    react_to_message,
+    release_number,
+    send_message,
+    update_contact,
+    update_conversation,
+)
+
+TOOLS = (
+    create_number,
+    list_numbers,
+    release_number,
+    get_number_messages,
+    create_call,
+    list_calls,
+    get_call,
+    get_call_transcript,
+    list_conversations,
+    get_conversation,
+    update_conversation,
+    get_conversation_messages,
+    send_message,
+    react_to_message,
+    create_contact,
+    list_contacts,
+    get_contact,
+    update_contact,
+    delete_contact,
+    get_usage,
+    get_usage_daily,
+    get_usage_monthly,
+)
+
+__all__ = [
+    "TOOLS",
+    "create_call",
+    "create_contact",
+    "create_number",
+    "delete_contact",
+    "get_call",
+    "get_call_transcript",
+    "get_contact",
+    "get_conversation",
+    "get_conversation_messages",
+    "get_number_messages",
+    "get_usage",
+    "get_usage_daily",
+    "get_usage_monthly",
+    "list_calls",
+    "list_contacts",
+    "list_conversations",
+    "list_numbers",
+    "manifest",
+    "react_to_message",
+    "release_number",
+    "send_message",
+    "update_contact",
+    "update_conversation",
+]

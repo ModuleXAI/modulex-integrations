@@ -1,0 +1,5 @@
+# Runtime dependencies for the ses integration.
+# CI assembles this into the root pyproject's [project.optional-dependencies].
+# Requests are signed with AWS Signature Version 4 using the standard
+# library (hmac/hashlib), so no AWS SDK is required.
+dependencies = []

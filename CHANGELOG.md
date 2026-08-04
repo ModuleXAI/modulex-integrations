@@ -6,6 +6,23 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ## [Unreleased]
 
+### Added
+
+- `agentphone` integration — 22 actions, auth: api_key.
+- `arxiv` integration — 3 actions, auth: modulex_key. Keyword/field search,
+  single-paper metadata lookup, and an author's recent submissions over the
+  public arXiv API. The API takes no credential; the managed-key schema is
+  declarative only.
+- `ses` integration — 19 actions, auth: custom. Amazon SES API v2 sending
+  (simple, templated, bulk, custom verification), email identity and DKIM
+  management, email templates, suppression list, configuration sets, and
+  account sending quota. Requests are signed with AWS Signature Version 4
+  using the standard library; no AWS SDK dependency.
+- `zoho_desk` integration — 9 actions, auth: custom. Ticket listing/read/update,
+  ticket comments and threads, contact lookup, and organization (portal)
+  discovery over the Zoho Desk REST API, with data-center-aware host
+  resolution.
+
 ### Changed
 
 - `google_docs`, `google_sheets`, `google_slides`, `google_drive` — OAuth now

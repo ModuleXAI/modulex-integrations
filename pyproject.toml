@@ -244,6 +244,10 @@ whatsapp = "modulex_integrations.tools.whatsapp"
 wiza = "modulex_integrations.tools.wiza"
 youtube = "modulex_integrations.tools.youtube"
 zerobounce = "modulex_integrations.tools.zerobounce"
+agentphone = "modulex_integrations.tools.agentphone"
+arxiv = "modulex_integrations.tools.arxiv"
+ses = "modulex_integrations.tools.ses"
+zoho_desk = "modulex_integrations.tools.zoho_desk"
 
 [tool.hatch.version]
 # Version is derived from the latest git tag matching v* (e.g. v0.1.0,

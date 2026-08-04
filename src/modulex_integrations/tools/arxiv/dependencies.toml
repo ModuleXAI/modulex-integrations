@@ -1,0 +1,7 @@
+# Runtime dependencies for the arxiv integration.
+#
+# The arXiv API is hit via raw HTTP (httpx) and its Atom feed is parsed
+# with the standard library's xml.etree.ElementTree. httpx and
+# langchain-core are in core deps; nothing extra needed.
+
+dependencies = []
