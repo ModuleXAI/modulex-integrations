@@ -508,7 +508,7 @@ def _parse_sentence(raw: dict[str, Any]) -> FirefliesSentence:
 
 def _parse_summary(raw: dict[str, Any]) -> FirefliesSummary:
     return FirefliesSummary(
-        keywords=_as_str_list(raw.get("keywords")),
+        keywords=_as_text(raw.get("keywords")),
         action_items=_as_text(raw.get("action_items")),
         outline=_as_text(raw.get("outline")),
         shorthand_bullet=_as_text(raw.get("shorthand_bullet")),
@@ -747,7 +747,10 @@ class UploadAudioInput(BaseModel):
     title: str | None = Field(default=None, description="Title for the meeting/transcript")
     webhook: str | None = Field(
         default=None,
-        description="URL the service calls when the transcription finishes",
+        description=(
+            "Your own https:// endpoint that the service POSTs the finished "
+            "transcript to. Leave unset unless you operate the receiving endpoint"
+        ),
     )
     language: str | None = Field(
         default=None,
@@ -970,8 +973,12 @@ async def upload_audio(
         audio_input["title"] = title.strip()
     if webhook and webhook.strip():
         hook = webhook.strip()
-        if not hook.lower().startswith(("http://", "https://")):
-            return UploadAudioOutput(success=False, error="webhook must be an http(s) URL.")
+        # The vendor POSTs the finished transcript to this URL, so it is a
+        # data-egress surface: https only, matching audio_url.
+        if not hook.lower().startswith("https://"):
+            return UploadAudioOutput(
+                success=False, error="webhook must be an https:// URL."
+            )
         audio_input["webhook"] = hook
     if language and language.strip():
         audio_input["custom_language"] = language.strip()

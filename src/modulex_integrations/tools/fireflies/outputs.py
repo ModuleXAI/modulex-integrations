@@ -96,7 +96,7 @@ class FirefliesSummary(_Base):
     union rather than forced into one shape.
     """
 
-    keywords: list[str] = Field(default_factory=list)
+    keywords: str | list[str] | None = None
     action_items: str | list[str] | None = None
     outline: str | list[str] | None = None
     shorthand_bullet: str | list[str] | None = None

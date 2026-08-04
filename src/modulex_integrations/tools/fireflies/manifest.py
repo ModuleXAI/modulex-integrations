@@ -148,7 +148,11 @@ manifest = IntegrationManifest(
                 ),
                 "webhook": ParameterDef(
                     type="string",
-                    description="URL Fireflies calls when the transcription finishes",
+                    description=(
+                        "Your own https:// endpoint that Fireflies POSTs the finished "
+                        "transcript to. Leave unset unless you operate the receiving "
+                        "endpoint"
+                    ),
                 ),
                 "language": _LANGUAGE_PARAM,
                 "attendees": ParameterDef(

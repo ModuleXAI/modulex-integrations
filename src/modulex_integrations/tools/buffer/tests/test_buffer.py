@@ -218,6 +218,9 @@ async def test_create_post_custom_scheduled_sends_due_at(httpx_mock):  # type: i
 
 @pytest.mark.asyncio
 async def test_edit_post(httpx_mock):  # type: ignore[no-untyped-def]
+    # schedulingType is non-null upstream, so an unspecified value is read off
+    # the post first rather than defaulted.
+    httpx_mock.add_response(method="POST", json={"data": {"post": _POST_NODE}})
     httpx_mock.add_response(
         method="POST",
         json={
@@ -232,13 +235,57 @@ async def test_edit_post(httpx_mock):  # type: ignore[no-untyped-def]
     assert result.post is not None
     assert result.post.id == "post_1"
 
-    post_input = _sent_variables(httpx_mock)["input"]
+    post_input = _sent_variables(httpx_mock, 1)["input"]
     assert post_input["id"] == "post_1"
     assert post_input["text"] == "Updated text"
-    # schedulingType is non-null upstream, so it is always sent; mode is
-    # omitted when the caller makes no scheduling change.
-    assert post_input["schedulingType"] == "automatic"
+    assert post_input["schedulingType"] == _POST_NODE["schedulingType"]
+    # mode is omitted when the caller makes no scheduling change.
     assert "mode" not in post_input
+
+
+@pytest.mark.asyncio
+async def test_edit_post_preserves_notification_scheduling(httpx_mock):  # type: ignore[no-untyped-def]
+    """Editing only the text must not convert a notification-published post.
+
+    `EditPostInput.schedulingType` is non-null with no upstream default, so a
+    value has to be sent on every edit. Defaulting it to "automatic" would
+    silently change how an existing notification post publishes.
+    """
+    notification_post = {**_POST_NODE, "schedulingType": "notification"}
+    httpx_mock.add_response(method="POST", json={"data": {"post": notification_post}})
+    httpx_mock.add_response(
+        method="POST",
+        json={
+            "data": {
+                "editPost": {"__typename": "PostActionSuccess", "post": notification_post}
+            }
+        },
+    )
+
+    result_dict = await edit_post.ainvoke(_args(post_id="post_1", text="Updated text"))
+    assert EditPostOutput.model_validate(result_dict).success is True
+
+    assert _sent_variables(httpx_mock, 1)["input"]["schedulingType"] == "notification"
+
+
+@pytest.mark.asyncio
+async def test_edit_post_explicit_scheduling_type_skips_the_lookup(httpx_mock):  # type: ignore[no-untyped-def]
+    """An explicit value is authoritative — no extra request is spent."""
+    httpx_mock.add_response(
+        method="POST",
+        json={
+            "data": {"editPost": {"__typename": "PostActionSuccess", "post": _POST_NODE}}
+        },
+    )
+
+    result_dict = await edit_post.ainvoke(
+        _args(post_id="post_1", text="Updated text", scheduling_type="notification")
+    )
+    assert EditPostOutput.model_validate(result_dict).success is True
+
+    requests = httpx_mock.get_requests()
+    assert len(requests) == 1
+    assert _sent_variables(httpx_mock)["input"]["schedulingType"] == "notification"
 
 
 @pytest.mark.asyncio

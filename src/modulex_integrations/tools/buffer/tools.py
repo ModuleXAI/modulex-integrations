@@ -590,11 +590,11 @@ class EditPostInput(BaseModel):
             "'customScheduled' (requires due_at). Omit to make no scheduling change"
         ),
     )
-    scheduling_type: str = Field(
-        default="automatic",
+    scheduling_type: str | None = Field(
+        default=None,
         description=(
-            "How the post publishes: 'automatic' or 'notification'. Buffer requires this on "
-            "every edit, so pass 'notification' for a notification-published post"
+            "How the post publishes: 'automatic' or 'notification'. Leave unset to keep "
+            "the post's current setting; set it only to change how the post publishes"
         ),
     )
     due_at: str | None = Field(
@@ -770,7 +770,7 @@ async def edit_post(
     api_key: str,
     text: str | None = None,
     mode: str | None = None,
-    scheduling_type: str = "automatic",
+    scheduling_type: str | None = None,
     due_at: str | None = None,
     save_to_draft: bool | None = None,
     media_url: str | None = None,
@@ -784,7 +784,7 @@ async def edit_post(
         return EditPostOutput(
             success=False, error=f"mode must be one of: {', '.join(_SHARE_MODES)}."
         )
-    if scheduling_type not in _SCHEDULING_TYPES:
+    if scheduling_type is not None and scheduling_type not in _SCHEDULING_TYPES:
         return EditPostOutput(
             success=False,
             error=f"scheduling_type must be one of: {', '.join(_SCHEDULING_TYPES)}.",
@@ -798,8 +798,37 @@ async def edit_post(
     if asset_error is not None:
         return EditPostOutput(success=False, error=asset_error)
 
-    # schedulingType is non-null on the edit input, so it is always sent.
-    post_input: dict[str, Any] = {"id": post_id, "schedulingType": scheduling_type}
+    # schedulingType is non-null on the edit input, so a value must always be
+    # sent. Defaulting it would silently convert a notification-published post
+    # to automatic whenever the caller edits only the text, so an unspecified
+    # value is read off the post instead. That costs one extra request only in
+    # the ambiguous case — an explicit scheduling_type skips the lookup.
+    resolved_scheduling_type = scheduling_type
+    if resolved_scheduling_type is None:
+        current, current_error = await _graphql(
+            api_key, _GET_POST_QUERY, {"input": {"id": post_id}}
+        )
+        if current_error is not None:
+            return EditPostOutput(success=False, error=current_error)
+        current_post = _as_dict(current.get("post"))
+        if not current_post:
+            return EditPostOutput(
+                success=False, error=f"Post '{post_id}' was not found."
+            )
+        resolved_scheduling_type = _as_str(current_post.get("schedulingType"))
+        if resolved_scheduling_type not in _SCHEDULING_TYPES:
+            return EditPostOutput(
+                success=False,
+                error=(
+                    f"Post '{post_id}' reports an unrecognised scheduling type; "
+                    "pass scheduling_type explicitly to edit it."
+                ),
+            )
+
+    post_input: dict[str, Any] = {
+        "id": post_id,
+        "schedulingType": resolved_scheduling_type,
+    }
     if text is not None:
         post_input["text"] = text
     if mode is not None:

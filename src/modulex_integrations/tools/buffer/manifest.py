@@ -131,11 +131,10 @@ manifest = IntegrationManifest(
                     type="string",
                     description=(
                         "How the post publishes: 'automatic' (Buffer publishes it) or "
-                        "'notification' (a mobile reminder is sent instead). Buffer requires "
-                        "this on every edit, so pass 'notification' when editing a post that "
-                        "already publishes by notification"
+                        "'notification' (a mobile reminder is sent instead). Leave unset "
+                        "to keep the post's current setting; set it only to change how "
+                        "the post publishes"
                     ),
-                    default="automatic",
                 ),
                 "due_at": ParameterDef(
                     type="string",

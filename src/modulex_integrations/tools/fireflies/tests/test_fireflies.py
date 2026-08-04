@@ -713,7 +713,10 @@ async def test_wrong_typed_nested_scalar_degrades(httpx_mock):  # type: ignore[n
     assert sentence.start_time == 12.5
     assert sentence.ai_filters is None
     assert result.transcript.summary is not None
-    assert result.transcript.summary.keywords == []
+    # The vendor's schema page types `keywords` String while its own reference
+    # types it string[]; both shapes are accepted rather than one being
+    # guessed, exactly as for the other conflicting summary fields.
+    assert result.transcript.summary.keywords == "release"
     assert result.transcript.summary.action_items == ["a", "7"]
     assert result.transcript.analytics is not None
     assert result.transcript.analytics.categories is not None
@@ -848,3 +851,23 @@ async def test_wrong_typed_bool_degrades_instead_of_raising(httpx_mock):  # type
     assert filters.question is None
     # A non-bool scalar still coerces on the str-typed sibling field.
     assert filters.sentiment == "3"
+
+
+@pytest.mark.asyncio
+async def test_upload_audio_rejects_plaintext_webhook(httpx_mock):  # type: ignore[no-untyped-def]
+    """The webhook receives the finished transcript, so it must be https.
+
+    Plain http would have the vendor POST meeting content in cleartext. The
+    same bar already applies to `audio_url`; this keeps the two consistent.
+    """
+    result_dict = await upload_audio.ainvoke(
+        _args(
+            audio_url="https://cdn.example.com/call.mp3",
+            webhook="http://hooks.example.com/fireflies",
+        )
+    )
+    result = UploadAudioOutput.model_validate(result_dict)
+    assert result.success is False
+    assert "https" in (result.error or "")
+    # Rejected locally — nothing was sent upstream.
+    assert httpx_mock.get_requests() == []
