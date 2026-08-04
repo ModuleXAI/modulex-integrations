@@ -381,10 +381,16 @@ def _seg(value: Any) -> str:
     call at a different endpoint — escaping the action allow-list the
     manifest advertises. Encoding keeps any value a single segment.
 
-    An empty identifier becomes ``-`` so a missing ID 404s instead of
-    collapsing the path onto its parent collection endpoint.
+    Encoding alone is not enough: ``quote`` treats ``.`` as always-safe, so
+    a bare ``.`` or ``..`` survives as a dot segment and httpx resolves it
+    while building the URL — ``.`` collapses ``/contacts/{id}`` onto the
+    ``/contacts`` collection and ``..`` drops the entity segment entirely.
+    An empty identifier collapses the same way. All three become a segment
+    that cannot name a record, so the call 404s through the normal error
+    envelope instead of addressing something the caller never asked for.
     """
-    return quote(str(value), safe="") or "-"
+    encoded = quote(str(value), safe="")
+    return "-" if encoded in {"", ".", ".."} else encoded
 
 
 # --- Response coercion ------------------------------------------------------

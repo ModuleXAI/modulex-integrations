@@ -3056,6 +3056,30 @@ class TestRequestSafety:
         assert "limit" not in dict(request.url.params)
 
     @pytest.mark.asyncio
+    async def test_a_dot_id_cannot_reach_the_parent_collection(
+        self, httpx_mock: Any
+    ) -> None:
+        # `.` and `..` are in quote()'s always-safe set, so encoding alone
+        # leaves them as dot segments that httpx resolves away.
+        httpx_mock.add_response(json={"contact": {"id": "x"}})
+
+        await get_contact.ainvoke(_args(contact_id="."))
+
+        path = httpx_mock.get_requests()[0].url.path
+        assert not path.endswith("/contacts")
+        assert path.endswith("/contacts/-")
+
+    @pytest.mark.asyncio
+    async def test_a_double_dot_id_cannot_drop_the_entity_segment(
+        self, httpx_mock: Any
+    ) -> None:
+        httpx_mock.add_response(json={"contact": {"id": "x"}})
+
+        await get_contact.ainvoke(_args(contact_id=".."))
+
+        assert httpx_mock.get_requests()[0].url.path.endswith("/contacts/-")
+
+    @pytest.mark.asyncio
     async def test_empty_id_does_not_collapse_onto_the_collection(
         self, httpx_mock: Any
     ) -> None:
