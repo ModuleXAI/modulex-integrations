@@ -10,7 +10,7 @@
 <h1 align="center">modulex-integrations</h1>
 
 <p align="center">
-  <b>192 integrations · 1,950 actions · 20 categories</b><br>
+  <b>193 integrations · 2,067 actions · 20 categories</b><br>
   Pip-installable LangChain tool integrations for the <a href="https://modulex.dev">ModuleX</a> runtime — and any LangChain / LangGraph agent.
 </p>
 
