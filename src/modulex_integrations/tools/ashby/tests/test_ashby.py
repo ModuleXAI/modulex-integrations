@@ -1206,6 +1206,11 @@ async def test_empty_api_key_short_circuits_for_writes() -> None:
         "unicøde-key",
         "key with spaces",
         "+/=padding+/=",
+        # The two below are the only shapes whose base64 *payload* contains
+        # "+" and "/". Without them a urlsafe_b64encode swap survives the
+        # whole suite: every other key here encodes to the shared alphabet.
+        "ab~",  # -> YWJ+Og==
+        "ÿÿ",  # -> w7/Dvzo=
     ],
 )
 def test_basic_auth_header_matches_httpx_reference(key: str) -> None:
