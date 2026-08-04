@@ -9,6 +9,19 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 ### Added
 
 - `agentphone` integration — 22 actions, auth: api_key.
+- `ashby` integration — 28 actions, auth: api_key. Candidates, applications and
+  stage changes, jobs, openings and postings, offers, interviews, notes, plus
+  the reference-data lists, over the Ashby ATS API.
+- `buffer` integration — 10 actions, auth: api_key. Post create/edit/read/
+  delete, channel and account lookup, and the ideas surface over Buffer's
+  GraphQL API.
+- `fathom` integration — 6 actions, auth: api_key. Meeting listing with
+  date/team/recorder/invitee-domain filters, meeting-type listing, per-recording
+  summary and transcript retrieval, and team/team-member directory lookups over
+  the Fathom External API.
+- `flint` integration — 3 actions, auth: api_key. Starts prompt-driven and
+  template-based page-generation agent tasks on a Flint site and reads back a
+  task's status and the pages it created, modified, or deleted.
 - `arxiv` integration — 3 actions, auth: modulex_key. Keyword/field search,
   single-paper metadata lookup, and an author's recent submissions over the
   public arXiv API. The API takes no credential; the managed-key schema is

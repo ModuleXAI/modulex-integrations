@@ -248,6 +248,10 @@ agentphone = "modulex_integrations.tools.agentphone"
 arxiv = "modulex_integrations.tools.arxiv"
 ses = "modulex_integrations.tools.ses"
 zoho_desk = "modulex_integrations.tools.zoho_desk"
+ashby = "modulex_integrations.tools.ashby"
+buffer = "modulex_integrations.tools.buffer"
+fathom = "modulex_integrations.tools.fathom"
+flint = "modulex_integrations.tools.flint"
 
 [tool.hatch.version]
 # Version is derived from the latest git tag matching v* (e.g. v0.1.0,
