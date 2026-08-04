@@ -25,6 +25,12 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 - `latex` integration — 3 actions, auth: modulex_key. TeX Live package search,
   single-package metadata, and font search. The service takes no credential;
   the managed-key schema is declarative only.
+- `quickbooks` integration — 73 actions, auth: oauth2. Invoices, estimates,
+  sales receipts and credit memos, customers and vendors, bills, purchases
+  and payments on both sides of the ledger, items and the chart of accounts,
+  the company profile, eight financial reports, and a raw query escape hatch
+  over the QuickBooks Online Accounting API. Company scoped: the realm ID is
+  stored on the credential rather than passed per action.
 - `reddit` integration — 38 actions, auth: custom. Posts, comments, search,
   user and subreddit surfaces, the inbox, writes and per-thing state toggles,
   plus the six moderator actions. Static script-app credentials, no browser
