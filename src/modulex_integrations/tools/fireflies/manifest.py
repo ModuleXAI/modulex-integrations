@@ -48,7 +48,7 @@ manifest = IntegrationManifest(
     ),
     version="1.0.0",
     author="ModuleX",
-    logo="modulex:fireflies-themed",
+    logo="modulex:fireflies",
     app_url="https://fireflies.ai",
     categories=["Productivity & Collaboration", "meeting", "note-taking"],
     actions=[

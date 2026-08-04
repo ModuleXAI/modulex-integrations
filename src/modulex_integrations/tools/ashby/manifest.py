@@ -52,7 +52,7 @@ manifest = IntegrationManifest(
     ),
     version="1.0.0",
     author="ModuleX",
-    logo="modulex:ashby-themed",
+    logo="modulex:ashby",
     app_url="https://ashbyhq.com",
     categories=["Productivity & Collaboration", "hr", "recruiting", "ats"],
     actions=[

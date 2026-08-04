@@ -50,7 +50,7 @@ manifest = IntegrationManifest(
     ),
     version="1.0.0",
     author="ModuleX",
-    logo="modulex:buffer-themed",
+    logo="logos:buffer",
     app_url="https://buffer.com",
     categories=["Social Media", "Marketing & Advertising", "Scheduling & Events"],
     actions=[

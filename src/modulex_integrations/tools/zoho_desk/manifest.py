@@ -35,7 +35,7 @@ manifest = IntegrationManifest(
     ),
     version="1.0.0",
     author="ModuleX",
-    logo="modulex:zoho_desk-themed",
+    logo="modulex:zoho_desk",
     app_url="https://www.zoho.com/desk/",
     categories=["Customer Support", "Helpdesk", "Ticketing"],
     actions=[

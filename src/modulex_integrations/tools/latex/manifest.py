@@ -39,7 +39,7 @@ manifest = IntegrationManifest(
     ),
     version="1.0.0",
     author="ModuleX",
-    logo="modulex:latex-themed",
+    logo="modulex:latex",
     app_url="https://www.latex-project.org",
     categories=["Productivity & Collaboration", "documents", "typesetting", "publishing"],
     actions=[

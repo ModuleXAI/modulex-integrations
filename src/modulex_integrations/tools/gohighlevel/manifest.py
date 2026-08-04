@@ -68,7 +68,7 @@ manifest = IntegrationManifest(
     ),
     version="1.0.0",
     author="ModuleX",
-    logo="modulex:gohighlevel-themed",
+    logo="modulex:gohighlevel",
     app_url="https://www.gohighlevel.com",
     categories=["CRM", "Sales", "Marketing & Advertising"],
     actions=[

@@ -183,7 +183,7 @@ class TestManifest:
             assert "api_key" not in action.parameters
 
     def test_manifest_logo_follows_convention(self) -> None:
-        assert manifest.logo == "modulex:arxiv-themed"
+        assert manifest.logo == "modulex:arxiv"
 
 
 # --- Happy paths -----------------------------------------------------------

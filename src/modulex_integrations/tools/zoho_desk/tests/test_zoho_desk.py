@@ -215,7 +215,7 @@ class TestManifest:
 
     def test_manifest_logo_and_name(self) -> None:
         assert manifest.name == "zoho_desk"
-        assert manifest.logo == "modulex:zoho_desk-themed"
+        assert manifest.logo == "modulex:zoho_desk"
 
 
 # --- Token minting ----------------------------------------------------------

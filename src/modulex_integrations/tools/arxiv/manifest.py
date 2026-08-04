@@ -45,7 +45,7 @@ manifest = IntegrationManifest(
     ),
     version="1.0.0",
     author="ModuleX",
-    logo="modulex:arxiv-themed",
+    logo="modulex:arxiv",
     app_url="https://arxiv.org",
     categories=["Web Search & Scraping", "research", "academic", "papers"],
     actions=[

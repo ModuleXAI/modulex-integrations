@@ -78,7 +78,7 @@ manifest = IntegrationManifest(
     ),
     version="1.0.0",
     author="ModuleX",
-    logo="modulex:reddit-themed",
+    logo="modulex:reddit",
     app_url="https://www.reddit.com",
     categories=["Social Media", "Communication", "Content"],
     actions=[

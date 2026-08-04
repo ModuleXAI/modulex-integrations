@@ -41,7 +41,7 @@ manifest = IntegrationManifest(
     ),
     version="1.0.0",
     author="ModuleX",
-    logo="modulex:fathom-themed",
+    logo="modulex:fathom",
     app_url="https://fathom.video",
     categories=["Productivity & Collaboration", "meeting", "note-taking"],
     actions=[

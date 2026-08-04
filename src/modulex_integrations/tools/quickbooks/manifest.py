@@ -42,7 +42,7 @@ manifest = IntegrationManifest(
     ),
     version="1.0.0",
     author="ModuleX",
-    logo="modulex:quickbooks-themed",
+    logo="modulex:quickbooks",
     app_url="https://quickbooks.intuit.com",
     categories=["Finance & Payments", "Accounting", "Bookkeeping"],
     actions=[
