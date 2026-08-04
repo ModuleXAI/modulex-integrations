@@ -1,0 +1,5 @@
+# Runtime dependencies for the quickbooks integration.
+#
+# httpx and langchain-core are core deps; nothing extra needed.
+
+dependencies = []

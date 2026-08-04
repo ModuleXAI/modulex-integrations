@@ -6,6 +6,71 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ## [Unreleased]
 
+## [0.14.0] - 2026-08-04
+
+
+### Added
+
+- `agentphone` integration — 22 actions, auth: api_key.
+- `fireflies` integration — 10 actions, auth: api_key. Transcript listing and
+  retrieval, user and contact directory, audio upload by URL, live-meeting
+  join, and bite creation/listing over the Fireflies GraphQL API.
+- `gohighlevel` integration — 117 actions, auth: oauth2. Contacts with their
+  notes, tasks and tags, opportunities and pipelines, conversations and
+  messages across SMS/email/social, email templates and campaigns, plus
+  calendars, appointments, availability schedules, booking slots, groups,
+  resources and notifications over the GoHighLevel v2 API. Sub-account
+  scoped: the location ID is stored on the credential rather than passed per
+  action.
+- `greenhouse` integration — 11 actions, auth: api_key. Candidates, jobs,
+  applications, users, departments, offices, and job stages over the
+  Greenhouse Harvest read API.
+- `latex` integration — 3 actions, auth: modulex_key. TeX Live package search,
+  single-package metadata, and font search. The service takes no credential;
+  the managed-key schema is declarative only.
+- `quickbooks` integration — 73 actions, auth: oauth2. Invoices, estimates,
+  sales receipts and credit memos, customers and vendors, bills, purchases
+  and payments on both sides of the ledger, items and the chart of accounts,
+  the company profile, eight financial reports, and a raw query escape hatch
+  over the QuickBooks Online Accounting API. Company scoped: the realm ID is
+  stored on the credential rather than passed per action.
+- `reddit` integration — 38 actions, auth: custom. Posts, comments, search,
+  user and subreddit surfaces, the inbox, writes and per-thing state toggles,
+  plus the six moderator actions. Static script-app credentials, no browser
+  redirect.
+- `ashby` integration — 28 actions, auth: api_key. Candidates, applications and
+  stage changes, jobs, openings and postings, offers, interviews, notes, plus
+  the reference-data lists, over the Ashby ATS API.
+- `buffer` integration — 10 actions, auth: api_key. Post create/edit/read/
+  delete, channel and account lookup, and the ideas surface over Buffer's
+  GraphQL API.
+- `fathom` integration — 6 actions, auth: api_key. Meeting listing with
+  date/team/recorder/invitee-domain filters, meeting-type listing, per-recording
+  summary and transcript retrieval, and team/team-member directory lookups over
+  the Fathom External API.
+- `flint` integration — 3 actions, auth: api_key. Starts prompt-driven and
+  template-based page-generation agent tasks on a Flint site and reads back a
+  task's status and the pages it created, modified, or deleted.
+- `arxiv` integration — 3 actions, auth: modulex_key. Keyword/field search,
+  single-paper metadata lookup, and an author's recent submissions over the
+  public arXiv API. The API takes no credential; the managed-key schema is
+  declarative only.
+- `wikipedia` integration — 4 actions, auth: modulex_key. Page summary, article
+  search, full page content with HTML, and a random article, across any language
+  edition. The API takes no credential; the managed-key schema is declarative
+  only.
+- `ses` integration — 19 actions, auth: custom. Amazon SES API v2 sending
+  (simple, templated, bulk, custom verification), email identity and DKIM
+  management, email templates, suppression list, configuration sets, and
+  account sending quota. Requests are signed with AWS Signature Version 4
+  using the standard library; no AWS SDK dependency.
+- `zoho_desk` integration — 9 actions, auth: custom. Ticket listing/read/update,
+  ticket comments and threads, contact lookup, and organization (portal)
+  discovery over the Zoho Desk REST API, with data-center-aware host
+  resolution.
+
+## [0.13.0] - 2026-07-21
+
 ### Changed
 
 - `google_docs`, `google_sheets`, `google_slides`, `google_drive` — OAuth now

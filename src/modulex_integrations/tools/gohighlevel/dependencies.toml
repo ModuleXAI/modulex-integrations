@@ -1,0 +1,6 @@
+# Runtime dependencies for the gohighlevel integration.
+#
+# The GoHighLevel v2 API is plain REST over HTTP, hit with httpx.
+# httpx and langchain-core are core deps; nothing extra needed.
+
+dependencies = []
