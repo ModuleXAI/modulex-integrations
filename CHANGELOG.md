@@ -12,6 +12,13 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 - `fireflies` integration — 10 actions, auth: api_key. Transcript listing and
   retrieval, user and contact directory, audio upload by URL, live-meeting
   join, and bite creation/listing over the Fireflies GraphQL API.
+- `gohighlevel` integration — 117 actions, auth: oauth2. Contacts with their
+  notes, tasks and tags, opportunities and pipelines, conversations and
+  messages across SMS/email/social, email templates and campaigns, plus
+  calendars, appointments, availability schedules, booking slots, groups,
+  resources and notifications over the GoHighLevel v2 API. Sub-account
+  scoped: the location ID is stored on the credential rather than passed per
+  action.
 - `greenhouse` integration — 11 actions, auth: api_key. Candidates, jobs,
   applications, users, departments, offices, and job stages over the
   Greenhouse Harvest read API.

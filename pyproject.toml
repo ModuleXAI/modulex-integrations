@@ -257,6 +257,7 @@ greenhouse = "modulex_integrations.tools.greenhouse"
 latex = "modulex_integrations.tools.latex"
 reddit = "modulex_integrations.tools.reddit"
 wikipedia = "modulex_integrations.tools.wikipedia"
+gohighlevel = "modulex_integrations.tools.gohighlevel"
 
 [tool.hatch.version]
 # Version is derived from the latest git tag matching v* (e.g. v0.1.0,
